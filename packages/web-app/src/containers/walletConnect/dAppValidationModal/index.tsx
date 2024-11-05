@@ -24,7 +24,6 @@ import {handleClipboardActions} from 'utils/library';
 import {useAlertContext} from 'context/alert';
 import {TransactionState as ConnectionState} from 'utils/constants/misc';
 import {useWalletConnectInterceptor} from 'hooks/useWalletConnectInterceptor';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
 
 type Props = {
   onBackButtonClicked: () => void;
@@ -40,8 +39,6 @@ const WCdAppValidation: React.FC<Props> = props => {
   const {t} = useTranslation();
   const {alert} = useAlertContext();
   const {isDesktop} = useScreen();
-
-  const {data: daoDetails} = useDaoDetailsQuery();
 
   const [connectionStatus, setConnectionStatus] = useState<ConnectionState>(
     ConnectionState.WAITING
@@ -130,7 +127,7 @@ const WCdAppValidation: React.FC<Props> = props => {
 
     const c = await wcConnect({
       uri,
-      address: daoDetails?.address as string,
+      address: '',
       onError: e => console.error(e),
       autoApprove: true,
     });
@@ -140,7 +137,7 @@ const WCdAppValidation: React.FC<Props> = props => {
     } else {
       setConnectionStatus(ConnectionState.ERROR);
     }
-  }, [connectionStatus, daoDetails?.address, props, session, uri, wcConnect]);
+  }, [connectionStatus, props, session, uri, wcConnect]);
   /*************************************************
    *                     Render                    *
    *************************************************/

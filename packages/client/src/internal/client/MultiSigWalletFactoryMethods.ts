@@ -177,18 +177,18 @@ export class MultiSigWalletFactoryMethods extends ClientCore implements IMultiSi
             provider
         );
 
-        console.log(`getWallets account: ${this.web3.getWalletFactoryAddress()} ${account}`);
+        //console.log(`getWallets account: ${this.web3.getWalletFactoryAddress()} ${account}`);
 
         const length1 = await contract.getNumberOfWalletsForMember(account);
-        console.log(`getWallets length: ${account} ${length1.toString()}`);
+        //console.log(`getWallets length: ${account} ${length1.toString()}`);
         const length = (await contract.getNumberOfWalletsForMember(account)).toNumber();
 
         const skip = option.skip !== undefined ? option.skip : 0;
         const limit = option.limit !== undefined ? option.limit : 16;
-        console.log(`length : ${length}`);
-        console.log(`skip : ${skip}`);
-        console.log(`limit : ${limit}`);
-        console.log(`direction : ${option.direction}`);
+        //console.log(`length : ${length}`);
+        //console.log(`skip : ${skip}`);
+        //console.log(`limit : ${limit}`);
+        //console.log(`direction : ${option.direction}`);
         if (option.direction === SortDirection.ASC) {
             const from = skip;
             const to = skip + limit > length ? length : skip + limit;

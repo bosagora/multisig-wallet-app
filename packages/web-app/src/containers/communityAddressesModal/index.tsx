@@ -32,7 +32,7 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
       if (searchValue !== '') {
         const re = new RegExp(searchValue, 'i');
 
-        return wallet?.address?.match(re) || wallet?.ensName.match(re);
+        return wallet?.address?.match(re);
       }
       return true;
     },
@@ -40,20 +40,10 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
   );
 
   const filteredAddressList = useMemo(() => {
-    if (tokenMembership) {
-      return (wallets as TokenVotingWalletField[]).filter(filterValidator).map(
-        ({address, amount, ensName}) =>
-          ({
-            wallet: ensName || getUserFriendlyWalletLabel(address, t),
-            tokenAmount: `${amount} ${tokenSymbol}`,
-          } as VoterType)
-      );
-    }
-
     // multisig
     return (multisigWallets as MultisigWalletField[])
       .filter(filterValidator)
-      .map(({address, ensName}) => ({wallet: ensName || address} as VoterType));
+      .map(({address}) => ({wallet: address} as VoterType));
   }, [
     filterValidator,
     multisigWallets,

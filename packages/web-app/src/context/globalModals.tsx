@@ -109,6 +109,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
         setIsGatingOpen(true);
         break;
       case 'deposit':
+        //console.log('open deposit');
         setIsDepositOpen(true);
         break;
       case 'poapClaim':

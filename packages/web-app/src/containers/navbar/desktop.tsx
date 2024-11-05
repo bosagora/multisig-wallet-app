@@ -30,7 +30,6 @@ type DesktopNavProp = {
   processLabel?: string;
   onDaoSelect: () => void;
   onWalletClick: () => void;
-  onFeedbackClick: () => void;
 };
 
 const DesktopNav: React.FC<DesktopNavProp> = props => {
@@ -39,7 +38,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {network} = useNetwork();
   const {dao} = useParams();
   const {breadcrumbs, icon, tag} = useMappedBreadcrumbs();
-  const {address, ensName, ensAvatarUrl, isConnected} = useWallet();
+  const {address, isConnected} = useWallet();
 
   const currentDao = useReactiveVar(selectedDaoVar);
 
@@ -73,12 +72,10 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
             />
 
             <ButtonWallet
-              src={ensAvatarUrl || address}
+              src={address}
               onClick={props.onWalletClick}
               isConnected={isConnected}
-              label={
-                isConnected ? ensName || address : t('navButtons.connectWallet')
-              }
+              label={isConnected ? address : t('navButtons.connectWallet')}
             />
           </Menu>
         </Container>
@@ -100,9 +97,9 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
       <Menu>
         <Content>
           <DaoSelector
-            daoAddress={currentDao.ensDomain}
-            daoName={currentDao?.metadata?.name || currentDao?.ensDomain}
-            src={currentDao.metadata.avatar}
+            daoAddress={currentDao.address}
+            daoName={currentDao?.metadata.name}
+            src={currentDao.address}
             onClick={props.onDaoSelect}
           />
           <LinksWrapper>
@@ -114,7 +111,9 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
                 <Breadcrumb
                   icon={icon}
                   crumbs={breadcrumbs}
-                  onClick={path => navigate(generatePath(path, {network, dao}))}
+                  onClick={(path: string) =>
+                    navigate(generatePath(path, {network, dao}))
+                  }
                   tag={tag}
                 />
               </>
@@ -123,22 +122,11 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
         </Content>
 
         <div className="flex gap-2">
-          <ButtonText
-            className="w-full tablet:w-max"
-            size="large"
-            label={t('navButtons.giveFeedback')}
-            mode="secondary"
-            iconRight={<IconFeedback />}
-            onClick={props.onFeedbackClick}
-          />
-
           <ButtonWallet
-            src={ensAvatarUrl || address}
+            src={address}
             onClick={props.onWalletClick}
             isConnected={isConnected}
-            label={
-              isConnected ? ensName || address : t('navButtons.connectWallet')
-            }
+            label={isConnected ? address : t('navButtons.connectWallet')}
           />
         </div>
       </Menu>

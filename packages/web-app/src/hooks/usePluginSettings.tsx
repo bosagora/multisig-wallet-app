@@ -1,8 +1,14 @@
-import {MultisigVotingSettings, VotingSettings} from '@aragon/sdk-client';
+// import {MultisigVotingSettings, VotingSettings} from '@aragon/sdk-client';
 import {useEffect, useState} from 'react';
 import {HookData, SupportedVotingSettings} from 'utils/types';
+import {
+  MultisigVotingSettings,
+  PluginTypes,
+  VotingSettings,
+} from '../utils/aragon/types';
+import {useClient} from './useClient';
 
-import {PluginTypes, usePluginClient} from './usePluginClient';
+// import {PluginTypes, usePluginClient} from './usePluginClient';
 
 export function isTokenVotingSettings(
   settings: SupportedVotingSettings | undefined
@@ -34,14 +40,23 @@ export function usePluginSettings(
   const [error, setError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const client = usePluginClient(type);
+  const {client} = useClient();
 
   useEffect(() => {
     async function getPluginSettings() {
       try {
         setIsLoading(true);
 
-        const settings = await client?.methods.getVotingSettings(pluginAddress);
+        const minApprovals = await client?.multiSigWallet.getRequired();
+        //console.log('minApprovals :', minApprovals);
+        const settings = {
+          minDuration: 0,
+          minParticipation: 0,
+          supportThreshold: 0,
+          votingMode: 'Standard',
+          minApprovals: minApprovals,
+          onlyListed: true,
+        };
         if (settings) setData(settings as VotingSettings);
       } catch (err) {
         console.error(err);
@@ -52,7 +67,7 @@ export function usePluginSettings(
     }
 
     getPluginSettings();
-  }, [client?.methods, pluginAddress]);
+  }, [pluginAddress]);
 
   return {data, error, isLoading};
 }

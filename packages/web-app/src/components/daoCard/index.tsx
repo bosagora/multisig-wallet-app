@@ -1,6 +1,5 @@
 import {AvatarDao, IconBlock, IconCommunity} from '@aragon/ui-components';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
 import useScreen from 'hooks/useScreen';
@@ -8,25 +7,11 @@ import {getSupportedNetworkByChainId} from 'utils/constants';
 
 export interface IDaoCardProps {
   name: string;
-  ensName: string;
-  logo?: string;
   description: string;
+  address: string;
   chainId: number;
-  daoType: DaoType;
   onClick?: () => void;
 }
-
-export type DaoType = 'wallet-based' | 'token-based';
-
-const useGetDaoType = (daoType?: DaoType) => {
-  const {t} = useTranslation();
-  switch (daoType) {
-    case 'token-based':
-      return t('explore.explorer.tokenBased');
-    case 'wallet-based':
-      return t('explore.explorer.walletBased');
-  }
-};
 
 // this is needed for line-clamp
 type DescriptionProps = {
@@ -35,18 +20,14 @@ type DescriptionProps = {
 
 export const DaoCard = (props: IDaoCardProps) => {
   const {isDesktop} = useScreen();
-  const daoType = useGetDaoType(props.daoType);
 
   return (
     <Container data-testid="daoCard" onClick={props.onClick}>
       <DaoDataWrapper>
         <HeaderContainer>
-          <AvatarDao daoName={props.name} src={props.logo} />
+          <AvatarDao daoName={props.name} src={props.address} />
           <div className="space-y-0.25 desktop:space-y-0.5 text-left">
             <Title>{props.name}</Title>
-            <p className="font-semibold text-ui-500 ft-text-sm">
-              {props.ensName}
-            </p>
           </div>
         </HeaderContainer>
         <Description isDesktop={isDesktop}>{props.description}</Description>
@@ -55,10 +36,6 @@ export const DaoCard = (props: IDaoCardProps) => {
         <IconWrapper>
           <StyledIconBlock />
           <IconLabel>{getSupportedNetworkByChainId(props.chainId)}</IconLabel>
-        </IconWrapper>
-        <IconWrapper>
-          <StyledIconCommunity />
-          <IconLabel>{daoType}</IconLabel>
         </IconWrapper>
       </DaoMetadataWrapper>
     </Container>

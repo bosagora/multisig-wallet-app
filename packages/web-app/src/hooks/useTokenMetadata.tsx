@@ -1,43 +1,26 @@
-import {useApolloClient} from '@apollo/client';
-import {AssetBalance} from '@aragon/sdk-client';
-import {TokenType} from '@aragon/sdk-client-common';
 import {constants} from 'ethers';
 import {useEffect, useState} from 'react';
 
 import {useNetwork} from 'context/network';
-import {fetchTokenData} from 'services/prices';
 import {CHAIN_METADATA} from 'utils/constants';
 import {HookData, TokenWithMetadata} from 'utils/types';
+import {AssetBalance} from '../utils/aragon/sdk-client-types';
+import {TokenType} from '../utils/aragon/sdk-client-common-types';
+import {useLoadTokenLogoURL} from './useDaoBalances';
 
 export const useTokenMetadata = (
   assets: AssetBalance[]
 ): HookData<TokenWithMetadata[]> => {
-  const client = useApolloClient();
   const {network} = useNetwork();
   const [data, setData] = useState<TokenWithMetadata[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
+  const {getImgUrl} = useLoadTokenLogoURL();
 
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
         setLoading(true);
-
-        // TODO fix cases below for ERC721
-
-        // fetch token metadata from external api
-        const metadata = await Promise.all(
-          assets?.map(asset => {
-            return fetchTokenData(
-              asset.type !== TokenType.NATIVE
-                ? asset.address
-                : constants.AddressZero,
-              client,
-              network,
-              asset.type !== TokenType.NATIVE ? asset.symbol : undefined
-            );
-          })
-        );
 
         // map metadata to token balances
         const tokensWithMetadata = assets?.map((asset, index) => ({
@@ -47,23 +30,19 @@ export const useTokenMetadata = (
               ? {
                   id: asset.address,
                   decimals: asset.decimals,
-                  name: metadata[index]?.name || asset.name,
-                  symbol: metadata[index]?.symbol || asset.symbol,
+                  name: asset.name,
+                  symbol: asset.symbol,
                 }
               : {
                   id: constants.AddressZero,
                   decimals: CHAIN_METADATA[network].nativeCurrency.decimals,
-                  name:
-                    metadata[index]?.name ||
-                    CHAIN_METADATA[network].nativeCurrency.name,
-                  symbol:
-                    metadata[index]?.symbol ||
-                    CHAIN_METADATA[network].nativeCurrency.symbol,
+                  name: CHAIN_METADATA[network].nativeCurrency.name,
+                  symbol: CHAIN_METADATA[network].nativeCurrency.symbol,
                 }),
 
-            price: metadata[index]?.price,
-            apiId: metadata[index]?.id,
-            imgUrl: metadata[index]?.imgUrl || '',
+            price: 1,
+            apiId: index,
+            imgUrl: getImgUrl(asset.symbol, CHAIN_METADATA[network].id) || '',
           },
         }));
 
@@ -77,7 +56,7 @@ export const useTokenMetadata = (
     };
 
     if (assets) fetchMetadata();
-  }, [assets, network, client]);
+  }, [assets, getImgUrl, network]);
 
   return {data, isLoading: loading, error};
 };

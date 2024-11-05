@@ -23,17 +23,8 @@ import {LoginRequired} from './LoginRequired';
 
 export const WalletMenu = () => {
   const {close, isWalletOpen} = useGlobalModalContext();
-  const {
-    address,
-    ensName,
-    ensAvatarUrl,
-    methods,
-    chainId,
-    isConnected,
-    network,
-    status,
-    provider,
-  } = useWallet();
+  const {address, methods, chainId, isConnected, network, status, provider} =
+    useWallet();
   const {isDesktop} = useScreen();
   const {t} = useTranslation();
   const {alert} = useAlertContext();
@@ -81,10 +72,9 @@ export const WalletMenu = () => {
     >
       <ModalHeader>
         <AvatarAddressContainer>
-          <Avatar src={ensAvatarUrl || address || ''} size="small" />
+          <Avatar src={address || ''} size="small" />
           <AddressContainer>
-            <Title>{ensName ? ensName : shortenAddress(address)}</Title>
-            {ensName && <SubTitle>{shortenAddress(address)}</SubTitle>}
+            <Title>{shortenAddress(address)}</Title>
           </AddressContainer>
         </AvatarAddressContainer>
         <ButtonIcon

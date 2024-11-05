@@ -1,4 +1,4 @@
-import {DaoQueryParams} from '@aragon/sdk-client';
+import {QueryOption} from 'multisig-wallet-sdk-client';
 import {
   InfiniteData,
   UseQueryResult,
@@ -42,7 +42,7 @@ export const useFavoritedDaosQuery = (
   return useQuery<NavigationDao[]>({
     queryKey: ['favoriteDaos'],
     queryFn: useCallback(() => getFavoritedDaosFromCache({skip}), [skip]),
-    select: addAvatarToDaos,
+    select: addAvatarToWallet,
     refetchOnWindowFocus: false,
   });
 };
@@ -56,9 +56,7 @@ export const useFavoritedDaosQuery = (
  */
 export const useFavoritedDaosInfiniteQuery = (
   enabled = true,
-  {
-    limit = DEFAULT_QUERY_PARAMS.limit,
-  }: Partial<Pick<DaoQueryParams, 'limit'>> = {}
+  {limit = DEFAULT_QUERY_PARAMS.limit}: Partial<Pick<QueryOption, 'limit'>> = {}
 ) => {
   return useInfiniteQuery({
     queryKey: ['infiniteFavoriteDaos'],
@@ -172,7 +170,7 @@ export const useRemoveFavoriteDaoMutation = (onSuccess?: () => void) => {
 function augmentCachedDaos(data: InfiniteData<NavigationDao[]>) {
   return {
     pageParams: data.pageParams,
-    pages: data.pages.flatMap(page => addAvatarToDaos(page)),
+    pages: data.pages.flatMap(page => addAvatarToWallet(page)),
   };
 }
 
@@ -181,17 +179,14 @@ function augmentCachedDaos(data: InfiniteData<NavigationDao[]>) {
  * @param daos array of `NavigationDao` objects representing the DAOs to be processed.
  * @returns array of augmented NavigationDao objects with resolved avatar IPFS CIDs.
  */
-function addAvatarToDaos<T extends NavigationDao>(daos: T[]): T[] {
+function addAvatarToWallet<T extends NavigationDao>(daos: T[]): T[] {
   return daos.map(dao => {
     const {metadata} = dao;
     return {
       ...dao,
       metadata: {
         ...metadata,
-        avatar: resolveDaoAvatarIpfsCid(
-          getSupportedNetworkByChainId(dao.chain) || 'unsupported',
-          metadata.avatar
-        ),
+        avatar: undefined,
       },
     } as T;
   });

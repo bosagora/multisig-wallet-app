@@ -13,7 +13,7 @@ import {MembersList} from 'components/membersList';
 import {Loading} from 'components/temporary';
 import {useNetwork} from 'context/network';
 import {useDaoMembers} from 'hooks/useDaoMembers';
-import {PluginTypes} from 'hooks/usePluginClient';
+// import {PluginTypes} from 'hooks/usePluginClient';
 import useScreen from 'hooks/useScreen';
 import {
   Community,
@@ -21,61 +21,51 @@ import {
   MintTokensProposal,
 } from 'utils/paths';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {useExistingToken} from 'hooks/useExistingToken';
-import {useGovTokensWrapping} from 'context/govTokensWrapping';
+// import {useExistingToken} from 'hooks/useExistingToken';
+// import {useGovTokensWrapping} from 'context/govTokensWrapping';
 
 type Props = {
   daoAddressOrEns: string;
-  pluginType: PluginTypes;
-  pluginAddress: string;
+  pluginType?: string;
   horizontal?: boolean;
 };
 
 export const MembershipSnapshot: React.FC<Props> = ({
   daoAddressOrEns,
-  pluginType,
-  pluginAddress,
-  horizontal,
+  pluginType = 'multisig.plugin.dao.eth',
+  horizontal = false,
 }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {network} = useNetwork(); // TODO ensure this is the dao network
   const {isDesktop} = useScreen();
-  const {handleOpenModal} = useGovTokensWrapping();
+  //console.log('isDesktop :', isDesktop);
+  // const {handleOpenModal} = useGovTokensWrapping();
 
   const {
-    data: {members, daoToken},
+    data: {members},
     isLoading,
-  } = useDaoMembers(pluginAddress, pluginType);
+  } = useDaoMembers(daoAddressOrEns, pluginType);
   const totalMemberCount = members.length;
 
-  const {data: daoDetails} = useDaoDetailsQuery();
+  // const {data: daoDetails} = useDaoDetailsQuery();
 
-  const {isDAOTokenWrapped, isTokenMintable} = useExistingToken({
-    daoToken,
-    daoDetails,
-  });
-
+  // const {isDAOTokenWrapped, isTokenMintable} = useExistingToken({
+  //   daoToken,
+  //   daoDetails,
+  // });
+  //
   const walletBased = pluginType === 'multisig.plugin.dao.eth';
 
   const headerButtonHandler = () => {
-    walletBased
-      ? navigate(
-          generatePath(ManageMembersProposal, {network, dao: daoAddressOrEns})
-        )
-      : isDAOTokenWrapped
-      ? handleOpenModal()
-      : isTokenMintable
-      ? navigate(
-          generatePath(MintTokensProposal, {network, dao: daoAddressOrEns})
-        )
-      : navigate(generatePath(Community, {network, dao: daoAddressOrEns}));
+    generatePath(ManageMembersProposal, {network, dao: daoAddressOrEns});
   };
 
   if (isLoading) return <Loading />;
 
   if (members.length === 0) return null;
 
+  //console.log('horizontal && isDesktop :', horizontal && isDesktop);
   if (horizontal && isDesktop) {
     return (
       <div className="flex space-x-3">
@@ -89,13 +79,8 @@ export const MembershipSnapshot: React.FC<Props> = ({
                 : t('explore.explorer.tokenBased')
             }
             buttonText={
-              walletBased
-                ? t('labels.manageMember')
-                : isDAOTokenWrapped
-                ? t('community.ctaMain.wrappedLabel')
-                : isTokenMintable
-                ? t('labels.addMember')
-                : t('labels.seeCommunity')
+              // walletBased ? t('labels.manageMember') : t('labels.seeCommunity')
+              ''
             }
             orientation="vertical"
             onClick={headerButtonHandler}
@@ -103,9 +88,10 @@ export const MembershipSnapshot: React.FC<Props> = ({
         </div>
         <div className="space-y-2 w-2/3">
           <ListItemGrid>
-            <MembersList token={daoToken} members={members} />
+            <MembersList members={members} />
           </ListItemGrid>
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             iconRight={<IconChevronRight />}
@@ -130,19 +116,15 @@ export const MembershipSnapshot: React.FC<Props> = ({
             : t('explore.explorer.tokenBased')
         }
         buttonText={
-          walletBased
-            ? t('labels.manageMember')
-            : isDAOTokenWrapped
-            ? t('community.ctaMain.wrappedLabel')
-            : isTokenMintable
-            ? t('labels.addMember')
-            : t('labels.seeCommunity')
+          // walletBased ? t('labels.manageMember') : t('labels.seeCommunity')
+          ''
         }
         orientation="vertical"
         onClick={headerButtonHandler}
       />
-      <MembersList token={daoToken} members={members.slice(0, 3)} />
+      <MembersList members={members.slice(0, 3)} />
       <ButtonText
+        css={{}}
         mode="secondary"
         size="large"
         iconRight={<IconChevronRight />}

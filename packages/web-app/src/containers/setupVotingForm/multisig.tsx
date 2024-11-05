@@ -4,8 +4,8 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
-import DateTimeSelector from 'containers/dateTimeSelector';
-import Duration, {DurationLabel} from 'containers/duration';
+// import DateTimeSelector from 'containers/dateTimeSelector';
+// import Duration, {DurationLabel} from 'containers/duration';
 import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -185,86 +185,8 @@ const SetupMultisigVotingForm: React.FC = () => {
         />
       </FormSection>
 
-      {/* Start time */}
-      <FormSection>
-        <Label
-          label={t('newWithdraw.setupVoting.multisig.startLabel')}
-          helpText={t('newWithdraw.setupVoting.multisig.startDescription')}
-        />
-        <Controller
-          name="startSwitch"
-          rules={{required: 'Validate'}}
-          control={control}
-          defaultValue="now"
-          render={({field: {onChange, value}}) => (
-            <ToggleCheckList
-              items={startItems}
-              value={value}
-              onChange={changeValue => handleStartToggle(changeValue, onChange)}
-            />
-          )}
-        />
-        {startSwitch === 'date' && (
-          <>
-            <DateTimeSelector
-              mode="start"
-              defaultDateOffset={{minutes: 10}}
-              minDurationAlert={t('alert.multisig.dateTimeMinDuration')}
-              minDurationMills={minDurationMills}
-              onUtcClicked={() => handleUtcClicked('first')}
-            />
-            <DateTimeErrors mode="start" />
-          </>
-        )}
-      </FormSection>
 
-      {/* Expiration time */}
-      <FormSection>
-        <Label
-          label={t('newWithdraw.setupVoting.multisig.expiration')}
-          helpText={t('newWithdraw.setupVoting.multisig.expirationDescription')}
-        />
-        <Controller
-          name="durationSwitch"
-          rules={{required: 'Validate'}}
-          control={control}
-          defaultValue="duration"
-          render={({field: {onChange, value}}) => (
-            <ToggleCheckList
-              value={value}
-              items={expirationItems}
-              onChange={changeValue => handleEndToggle(changeValue, onChange)}
-            />
-          )}
-        />
-        {durationSwitch === 'duration' ? (
-          <Duration
-            defaultValues={{days: MULTISIG_REC_DURATION_DAYS}}
-            minDuration={{hours: MULTISIG_MIN_DURATION_HOURS}}
-          />
-        ) : (
-          <>
-            <DateTimeSelector
-              mode="end"
-              onUtcClicked={() => handleUtcClicked('second')}
-              minDurationAlert={t('alert.multisig.dateTimeMinDuration')}
-              minDurationMills={minDurationMills}
-              defaultDateOffset={{
-                days: MULTISIG_REC_DURATION_DAYS,
-                minutes: 10,
-              }}
-            />
-            <DateTimeErrors mode="end" />
-          </>
-        )}
-        {!endTimeWarning && !formState?.errors?.endDate && (
-          <DurationLabel
-            maxDuration={getDuration() >= MAX_DURATION_MILLS}
-            minDuration={getDuration() === minDurationMills}
-            alerts={durationAlerts}
-          />
-        )}
-      </FormSection>
+
       <UtcMenu onTimezoneSelect={tzSelector} />
     </>
   );

@@ -27,7 +27,7 @@
     "privacyLinkURL": "https://aragon.org/privacy-policy"
   },
   "daoSwitcher": {
-    "title": "Select your DAO",
+    "title": "Select your Multisig Wallet",
     "subtitle": "Go back to explorer page"
   },
   "navButtons": {
@@ -93,8 +93,8 @@
     "networkCost": "Network cost",
     "security": "Security",
     "popularity": "Popularity",
-    "daoName": "DAO name",
-    "summary": "Summary",
+    "daoName": "Multisig wallet name",
+    "summary": "Description",
     "description": "Description",
     "addLink": "Add link",
     "addWallet": "Add wallet",
@@ -160,7 +160,7 @@
     },
     "review": {
       "blockchain": "Blockchain",
-      "daoMetadata": "DAO details",
+      "daoMetadata": "Multisig wallet details",
       "voters": "Voters",
       "votingParameters": "Voting parameters",
       "governance": "Governance",
@@ -189,7 +189,7 @@
     "step": "Step",
     "of": "of",
     "edit": "Edit",
-    "daoSettings": "DAO settings",
+    "daoSettings": "Multisig wallet settings",
     "selectWallets": "Select wallets",
     "cancel": "Cancel",
     "addSingleWallet": "Add 1 wallet",
@@ -239,9 +239,9 @@
   },
   "placeHolders": {
     "selectToken": "Select a token …",
-    "walletOrEns": "Type wallet address or ENS …",
+    "walletOrEns": "Type wallet address …",
     "searchTokens": "Type to search …",
-    "daoName": "Type your DAO's name …",
+    "daoName": "Type your Multisig wallet's name …",
     "ensName": "aragon",
     "daoDescription": "Type your summary …",
     "addResource": "Lens, Discord, etc."
@@ -267,10 +267,10 @@
     "action": "New proposal",
     "emptyState": {
       "title": "Create your first proposal",
-      "subtitle": "What's the first thing your community needs to decide? For ideas on how to structure proposals, {{link}}.",
+      "subtitle": "What's the first thing your community needs to decide? ",
       "subtitleLinkLabel": "read this guide",
       "subtitleLinkURL": "https://aragon.org/how-to/structure-dao-proposals-and-build-proposal-processes",
-      "description": "Get your community involved in the decision-making process. Learn more in our {{link}}.",
+      "description": "Get your community involved in the decision-making process.",
       "descriptionLinkLabel": "proposal guide",
       "descriptionLinkURL": "https://aragon.org/how-to/structure-dao-proposals-and-build-proposal-processes"
     },
@@ -446,6 +446,8 @@
     "gatingUsers": {
       "tokenTitle": "Token not found",
       "tokenDescription": "The wallet does not contain '{{tokenName}}' token. Please ensure that you have the necessary tokens in order to continue.",
+      "walletTitle1": "You can't create a proposal",
+      "walletDescription1": "You are not a member. Creating proposals in test can only be done by addresses that have been added to its member list.",
       "walletTitle": "Wallet not allowlisted",
       "walletDescription": "The connected wallet is not allowlisted. Please connect a valid wallet in order to proceed with the process.",
       "buttonLabel": "Ok, understood"
@@ -468,8 +470,8 @@
       "walletConnected": "Wallet connected",
       "walletDisconnected": "Wallet disconnected",
       "max": "Max balance applied",
-      "favorited": "DAO favorited",
-      "unfavorite": "DAO removed from favorites"
+      "favorited": "Multisig wallet favorited",
+      "unfavorite": "Multisig wallet removed from favorites"
     }
   },
   "warnings": {
@@ -543,7 +545,7 @@
     "mintTokens": "Mint tokens",
     "mintTokensSubtitle": "Mint more DAO tokens and distribute to wallets.",
     "withdrawAssetsSubtitle": "Create a proposal to withdraw assets to a wallet.",
-    "withdrawAssetsActionSubtitle": "Withdraw assets from the DAO treasury",
+    "withdrawAssetsActionSubtitle": "Withdraw assets from the Multisig wallet treasury",
     "externalContract": "Smart contract composer",
     "externalContractSubtitle": "Interact with an external contract on the chain your DAO is deployed on.",
     "changeMinimumApproval": "Change minimum approval",
@@ -623,23 +625,23 @@
     }
   },
   "createDAO": {
-    "title": "Create your DAO",
+    "title": "Create your Multisig wallet",
     "overview": {
-      "title": "Build your DAO",
-      "description": "Start simple and learn as you go. You can always evolve your DAO in the future.",
-      "button": "Build your DAO"
+      "title": "Build your Multisig wallet",
+      "description": "You can easily create them as you go step by step.",
+      "button": "Build"
     },
     "step1": {
       "label": "Step 1",
       "title": "Select blockchain",
-      "description": "The chain you choose is where your tokens and assets are stored. If you already have a token, choose the chain your token is minted on. This cannot be changed later. For help selecting your chain, read our guide on choosing the best {{link}}.",
+      "description": "The chain you choose is where your tokens and assets are stored. If you already have a token, choose the chain your token is minted on. This cannot be changed later.",
       "descriptionLinkLabel": "blockchain for your DAO",
       "descriptionLinkURL": "https://aragon.org/how-to/choose-the-right-blockchain-for-your-dao"
     },
     "step2": {
       "label": "Step 2",
-      "title": "Describe your DAO",
-      "description": "Name and define your DAO so new contributors know they've come to the right place. This information is displayed on the DAO Explore page and can be changed with a vote. For ideas on DAO branding, {{link}}.",
+      "title": "Describe your Multisig wallet",
+      "description": "Name and define your Multisig wallet so new contributors know they've come to the right place. This information is displayed on the Multisig wallet Explore page.",
       "nameSubtitle": "Maximum of 128 characters",
       "logoSubtitle": "JPG, PNG, GIF, or SVG of no more than 3MB. We recommend 1024x1024px.",
       "descriptionSubtitle": "Describe your DAO's purpose in a few sentences. This is listed on the Explore page so new contributors can find you.",
@@ -652,7 +654,7 @@
     "step3": {
       "label": "Step 3",
       "title": "Define membership",
-      "description": "Decide the type of voting your DAO uses. You can change these settings with a vote. For help deciding which type of governance is best for you, {{link}}.",
+      "description": "Decide the type of voting your Multisig wallet uses. You can change these settings with a vote. ",
       "communityOverviewGuide": "read this guide",
       "newToken": "No",
       "authorisedWalletsSubtitle": "Add wallets of members who are authorized to participate in governance",
@@ -690,7 +692,7 @@
       "multisigMembership": "Multisig members",
       "multisigMembershipSubtitle": "Only multisig members can vote. 1 wallet address equals 1 approval.",
       "multisigMembers": "Multisig members",
-      "multisigMembersHelptext": "There is no limit on the number of addresses on your multisig. Addresses can create proposals, create and approve transactions, and suggest changes to the DAO settings after creation. ",
+      "multisigMembersHelptext": "There is a limit of 50 addresses in a multisig. Addresses can create proposals, create and approve transactions after creation. ",
       "multisigMembersWalletAlert": "Your connected wallet was automatically added to the list. You can remove it if you like.",
       "multisigEligibilityTitle": "Proposal creation",
       "multisigEligibilitySubtitle": "Specify who is permitted to create proposals.",
@@ -742,7 +744,7 @@
     "step4": {
       "label": "Step 4",
       "title": "Select governance settings",
-      "description": "These are the rules that define how decisions are made in your DAO. How many people have to participate? How much support is needed? How long are proposals open for voting? Learn more about in {{link}}.",
+      "description": "These are the rules that define how decisions are made in your Multisig wallet. How many people have to participate? How much support is needed?",
       "bestPractices": "best practices on governance",
       "supportThresholdSubtitle": "The percentage of tokens that vote \"Yes\" in support of a proposal, out of all tokens that have voted, must be greater than this value for the proposal to pass.",
       "minimumParticipationSubtitle": "The percentage of tokens that participate in a proposal, out of the total {{gTokenSymbol}} supply, must be greater than or equal to this value for the proposal to pass.",
@@ -778,14 +780,14 @@
       "wrappedReferenceParticipationValueLabel": "{{gTokenSymbol}} *"
     },
     "review": {
-      "title": "Deploy your DAO",
+      "title": "Deploy your Multisig wallet",
       "description": "Double-check that everything is correct before launching your organization.",
       "network": "{{network}} net",
       "distributionLink": "See {{count}} addresses",
       "days": "{{days}} days",
       "hours": "{{hours}} hours",
       "minutes": "{{minutes}} minutes",
-      "daoUpdates": "Except for the chain you choose and the token you mint, you can change all these values later with a vote in your DAO.",
+      "daoUpdates": "For the chain you choose and the members you add, you can't change all these values later in your Multisig wallet.",
       "acceptContent": "Accept proposed content.",
       "valuesCorrect": "These values are correct",
       "proposalCreation": "Token holders with ≥{{token}} {{symbol}}"
@@ -839,7 +841,7 @@
     "abstainHelptext": "Your choice will be counted for \"Abstain\"",
     "noHelptext": "Your choice will be counted for \"No\"",
     "token": "Token",
-    "inputPlaceholder": "Wallet, ENS, or email",
+    "inputPlaceholder": "Wallet ",
     "options": "Options",
     "yes+no": "Yes, no, or abstain",
     "strategy": "Strategy",
@@ -885,7 +887,7 @@
     "emptyState": {
       "titleSearch": "No result found for {{query}}",
       "title": "No voters yet",
-      "subtitle": "Search for another wallet address or ENS"
+      "subtitle": "Search for another wallet address"
     },
     "label": {
       "in": "In"
@@ -893,14 +895,14 @@
   },
   "explore": {
     "hero": {
-      "title": "Explore the DAO World",
-      "subtitle1": "Build your DAO, explore communities, and find inspiration for your project all in one place."
+      "title": "Multisig Wallet",
+      "subtitle1": "Create a multi-signature wallet to keep your assets safe."
     },
     "explorer": {
-      "title": "Explore DAOs",
-      "myDaos": "My DAOs",
+      "title": "Explore Wallets",
+      "myDaos": "Favorites",
       "popular": "Popular",
-      "newest": "Newest",
+      "newest": "My Wallets",
       "walletBased": "Wallet-based",
       "showMore": "Show more",
       "tokenBased": "Token-based"
@@ -918,7 +920,7 @@
       "securedByAragon": "Secured by Aragon OSx"
     },
     "learn": {
-      "linkLabel": "Learn about DAOs",
+      "linkLabel": "다중 서명 지갑에 대해서 학습하기",
       "linkURL": "https://aragon.org/education-portal"
     }
   },
@@ -948,14 +950,14 @@
   },
   "cta": {
     "create": {
-      "title": "Create your DAO",
-      "description": "Mint tokens, set governance parameters, and deploy your DAO on-chain in minutes with our no-code setup process.",
-      "actionLabel": "Create a DAO"
+      "title": "Create your multisig wallet",
+      "description": "A multisig wallet is a technology that enhances security by requiring more than one signature for a transaction.",
+      "actionLabel": "Create a multisig wallet"
     },
     "learn": {
-      "title": "Learn about DAOs",
-      "description": "Find inspiration and learn about DAOs in our education portal designed for builders at every stage of the journey.",
-      "actionLabel": "Learn about DAOs"
+      "title": "학습하기",
+      "description": "다중 서명 지갑을 생성하고 사용하는 방법을 학습합니다.",
+      "actionLabel": "다중 서명 지갑에 관해 배우기"
     },
     "build": {
       "title": "Build faster",
@@ -1002,9 +1004,9 @@
   "modal": {
     "deposit": {
       "headerTitle": "Deposit assets",
-      "headerDescription": "Send assets to the DAO treasury",
-      "inputLabelEns": "DAO treasury",
-      "inputHelptextEns": "Copy the ENS or address below and use your wallet's send feature to send money to your DAO's treasury.",
+      "headerDescription": "Send assets to the Multisig wallet treasury",
+      "inputLabelEns": "Multisig wallet treasury",
+      "inputHelptextEns": "Copy the address below and use your wallet's send feature to send money to your Multisig wallet's treasury.",
       "ctaLabel": "View all transfers",
       "cancelLabel": "Cancel",
       "inputLabelBlockchain": "Blockchain",
@@ -1017,7 +1019,7 @@
       "ctaLabel": "Yes, exit now",
       "cancelLabel": "No, stay",
       "titleProposalCreation": "Exit proposal creation",
-      "titleDaoCreation": "Exit DAO creation"
+      "titleDaoCreation": "Exit Multisig wallet creation"
     },
     "claimPoap": {
       "ctaLabel": "Claim POAP now",
@@ -1156,7 +1158,7 @@
     }
   },
   "inputWallet": {
-    "placeholder": "ENS or 0x…",
+    "placeholder": "0x…",
     "ensAlertSuccess": "ENS resolved successfully",
     "addressAlertSuccess": "Address resolved successfully",
     "ensAlertWarning": "This network does not support ENS domains",

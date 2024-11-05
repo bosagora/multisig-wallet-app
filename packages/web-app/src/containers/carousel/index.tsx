@@ -21,10 +21,10 @@ const Carousel: React.FC = () => {
   // when the rest of CTAs are enabled
   const handleCTAClick = useCallback(
     (path: string) => {
-      if (path === '/create') {
-        trackEvent('landing_createDaoBtn_clicked');
-      }
-
+      // if (path === '/create') {
+      //   trackEvent('landing_createDaoBtn_clicked');
+      // }
+      //
       if (path.startsWith('http')) {
         window.open(path, '_blank');
         return;
@@ -77,13 +77,14 @@ const Carousel: React.FC = () => {
           showArrows={false}
           showStatus={false}
           transitionTime={300}
-          centerSlidePercentage={92}
+          centerSlidePercentage={100}
           showThumbs={false}
           infiniteLoop
           renderIndicator={(onClickHandler, isSelected, index, label) => {
             if (isSelected) {
               return (
                 <ActiveIndicator
+                  className="hidden"
                   aria-label={`Selected: ${label} ${index + 1}`}
                   title={`Selected: ${label} ${index + 1}`}
                 />

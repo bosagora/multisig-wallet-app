@@ -8,7 +8,7 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
 import {trackEvent} from 'services/analytics';
-import {NewWithDraw} from 'utils/paths';
+import {NewProposal, NewWithDraw} from 'utils/paths';
 
 type Action = 'deposit_assets' | 'withdraw_assets';
 
@@ -17,18 +17,20 @@ const TransferMenu: React.FC = () => {
   const {t} = useTranslation();
   const {network} = useNetwork();
   const {dao} = useParams();
+  //console.log('dao >>>> ', dao);
   const navigate = useNavigate();
 
   const handleClick = (action: Action) => {
-    trackEvent('newTransfer_modalBtn_clicked', {
-      dao_address: dao,
-      action,
-    });
+    // trackEvent('newTransfer_modalBtn_clicked', {
+    //   dao_address: dao,
+    //   action,
+    // });
 
     if (action === 'deposit_assets') {
       open('deposit');
     } else {
       navigate(generatePath(NewWithDraw, {network: network, dao: dao}));
+      // navigate(generatePath(NewProposal, {network, dao: dao}));
     }
     close('default');
   };

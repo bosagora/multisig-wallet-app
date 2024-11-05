@@ -18,20 +18,16 @@ import {isOnlyWhitespace} from 'utils/library';
 
 const DefineProposal: React.FC = () => {
   const {t} = useTranslation();
-  const {address, ensAvatarUrl} = useWallet();
+  const {address} = useWallet();
   const {control} = useFormContext();
 
+  //console.log('DefineProposal');
   return (
     <>
       <FormItem>
         <Label label={t('labels.author')} />
 
-        <ButtonWallet
-          label="You"
-          src={ensAvatarUrl || address}
-          isConnected
-          disabled
-        />
+        <ButtonWallet label="You" src={address} isConnected disabled />
       </FormItem>
 
       <FormItem>
@@ -95,31 +91,31 @@ const DefineProposal: React.FC = () => {
         />
       </FormItem>
 
-      <FormItem>
-        <Label label={t('newWithdraw.defineProposal.body')} isOptional={true} />
-        <Controller
-          name="proposal"
-          control={control}
-          render={({field: {name, onBlur, onChange, value}}) => (
-            <TextareaWYSIWYG
-              name={name}
-              value={value}
-              onBlur={onBlur}
-              onChange={onChange}
-              placeholder={t('newWithdraw.defineProposal.proposalPlaceholder')}
-            />
-          )}
-        />
-      </FormItem>
+      {/*<FormItem>*/}
+      {/*  <Label label={t('newWithdraw.defineProposal.body')} isOptional={true} />*/}
+      {/*  <Controller*/}
+      {/*    name="proposal"*/}
+      {/*    control={control}*/}
+      {/*    render={({field: {name, onBlur, onChange, value}}) => (*/}
+      {/*      <TextareaWYSIWYG*/}
+      {/*        name={name}*/}
+      {/*        value={value}*/}
+      {/*        onBlur={onBlur}*/}
+      {/*        onChange={onChange}*/}
+      {/*        placeholder={t('newWithdraw.defineProposal.proposalPlaceholder')}*/}
+      {/*      />*/}
+      {/*    )}*/}
+      {/*  />*/}
+      {/*</FormItem>*/}
 
-      <FormItem>
-        <Label
-          label={t('labels.resources')}
-          helpText={t('labels.resourcesHelptext')}
-          isOptional
-        />
-        <AddLinks buttonPlusIcon buttonLabel={t('labels.addResource')} />
-      </FormItem>
+      {/*<FormItem>*/}
+      {/*  <Label*/}
+      {/*    label={t('labels.resources')}*/}
+      {/*    helpText={t('labels.resourcesHelptext')}*/}
+      {/*    isOptional*/}
+      {/*  />*/}
+      {/*  <AddLinks buttonPlusIcon buttonLabel={t('labels.addResource')} />*/}
+      {/*</FormItem>*/}
     </>
   );
 };

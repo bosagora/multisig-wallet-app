@@ -21,7 +21,6 @@ type MobileNavProps = {
   isProcess?: boolean;
   onDaoSelect: () => void;
   onWalletClick: () => void;
-  onFeedbackClick: () => void;
 };
 
 const MobileNav: React.FC<MobileNavProps> = props => {
@@ -29,7 +28,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
   const currentDao = useReactiveVar(selectedDaoVar);
-  const {isConnected, address, ensName, ensAvatarUrl} = useWallet();
+  const {isConnected, address} = useWallet();
 
   if (props.isProcess)
     return (
@@ -63,7 +62,6 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           <FlexOne className="justify-center">
             <DaoContainer>
               <AvatarDao
-                src={currentDao.metadata.avatar}
                 daoName={currentDao.metadata.name}
                 onClick={props.onDaoSelect}
               />
@@ -72,18 +70,16 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           </FlexOne>
           <FlexOne className="justify-end">
             <ButtonWallet
-              src={ensAvatarUrl || address}
+              src={address}
               onClick={props.onWalletClick}
               isConnected={isConnected}
-              label={
-                isConnected ? ensName || address : t('navButtons.connectWallet')
-              }
+              label={isConnected ? address : t('navButtons.connectWallet')}
             />
           </FlexOne>
         </Menu>
         <NetworkIndicator />
       </Container>
-      <MobileMenu onFeedbackClick={props.onFeedbackClick} />
+      <MobileMenu />
     </>
   );
 };

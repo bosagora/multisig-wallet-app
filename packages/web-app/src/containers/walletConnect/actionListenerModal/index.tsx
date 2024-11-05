@@ -14,8 +14,7 @@ import {useWalletConnectInterceptor} from 'hooks/useWalletConnectInterceptor';
 import {getEtherscanVerifiedContract} from 'services/etherscanAPI';
 import {WcRequest} from 'services/walletConnectInterceptor';
 import {addABI, decodeMethod} from 'utils/abiDecoder';
-import {attachEtherNotice} from 'utils/contract';
-import {getEncodedActionInputs, getWCPayableAmount} from 'utils/library';
+import {getEncodedActionInputs} from 'utils/library';
 
 type Props = {
   onBackButtonClicked: () => void;
@@ -98,44 +97,6 @@ const ActionListenerModal: React.FC<Props> = ({
             etherscanData.result[0].ContractName
           );
           setValue(`actions.${index}.functionName`, decodedData.name);
-
-          // get notices using etherscan abi parser
-          const notices = attachEtherNotice(
-            etherscanData.result[0].SourceCode,
-            etherscanData.result[0].ContractName,
-            JSON.parse(etherscanData.result[0].ABI)
-          ).find(notice => notice.name === decodedData.name);
-
-          // attach notice to input
-          const inputs = decodedData.params.map(param => {
-            return {
-              ...param,
-              notice: notices?.inputs.find(
-                notice =>
-                  notice.name === param.name && notice.type === param.type
-              )?.notice,
-            };
-          });
-
-          // add payable field as it is NOT present on the method itself
-          setValue(`actions.${index}.inputs`, [
-            ...inputs,
-            {...getWCPayableAmount(t, action.params[0].value, network)},
-          ]);
-          setValue(`actions.${actionIndex}.notice`, notices?.notice);
-        } else {
-          // Verified but failed to decode
-          setValue(`actions.${index}.decoded`, false);
-          setValue(
-            `actions.${index}.contractName`,
-            etherscanData.result[0].ContractName
-          );
-
-          setValue(`actions.${index}.functionName`, action.method);
-          setValue(
-            `actions.${index}.inputs`,
-            getEncodedActionInputs(action.params[0], network, t)
-          );
         }
       } else {
         // unverified & encoded

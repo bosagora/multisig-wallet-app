@@ -27,17 +27,20 @@ export const ListItemHeader: React.FC<ListItemHeaderProps> = ({
 }) => {
   const horizontal = orientation === 'horizontal';
 
+  //console.log('memeber props :', props);
   return (
     <Container horizontal={horizontal} data-testid="listItem-header">
       <IconWrapper>{props.icon}</IconWrapper>
 
-      <ButtonWrapper horizontal={horizontal}>
-        <ButtonText
-          label={props.buttonText}
-          onClick={props.onClick}
-          disabled={disabled}
-        />
-      </ButtonWrapper>
+      {props.buttonText !== '' ? (
+        <ButtonWrapper horizontal={horizontal}>
+          <ButtonText
+            label={props.buttonText}
+            onClick={props.onClick}
+            disabled={disabled}
+          />
+        </ButtonWrapper>
+      ) : null}
 
       <Break horizontal={horizontal} />
       <ContentWrapper horizontal={horizontal}>

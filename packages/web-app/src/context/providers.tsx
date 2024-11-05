@@ -6,10 +6,6 @@ import {
 } from '@ethersproject/providers';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 
-import {
-  LIVE_CONTRACTS,
-  SupportedNetwork as sdkSupportedNetworks,
-} from '@aragon/sdk-client-common';
 import {useWallet} from 'hooks/useWallet';
 import {
   alchemyApiKeys,
@@ -77,18 +73,18 @@ function getInfuraProvider(network: SupportedNetworks) {
   // library, there's no reason why passing the chainId wouldn't work. Also,
   // I've tried it on a fresh project and had no problems there...
   // [VR 07-03-2022]
-  if (network === 'arbitrum') {
-    return new InfuraProvider(NW_ARB, infuraApiKey);
-  } else if (network === 'arbitrum-test') {
-    return new InfuraProvider(NW_ARB_GOERLI, infuraApiKey);
-  } else if (network === 'mumbai' || network === 'polygon') {
+
+  if (
+    network === 'bosagora_mainnet' ||
+    network === 'bosagora_testnet' ||
+    network === 'bosagora_devnet' ||
+    network === 'acc_sidechain_mainnet' ||
+    network === 'acc_sidechain_testnet' ||
+    network === 'acc_sidechain_devnet'
+  ) {
     return new JsonRpcProvider(CHAIN_METADATA[network].rpc[0], {
       chainId: CHAIN_METADATA[network].id,
       name: translateToNetworkishName(network),
-      ensAddress:
-        LIVE_CONTRACTS[
-          translateToNetworkishName(network) as sdkSupportedNetworks
-        ].ensRegistry,
     });
   } else {
     return new InfuraProvider(CHAIN_METADATA[network].id, infuraApiKey);

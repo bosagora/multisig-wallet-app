@@ -11,10 +11,11 @@ import styled from 'styled-components';
 
 import {StateEmpty} from 'components/stateEmpty';
 import {useNetwork} from 'context/network';
-import {PluginTypes} from 'hooks/usePluginClient';
+// import {PluginTypes} from 'hooks/usePluginClient';
 import {CHAIN_METADATA} from 'utils/constants';
 import {Action} from 'utils/types';
 import {ActionsFilter} from './actionsFilter';
+import {PluginTypes} from '../../utils/aragon/types';
 
 export type ExecutionStatus =
   | 'defeated'
@@ -120,6 +121,7 @@ const WidgetFooter: React.FC<FooterProps> = ({
       return (
         <Footer>
           <StyledButtonText
+            css={{}}
             label={t('governance.proposals.buttons.execute')}
             size="large"
             onClick={onExecuteClicked}
@@ -131,12 +133,14 @@ const WidgetFooter: React.FC<FooterProps> = ({
       return (
         <Footer>
           <StyledButtonText
+            css={{}}
             label={t('governance.proposals.buttons.execute')}
             size="large"
             onClick={onExecuteClicked}
           />
           {txhash && (
             <StyledButtonText
+              css={{}}
               label={t('governance.executionCard.seeTransaction')}
               mode="secondary"
               iconRight={<IconLinkExternal />}
@@ -156,6 +160,7 @@ const WidgetFooter: React.FC<FooterProps> = ({
         <Footer>
           {txhash && (
             <StyledButtonText
+              css={{}}
               label={t('governance.executionCard.seeTransaction')}
               mode="secondary"
               iconRight={<IconLinkExternal />}

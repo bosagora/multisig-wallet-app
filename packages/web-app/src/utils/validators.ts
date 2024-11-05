@@ -7,9 +7,7 @@ import {TFunction} from 'react-i18next';
 import {i18n} from '../../i18n.config';
 import {ALPHA_NUMERIC_PATTERN} from './constants';
 import {Web3Address, isOnlyWhitespace} from './library';
-import {isERC1155, isERC20Governance, isERC20Token, isERC721} from './tokens';
 import {
-  Action,
   ActionAddAddress,
   ActionItem,
   ActionMintToken,
@@ -39,13 +37,7 @@ export async function validateTokenAddress(
 ): Promise<ValidateResult> {
   const result = validateAddress(address);
 
-  if (result === true) {
-    return (await isERC20Token(address, provider))
-      ? true
-      : (i18n.t('errors.notERC20Token') as string);
-  } else {
-    return result;
-  }
+  return result;
 }
 
 /**
@@ -62,48 +54,10 @@ export async function validateGovernanceTokenAddress(
   verificationResult: ValidateResult;
   type: string;
 }> {
-  const isAddress = validateAddress(address);
-
-  if (isAddress !== true) {
-    return {
-      verificationResult: isAddress,
-      type: 'Unknown',
-    };
-  } else {
-    const interfaces = await Promise.all([
-      isERC20Token(address, provider),
-      isERC20Governance(address, provider),
-      isERC721(address, provider),
-      isERC1155(address, provider),
-    ]);
-
-    if (interfaces[3])
-      return {
-        verificationResult: true,
-        type: 'ERC-1155',
-      };
-    else if (interfaces[2])
-      return {
-        verificationResult: true,
-        type: 'ERC-721',
-      };
-    else if (interfaces[1])
-      return {
-        verificationResult: true,
-        type: 'governance-ERC20',
-      };
-    else if (interfaces[0])
-      return {
-        verificationResult: true,
-        type: 'ERC-20',
-      };
-    else {
-      return {
-        verificationResult: true,
-        type: 'Unknown',
-      };
-    }
-  }
+  return {
+    verificationResult: false,
+    type: 'Unknown',
+  };
 }
 
 /**
@@ -180,7 +134,7 @@ export const alphaNumericValidator = (
  * @returns Whether the screen is valid
  */
 export function actionsAreValid(
-  formActions: Nullable<Action[]>,
+  formActions: Nullable<any[]>,
   contextActions: ActionItem[],
   errors: FieldErrors
 ) {

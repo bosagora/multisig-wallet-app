@@ -74,9 +74,9 @@ const ConfigureActions: React.FC<ConfigureActionsProps> = ({
   };
 
   const handleExtraActionClick = () => {
-    trackEvent('newProposal_addAction_clicked', {
-      dao_address: daoAddressOrEns,
-    });
+    // trackEvent('newProposal_addAction_clicked', {
+    //   dao_address: daoAddressOrEns,
+    // });
     if (onAddExtraActionClick) onAddExtraActionClick();
     else open('addAction');
   };
@@ -87,15 +87,15 @@ const ConfigureActions: React.FC<ConfigureActionsProps> = ({
       {actions.length ? (
         <ActionsWrapper>
           <ActionBuilder allowEmpty={allowEmpty} />
-          <ButtonText
-            mode="ghost"
-            size="large"
-            bgWhite
-            label={addExtraActionLabel}
-            iconLeft={<IconAdd />}
-            onClick={handleExtraActionClick}
-            className="mt-2 w-full tablet:w-max"
-          />
+          {/*<ButtonText*/}
+          {/*  mode="ghost"*/}
+          {/*  size="large"*/}
+          {/*  bgWhite*/}
+          {/*  label={addExtraActionLabel}*/}
+          {/*  iconLeft={<IconAdd />}*/}
+          {/*  onClick={handleExtraActionClick}*/}
+          {/*  className="mt-2 w-full tablet:w-max"*/}
+          {/*/>*/}
         </ActionsWrapper>
       ) : (
         <>

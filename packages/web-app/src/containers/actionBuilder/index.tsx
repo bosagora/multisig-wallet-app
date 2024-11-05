@@ -1,17 +1,11 @@
 import React from 'react';
 import {useFormContext} from 'react-hook-form';
 
-import {MultisigVotingSettings} from '@aragon/sdk-client';
-import {TemporarySection} from 'components/temporary';
-import SCC from 'containers/smartContractComposer';
 import TokenMenu from 'containers/tokenMenu';
-import WalletConnect from 'containers/walletConnect';
 import {useActionsContext} from 'context/actions';
 import {useNetwork} from 'context/network';
 import {useDaoBalances} from 'hooks/useDaoBalances';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {useDaoMembers} from 'hooks/useDaoMembers';
-import {PluginTypes} from 'hooks/usePluginClient';
 import {usePluginSettings} from 'hooks/usePluginSettings';
 import {fetchTokenPrice} from 'services/prices';
 import {formatUnits} from 'utils/library';
@@ -21,13 +15,8 @@ import {
   ActionsTypes,
   BaseTokenInfo,
 } from 'utils/types';
-import AddAddresses from './addAddresses';
-import MintTokens from './mintTokens';
-import RemoveAddresses from './removeAddresses';
-import SCCAction from './scc';
-import UpdateMinimumApproval from './updateMinimumApproval';
-import WalletConnectAction from './walletConnect';
 import WithdrawAction from './withdraw/withdrawAction';
+import {PluginTypes} from '../../utils/aragon/types';
 
 /**
  * This Component is responsible for generating all actions that append to pipeline context (actions)
@@ -46,66 +35,9 @@ const Action: React.FC<ActionsComponentProps> = ({
   actionIndex,
   allowRemove = true,
 }) => {
-  // dao data
-  const {data: daoDetails} = useDaoDetailsQuery();
-
-  // plugin data
-  const {data: votingSettings} = usePluginSettings(
-    daoDetails?.plugins[0].instanceAddress as string,
-    daoDetails?.plugins[0].id as PluginTypes
-  );
-  const {data: daoMembers} = useDaoMembers(
-    daoDetails?.plugins?.[0]?.instanceAddress || '',
-    (daoDetails?.plugins?.[0]?.id as PluginTypes) || undefined
-  );
-  const multisigDAOSettings = votingSettings as MultisigVotingSettings;
-
   switch (name) {
     case 'withdraw_assets':
       return <WithdrawAction {...{actionIndex, allowRemove}} />;
-    case 'mint_tokens':
-      return <MintTokens {...{actionIndex, allowRemove}} />;
-    case 'external_contract_modal':
-      return <SCC actionIndex={actionIndex} />;
-    case 'external_contract_action':
-      return <SCCAction actionIndex={actionIndex} allowRemove={allowRemove} />;
-    case 'modify_token_voting_settings':
-      return (
-        <TemporarySection purpose="It serves as a placeholder for not yet implemented external contract interaction component" />
-      );
-    case 'add_address':
-      return (
-        <AddAddresses
-          actionIndex={actionIndex}
-          currentDaoMembers={daoMembers?.members}
-          allowRemove={allowRemove}
-        />
-      );
-    case 'remove_address':
-      return (
-        <RemoveAddresses
-          actionIndex={actionIndex}
-          currentDaoMembers={daoMembers?.members}
-          allowRemove={allowRemove}
-        />
-      );
-    case 'modify_multisig_voting_settings':
-      return (
-        <UpdateMinimumApproval
-          actionIndex={actionIndex}
-          currentDaoMembers={daoMembers?.members}
-          currentMinimumApproval={multisigDAOSettings?.minApprovals}
-        />
-      );
-    case 'wallet_connect_modal':
-      return <WalletConnect actionIndex={actionIndex} />;
-    case 'wallet_connect_action':
-      return (
-        <WalletConnectAction
-          actionIndex={actionIndex}
-          allowRemove={allowRemove}
-        />
-      );
     default:
       throw Error('Action not found');
   }

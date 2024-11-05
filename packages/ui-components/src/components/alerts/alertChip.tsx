@@ -87,7 +87,7 @@ const WrapperAnimationCSS = css`
       z-index: 50;
     }
     to {
-      top: 0;s
+      top: 0;
       opacity: 0;
       z-index: 0;
     }

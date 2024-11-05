@@ -13,6 +13,7 @@ import useBreadcrumbs, {BreadcrumbData} from 'use-react-router-breadcrumbs';
 
 import * as Paths from 'utils/paths';
 import {useCache} from './useCache';
+import {ProposalStatus} from '../utils/aragon/sdk-client-common-types';
 
 type MappedBreadcrumbs = {
   breadcrumbs: {
@@ -45,15 +46,14 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
   // This useCache should be removed in future
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const proposalStatus = useMemo(() => get('proposalStatus'), [get, cache]);
-
   const breadcrumbs = useBreadcrumbs(routes, {
     excludePaths: [
       Paths.Dashboard,
       Paths.NotFound,
-      '/daos/:network/:dao/governance/proposals',
-      '/daos/:network/:dao/',
-      '/daos/:network/',
-      '/daos/',
+      '/multisig-wallets/:network/:dao/governance/proposals',
+      '/multisig-wallets/:network/:dao/',
+      '/multisig-wallets/:network/',
+      '/multisig-wallets/',
       '/',
     ],
   }).map((item: BreadcrumbData<string>) => {
@@ -71,7 +71,16 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
 
   let tag;
   if (isProposalDetail && proposalStatus)
-    tag = <Tag label={proposalStatus} className="capitalize" />;
+    tag =
+      proposalStatus === ProposalStatus.EXECUTED ? (
+        <Tag
+          label={proposalStatus}
+          colorScheme="success"
+          className="capitalize"
+        />
+      ) : (
+        <Tag label={proposalStatus} className="capitalize" />
+      );
 
   return {breadcrumbs, icon, tag};
 }

@@ -81,9 +81,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
       if (
         walletFieldArray?.some(
           (wallet, walletIndex) =>
-            (wallet.address === web3Address.address ||
-              wallet.ensName === web3Address.ensName) &&
-            walletIndex !== index
+            wallet.address === web3Address.address && walletIndex !== index
         )
       ) {
         setIsDuplicate(true);

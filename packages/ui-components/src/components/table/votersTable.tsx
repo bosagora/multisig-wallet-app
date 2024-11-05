@@ -39,10 +39,11 @@ export const VotersTable: React.FC<VotersTableProps> = ({
   showOption = false,
   showVotingPower = false,
   showAmount = false,
-  pageSize = 3,
+  pageSize = 10,
 }) => {
   const displayedVoters = page * pageSize;
 
+  //console.log('VoterTables > voters:', voters);
   return (
     <div className="overflow-x-auto">
       <Table data-testid="votersTable">

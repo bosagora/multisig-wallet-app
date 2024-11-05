@@ -1,4 +1,4 @@
-import {CardToken, CardTransfer} from '@aragon/ui-components';
+import {CardToken, CardTransfer, shortenAddress} from '@aragon/ui-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
@@ -12,11 +12,12 @@ export const WithdrawCard: React.FC<{
 }> = ({action, daoName}) => {
   const {t} = useTranslation();
 
+  //console.log('WithdrawCard > action:', action);
   return (
     <AccordionMethod
       type="execution-widget"
       methodName={t('TransferModal.item2Title')}
-      smartContractName={t('labels.aragonOSx')}
+      smartContractName={shortenAddress(action.tokenAddress)}
       verified
       methodDescription={t('AddActionModal.withdrawAssetsActionSubtitle')}
     >
@@ -32,14 +33,14 @@ export const WithdrawCard: React.FC<{
           tokenImageUrl={action.tokenImgUrl}
           tokenSymbol={action.tokenSymbol}
           tokenCount={action.amount}
-          treasuryShare={
-            action.tokenPrice
-              ? new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                }).format(action.tokenPrice * action.amount)
-              : t('finance.unknownUSDValue')
-          }
+          // treasuryShare={
+          //   action.tokenPrice
+          //     ? new Intl.NumberFormat('en-US', {
+          //         style: 'currency',
+          //         currency: 'USD',
+          //       }).format(action.tokenPrice * action.amount)
+          //     : t('finance.unknownUSDValue')
+          // }
           type={'transfer'}
         />
       </Container>

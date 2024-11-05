@@ -10,24 +10,13 @@ import DefineProposal, {
   isValid as defineProposalIsValid,
 } from 'containers/defineProposal';
 import ReviewProposal from 'containers/reviewProposal';
-import SetupVotingForm, {
-  isValid as setupVotingIsValid,
-} from 'containers/setupVotingForm';
 import {useActionsContext} from 'context/actions';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {PluginTypes} from 'hooks/usePluginClient';
-import {
-  isMultisigVotingSettings,
-  usePluginSettings,
-} from 'hooks/usePluginSettings';
+
 import {useWallet} from 'hooks/useWallet';
-import {trackEvent} from 'services/analytics';
-import {getCanonicalUtcOffset} from 'utils/date';
-import {removeUnchangedMinimumApprovalAction} from 'utils/library';
 import {Governance} from 'utils/paths';
-import {Action} from 'utils/types';
 import {actionsAreValid} from 'utils/validators';
 
 type ProposalStepperType = {
@@ -38,19 +27,13 @@ const ProposalStepper: React.FC<ProposalStepperType> = ({
   enableTxModal,
 }: ProposalStepperType) => {
   const {data: daoDetails, isLoading} = useDaoDetailsQuery();
-  const {data: pluginSettings, isLoading: settingsLoading} = usePluginSettings(
-    daoDetails?.plugins[0].instanceAddress as string,
-    daoDetails?.plugins[0].id as PluginTypes
-  );
-
-  const {actions} = useActionsContext();
+  const {actions, addAction} = useActionsContext();
   const {open} = useGlobalModalContext();
 
   const {t} = useTranslation();
   const {network} = useNetwork();
   const {trigger, control, getValues, setValue} = useFormContext();
   const {address, isConnected} = useWallet();
-
   const [formActions] = useWatch({
     name: ['actions'],
     control,
@@ -63,12 +46,11 @@ const ProposalStepper: React.FC<ProposalStepperType> = ({
   /*************************************************
    *                    Render                     *
    *************************************************/
-  if (isLoading || settingsLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
   if (!daoDetails) return null;
-
   return (
     <FullScreenStepper
       wizardProcessName={t('newProposal.title')}
@@ -81,78 +63,29 @@ const ProposalStepper: React.FC<ProposalStepperType> = ({
         wizardDescription={t('newWithdraw.defineProposal.description')}
         isNextButtonDisabled={!defineProposalIsValid(dirtyFields, errors)}
         onNextButtonClicked={next => {
-          trackEvent('newProposal_nextBtn_clicked', {
-            dao_address: daoDetails.address,
-            step: '1_define_proposal',
-            settings: {
-              author_address: address,
-              title: getValues('proposalTitle'),
-              summary: getValues('proposalSummary'),
-              proposal: getValues('proposal'),
-              resources_list: getValues('links'),
-            },
-          });
           next();
         }}
       >
         <DefineProposal />
       </Step>
-      <Step
-        wizardTitle={t('newWithdraw.setupVoting.title')}
-        wizardDescription={t('newWithdraw.setupVoting.description')}
-        isNextButtonDisabled={!setupVotingIsValid(errors)}
-        onNextButtonClicked={next => {
-          const [startDate, startTime, startUtc, endDate, endTime, endUtc] =
-            getValues([
-              'startDate',
-              'startTime',
-              'startUtc',
-              'endDate',
-              'endTime',
-              'endUtc',
-            ]);
-          trackEvent('newProposal_nextBtn_clicked', {
-            dao_address: daoDetails.address,
-            step: '2_setup_voting',
-            settings: {
-              start: `${startDate}T${startTime}:00${getCanonicalUtcOffset(
-                startUtc
-              )}`,
-              end: `${endDate}T${endTime}:00${getCanonicalUtcOffset(endUtc)}`,
-            },
-          });
-          next();
-        }}
-      >
-        <SetupVotingForm pluginSettings={pluginSettings} />
-      </Step>
-      <Step
-        wizardTitle={t('newProposal.configureActions.heading')}
-        wizardDescription={t('newProposal.configureActions.description')}
-        isNextButtonDisabled={!actionsAreValid(formActions, actions, errors)}
-        onNextButtonDisabledClicked={() => {
-          trigger('actions');
-        }}
-        onNextButtonClicked={next => {
-          if (isMultisigVotingSettings(pluginSettings)) {
-            setValue(
-              'actions',
-              removeUnchangedMinimumApprovalAction(formActions, pluginSettings)
-            );
-          }
 
-          trackEvent('newProposal_nextBtn_clicked', {
-            dao_address: daoDetails.address,
-            step: '3_configure_actions',
-            settings: {
-              actions: formActions.map((action: Action) => action.name),
-              actions_count: formActions.length,
-            },
-          });
+      <Step
+        wizardTitle={t('newWithdraw.configureWithdraw.title')}
+        wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
+        isNextButtonDisabled={
+          !actions.length || !actionsAreValid(formActions, actions, errors)
+        }
+        onNextButtonClicked={next => {
           next();
         }}
       >
-        <ConfigureActions />
+        <ConfigureActions
+          label=""
+          initialActions={['withdraw_assets']}
+          whitelistedActions={['withdraw_assets']}
+          hideAlert
+          allowEmpty={false}
+        />
       </Step>
       <Step
         wizardTitle={t('newWithdraw.reviewProposal.heading')}
@@ -162,9 +95,6 @@ const ProposalStepper: React.FC<ProposalStepperType> = ({
           if (!isConnected) {
             open('wallet');
           } else {
-            trackEvent('newProposal_publishBtn_clicked', {
-              dao_address: daoDetails.address,
-            });
             enableTxModal();
           }
         }}

@@ -10,24 +10,12 @@ const Governance: React.FC = () => {
   const {setStep} = useFormStep();
   const {t} = useTranslation();
   const {
-    minimumApproval,
-    minimumParticipation,
-    tokenTotalSupply,
-    tokenSymbol,
-    durationMinutes,
-    durationHours,
-    durationDays,
     reviewCheckError,
-    earlyExecution,
-    voteReplacement,
-    membership,
     multisigMinimumApprovals,
     multisigWallets,
     isCustomToken,
     tokenType,
   } = getValues();
-
-  const isGovTokenRequiresWrapping = !isCustomToken && tokenType === 'ERC-20';
 
   return (
     <Controller
@@ -45,74 +33,18 @@ const Governance: React.FC = () => {
           checkedState={
             value ? 'active' : reviewCheckError ? 'error' : 'default'
           }
-          tagLabel={t('labels.changeableVote')}
+          tagLabel={t('labels.notChangeable')}
           onChecked={() => onChange(!value)}
         >
-          {membership === 'multisig' && (
-            <Dl>
-              <Dt>{t('labels.minimumApproval')}</Dt>
-              <Dd>
-                {multisigMinimumApprovals}&nbsp;
-                {t('labels.review.multisigMinimumApprovals', {
-                  count: multisigWallets.length,
-                })}
-              </Dd>
-            </Dl>
-          )}
-          {membership === 'token' && (
-            <>
-              <Dl>
-                <Dt>{t('labels.supportThreshold')}</Dt>
-                <Dd>&gt;{parseInt(minimumApproval)}%</Dd>
-              </Dl>
-              <Dl>
-                <Dt>{t('labels.minimumParticipation')}</Dt>
-                <Dd>
-                  {'≥'}
-                  {minimumParticipation}%
-                  {!isGovTokenRequiresWrapping && (
-                    <span>
-                      (
-                      {Math.ceil(tokenTotalSupply * (value / 100)) <
-                      tokenTotalSupply
-                        ? '≥'
-                        : ''}
-                      {Math.ceil(
-                        tokenTotalSupply * (minimumParticipation / 100)
-                      )}{' '}
-                      {tokenSymbol})
-                    </span>
-                  )}
-                </Dd>
-              </Dl>
-              <Dl>
-                <Dt>{t('labels.minimumDuration')}</Dt>
-                <Dd>
-                  <div className="flex space-x-1.5">
-                    <div>
-                      {t('createDAO.review.days', {days: durationDays})}
-                    </div>
-                    <div>
-                      {t('createDAO.review.hours', {hours: durationHours})}
-                    </div>
-                    <div>
-                      {t('createDAO.review.minutes', {
-                        minutes: durationMinutes,
-                      })}
-                    </div>
-                  </div>
-                </Dd>
-              </Dl>
-              <Dl>
-                <Dt>{t('labels.earlyExecution')}</Dt>
-                <Dd>{earlyExecution ? t('labels.yes') : t('labels.no')}</Dd>
-              </Dl>
-              <Dl>
-                <Dt>{t('labels.voteReplacement')}</Dt>
-                <Dd>{voteReplacement ? t('labels.yes') : t('labels.no')}</Dd>
-              </Dl>
-            </>
-          )}
+          <Dl>
+            <Dt>{t('labels.minimumApproval')}</Dt>
+            <Dd>
+              {multisigMinimumApprovals}&nbsp;
+              {t('labels.review.multisigMinimumApprovals', {
+                count: multisigWallets.length,
+              })}
+            </Dd>
+          </Dl>
         </DescriptionListContainer>
       )}
     />

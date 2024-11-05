@@ -65,6 +65,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
 
   // this should be extracted into a hook if clamping/showing elsewhere
   useEffect(() => {
+    //console.log('headerDao');
     function countNumberOfLines() {
       const descriptionEl = descriptionRef.current;
 

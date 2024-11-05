@@ -1,8 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Logo from 'public/coloredLogo.svg';
-import Green from 'public/circleGreenGradient.svg';
-import Purple from 'public/purpleGradient.svg';
 import {useTranslation} from 'react-i18next';
 import {GridLayout} from 'components/layout';
 
@@ -16,15 +13,6 @@ function Hero() {
             <Title>{t('explore.hero.title')}</Title>
             <Subtitle>{t('explore.hero.subtitle1')}</Subtitle>
           </ContentWrapper>
-          <ImageWrapper>
-            <StyledImage src={Logo} />
-          </ImageWrapper>
-          <GradientContainer>
-            <GradientWrapper>
-              <GradientGreen src={Green} />
-              <GradientPurple src={Purple} />
-            </GradientWrapper>
-          </GradientContainer>
         </Wrapper>
       </GridLayout>
     </Container>
@@ -47,14 +35,14 @@ const Wrapper = styled.div.attrs({
 })``;
 
 const ContentWrapper = styled.div.attrs({
-  className: 'desktop:space-y-0.75 space-y-1 max-w-lg pt-4.5 desktop:pt-10',
+  className: 'desktop:space-y-0.95 space-y-1 max-w-lg pt-4.5 desktop:pt-10',
 })``;
 
 const Title = styled.h1.attrs({
   className:
     'text-ui-0 font-bold ft-text-5xl desktop:text-left text-center desktop:leading-7.5 leading-4.5',
 })`
-  font-family: Syne;
+  //font-family: Syne;
   letter-spacing: -0.03em;
 `;
 

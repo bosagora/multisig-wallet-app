@@ -1,16 +1,12 @@
-// TODO: Remove when statistics are available
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import {
   SupportedNetworksArray,
   SupportedNetwork,
-} from '@aragon/sdk-client-common';
+} from 'multisig-wallet-sdk-client';
 import React, {useEffect} from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import styled from 'styled-components';
 
 import {GridLayout} from 'components/layout';
-// import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import Carousel from 'containers/carousel';
 import {DaoExplorer} from 'containers/daoExplorer';
 import Hero from 'containers/hero';
@@ -40,17 +36,7 @@ const Explore: React.FC = () => {
       <GridLayout>
         <ContentWrapper>
           <Carousel />
-          {/* Uncomment when statistics are available */}
-          {/* <StatisticsContainer>
-            {statistics.map((s: Stats) => (
-              <Statistic key={s.statKey}>
-                <StatisticValue>{s.statValue}</StatisticValue>
-                <StatisticKey>{s.statKey}</StatisticKey>
-              </Statistic>
-            ))}
-          </StatisticsContainer> */}
           <DaoExplorer />
-          {/* <ActiveProposalsExplore /> */}
         </ContentWrapper>
       </GridLayout>
     </>

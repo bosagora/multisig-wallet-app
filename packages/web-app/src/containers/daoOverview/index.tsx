@@ -26,7 +26,7 @@ export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
   const {next} = useFormStep();
 
   const handleSetupClick = () => {
-    trackEvent('daoCreation_setupDAO_clicked');
+    // trackEvent('daoCreation_setupDAO_clicked');
     next();
   };
 

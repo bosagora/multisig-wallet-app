@@ -1,8 +1,6 @@
-import {VoteValues} from '@aragon/sdk-client';
-import {ProposalStatus} from '@aragon/sdk-client-common';
+// import {VoteValues} from '@aragon/sdk-client';
+// import {ProposalStatus} from '@aragon/sdk-client-common';
 import {
-  AlertCard,
-  AlertInline,
   ButtonGroup,
   ButtonText,
   CheckboxListItem,
@@ -11,8 +9,8 @@ import {
   IconRadioCancel,
   Option,
   SearchInput,
-  VoterType,
   VotersTable,
+  VoterType,
 } from '@aragon/ui-components';
 import React, {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -22,6 +20,8 @@ import {StateEmpty} from 'components/stateEmpty';
 import {shortenAddress} from 'utils/library';
 import BreakdownTab from './breakdownTab';
 import InfoTab from './infoTab';
+import {ProposalStatus} from '../../utils/aragon/sdk-client-common-types';
+import {VoteValues} from '../../utils/aragon/sdk-client-multisig-types';
 
 export type ProposalVoteResults = {
   yes: {value: string | number; percentage: number};
@@ -64,6 +64,7 @@ export type VotingTerminalProps = {
   alertMessage?: string;
   selectedTab?: TerminalTabs;
   onTabSelected?: React.Dispatch<React.SetStateAction<TerminalTabs>>;
+  isMember?: boolean;
 };
 
 export const VotingTerminal: React.FC<VotingTerminalProps> = ({
@@ -76,9 +77,9 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   missingParticipation = 0,
   supportThreshold,
   voters = [],
-  results,
+  // results,
   approvals,
-  token,
+  // token,
   startDate,
   endDate,
   preciseEndDate,
@@ -94,10 +95,11 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   alertMessage,
   selectedTab = 'info',
   onTabSelected,
+  isMember,
 }) => {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
-  const [selectedVote, setSelectedVote] = useState<VoteValues>();
+  const [selectedVote, setSelectedVote] = useState<VoteValues>(VoteValues.YES);
   const {t} = useTranslation();
 
   const displayedVoters = useMemo(() => {
@@ -150,8 +152,8 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
         <BreakdownTab
           approvals={approvals}
           memberCount={voters.length}
-          results={results}
-          token={token}
+          // results={results}
+          // token={token}
         />
       ) : selectedTab === 'voters' ? (
         <VotersTabContainer>
@@ -167,8 +169,8 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
               voters={displayedVoters}
               showOption
               page={page}
-              showVotingPower={token !== undefined}
-              showAmount={token !== undefined}
+              showVotingPower={false}
+              showAmount={false}
               onLoadMore={() => setPage(prev => prev + 1)}
             />
           ) : (
@@ -205,19 +207,14 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
           status={status}
           strategy={strategy}
           supportThreshold={supportThreshold}
-          uniqueVoters={token ? voters.length : undefined}
+          uniqueVoters={undefined}
           voteOptions={voteOptions}
         />
       )}
 
       {votingInProcess ? (
         <VotingContainer>
-          <Heading2>{t('votingTerminal.chooseOption')}</Heading2>
-          <p className="mt-1 text-ui-500">
-            {t('votingTerminal.chooseOptionHelptext')}
-          </p>
-
-          <CheckboxContainer>
+          <CheckboxContainer className="hidden">
             <CheckboxListItem
               label={t('votingTerminal.yes')}
               helptext={t('votingTerminal.yesHelptext')}
@@ -241,7 +238,9 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
           <VoteContainer>
             <ButtonWrapper>
               <ButtonText
-                label={t('votingTerminal.submit')}
+                css={{}}
+                // label={t('votingTerminal.submit')}
+                label="Approve"
                 size="large"
                 disabled={!selectedVote}
                 onClick={() => {
@@ -249,15 +248,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                     onVoteSubmitClicked(selectedVote);
                 }}
               />
-              <ButtonText
-                label={t('votingTerminal.cancel')}
-                mode="secondary"
-                size="large"
-                bgWhite
-                onClick={onCancelClicked}
-              />
             </ButtonWrapper>
-            <AlertInline label={statusLabel} mode="neutral" />
           </VoteContainer>
         </VotingContainer>
       ) : (
@@ -265,24 +256,22 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
           <>
             <VoteContainer>
               <ButtonText
-                label={voteButtonLabel || t('votingTerminal.voteNow')}
+                css={{}}
+                label={
+                  isMember
+                    ? 'Approved'
+                    : status === ProposalStatus.EXECUTED
+                    ? 'Concluded'
+                    : 'Member Only'
+                }
                 size="large"
-                onClick={onVoteClicked}
+                onClick={() => {
+                  onVoteClicked && onVoteClicked();
+                }}
                 className="w-full tablet:w-max"
                 disabled={voteNowDisabled}
               />
-              <AlertInline
-                label={statusLabel}
-                mode={status === 'Defeated' ? 'critical' : 'neutral'}
-                icon={<StatusIcon status={status} />}
-              />
             </VoteContainer>
-
-            {alertMessage && (
-              <div className="pt-2 tablet:pt-0 tablet:mt-3">
-                <AlertCard title={alertMessage} mode="warning" />
-              </div>
-            )}
           </>
         )
       )}

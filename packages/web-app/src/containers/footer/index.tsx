@@ -32,23 +32,19 @@ const Footer: React.FC = () => {
             {isDesktop ? (
               <>
                 <FlexDiv>
-                  <LogoContainer src={IconLogoBlue} />
-                  <StyledNavList>{ExploreNavLinks}</StyledNavList>
+                  <></>
                 </FlexDiv>
                 <FlexDiv>
-                  <StyledNavList>{PrivacyNavLinks}</StyledNavList>
                   <Copyright>
-                    &copy;{`  ${new Date().getFullYear()}  `}Aragon
+                    &copy;{`  ${new Date().getFullYear()}  `}BOSagora
                   </Copyright>
                 </FlexDiv>
               </>
             ) : (
               <>
-                <LogoContainer src={IconLogoBlue} />
-                <StyledNavList>{ExploreNavLinks}</StyledNavList>
-                <StyledNavList>{PrivacyNavLinks}</StyledNavList>
+                <></>
                 <Copyright>
-                  &copy;{`  ${new Date().getFullYear()}  `}Aragon
+                  &copy;{`  ${new Date().getFullYear()}  `}BOSagora
                 </Copyright>
               </>
             )}
@@ -61,7 +57,7 @@ const Footer: React.FC = () => {
         }`}
       >
         <IconInfo />
-        <span>Aragon App Public Beta</span>
+        <span>Multisig Wallet App Public Beta</span>
       </div>
     </Section>
   );

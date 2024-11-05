@@ -2,22 +2,22 @@ import {LinearProgress} from '@aragon/ui-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
-import {TokenVotingOptions} from 'utils/proposals';
-import {abbreviateTokenAmount} from 'utils/tokens';
+// import {TokenVotingOptions} from 'utils/proposals';
+// import {abbreviateTokenAmount} from 'utils/tokens';
 import {ProposalVoteResults, VotingTerminalProps} from '.';
 
 type BreakdownProps = {
   approvals?: string[];
   memberCount?: number;
-  results?: ProposalVoteResults;
-  token?: VotingTerminalProps['token'];
+  // results?: ProposalVoteResults;
+  // token?: VotingTerminalProps['token'];
 };
 
 const BreakdownTab: React.FC<BreakdownProps> = ({
   approvals,
   memberCount,
-  token,
-  results,
+  // token,
+  // results,
 }) => {
   const {t} = useTranslation();
 
@@ -43,22 +43,22 @@ const BreakdownTab: React.FC<BreakdownProps> = ({
     );
   }
 
-  if (token) {
-    return (
-      <VStackRelaxed>
-        {Object.entries(results || []).map(([key, result]) => (
-          <ResultRow
-            key={key}
-            option={key as TokenVotingOptions}
-            percentage={result.percentage}
-            value={`${abbreviateTokenAmount(result.value.toString())} ${
-              token.symbol
-            }`}
-          />
-        ))}
-      </VStackRelaxed>
-    );
-  }
+  // if (token) {
+  //   return (
+  //     <VStackRelaxed>
+  //       {Object.entries(results || []).map(([key, result]) => (
+  //         <ResultRow
+  //           key={key}
+  //           option={key as TokenVotingOptions}
+  //           percentage={result.percentage}
+  //           value={`${abbreviateTokenAmount(result.value.toString())} ${
+  //             token.symbol
+  //           }`}
+  //         />
+  //       ))}
+  //     </VStackRelaxed>
+  //   );
+  // }
 
   return null;
 };
@@ -66,30 +66,30 @@ const BreakdownTab: React.FC<BreakdownProps> = ({
 export default BreakdownTab;
 
 // Proposal result row
-const ResultRow: React.FC<{
-  option: TokenVotingOptions;
-  value: string | number;
-  percentage: string | number;
-}> = ({option, value, percentage}) => {
-  const {t} = useTranslation();
-
-  const options: {[k in TokenVotingOptions]: string} = {
-    yes: t('votingTerminal.yes'),
-    no: t('votingTerminal.no'),
-    abstain: t('votingTerminal.abstain'),
-  };
-
-  return (
-    <VStackNormal>
-      <HStack>
-        <VoteOption>{options[option]}</VoteOption>
-        <ResultValue>{value}</ResultValue>
-        <VotePercentage>{percentage}%</VotePercentage>
-      </HStack>
-      <LinearProgress max={100} value={percentage} />
-    </VStackNormal>
-  );
-};
+// const ResultRow: React.FC<{
+//   option: TokenVotingOptions;
+//   value: string | number;
+//   percentage: string | number;
+// }> = ({option, value, percentage}) => {
+//   const {t} = useTranslation();
+//
+//   const options: {[k in TokenVotingOptions]: string} = {
+//     yes: t('votingTerminal.yes'),
+//     no: t('votingTerminal.no'),
+//     abstain: t('votingTerminal.abstain'),
+//   };
+//
+//   return (
+//     <VStackNormal>
+//       <HStack>
+//         <VoteOption>{options[option]}</VoteOption>
+//         <ResultValue>{value}</ResultValue>
+//         <VotePercentage>{percentage}%</VotePercentage>
+//       </HStack>
+//       <LinearProgress max={100} value={percentage} />
+//     </VStackNormal>
+//   );
+// };
 
 const VotePercentage = styled.p.attrs({
   className: 'w-8 font-bold text-right text-primary-500 ' as string,

@@ -1,4 +1,4 @@
-import {MultisigVotingSettings, VotingSettings} from '@aragon/sdk-client';
+// import {MultisigVotingSettings, VotingSettings} from '@aragon/sdk-client';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Outlet, useNavigate} from 'react-router-dom';
 
@@ -10,12 +10,13 @@ import {useNetwork} from 'context/network';
 import {useSpecificProvider} from 'context/providers';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
 import {useDaoMembers} from 'hooks/useDaoMembers';
-import {PluginTypes} from 'hooks/usePluginClient';
-import {usePluginSettings} from 'hooks/usePluginSettings';
+// import {PluginTypes} from 'hooks/usePluginClient';
+// import {usePluginSettings} from 'hooks/usePluginSettings';
 import {useWallet} from 'hooks/useWallet';
 import {CHAIN_METADATA} from 'utils/constants';
-import {formatUnits} from 'utils/library';
-import {fetchBalance} from 'utils/tokens';
+// import {formatUnits} from 'utils/library';
+// import {fetchBalance} from 'utils/tokens';
+// import {PluginTypes} from '../../utils/aragon/types';
 
 const ProtectedRoute: React.FC = () => {
   const navigate = useNavigate();
@@ -30,24 +31,23 @@ const ProtectedRoute: React.FC = () => {
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const [pluginType, pluginAddress] = useMemo(
-    () => [
-      daoDetails?.plugins[0].id as PluginTypes,
-      daoDetails?.plugins[0].instanceAddress as string,
-    ],
-    [daoDetails?.plugins]
-  );
+  // const [pluginType, pluginAddress] = useMemo(
+  //   () => [
+  //     daoDetails?.plugins[0].id as PluginTypes,
+  //     daoDetails?.plugins[0].instanceAddress as string,
+  //   ],
+  //   [daoDetails?.plugins]
+  // );
 
-  const {data: daoSettings, isLoading: settingsAreLoading} = usePluginSettings(
-    pluginAddress,
-    pluginType
-  );
-
+  // const {data: daoSettings, isLoading: settingsAreLoading} = usePluginSettings(
+  //   pluginAddress,
+  //   pluginType
+  // );
+  //
   const {
-    data: {daoToken, filteredMembers},
+    data: {members, filteredMembers},
     isLoading: membersAreLoading,
-  } = useDaoMembers(pluginAddress, pluginType, address as string);
-
+  } = useDaoMembers(daoDetails ? daoDetails.address : '', address || '');
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
 
@@ -61,49 +61,52 @@ const ProtectedRoute: React.FC = () => {
     navigate(-1);
   }, [navigate]);
 
-  const gateTokenBasedProposal = useCallback(async () => {
-    if (daoToken && address && filteredMembers.length === 0) {
-      const balance = await fetchBalance(
-        daoToken?.address,
-        address,
-        provider,
-        CHAIN_METADATA[network].nativeCurrency
-      );
-      const minProposalThreshold = Number(
-        formatUnits(
-          (daoSettings as VotingSettings).minProposerVotingPower || 0,
-          daoToken?.decimals || 18
-        )
-      );
-      if (minProposalThreshold && Number(balance) < minProposalThreshold) {
-        open('gating');
-      } else close('gating');
-    }
-  }, [
-    address,
-    close,
-    daoSettings,
-    daoToken,
-    filteredMembers.length,
-    network,
-    open,
-    provider,
-  ]);
+  // const gateTokenBasedProposal = useCallback(async () => {
+  //   if (daoToken && address && filteredMembers.length === 0) {
+  //     const balance = await fetchBalance(
+  //       daoToken?.address,
+  //       address,
+  //       provider,
+  //       CHAIN_METADATA[network].nativeCurrency
+  //     );
+  //     const minProposalThreshold = Number(
+  //       formatUnits(
+  //         (daoSettings as VotingSettings).minProposerVotingPower || 0,
+  //         daoToken?.decimals || 18
+  //       )
+  //     );
+  //     if (minProposalThreshold && Number(balance) < minProposalThreshold) {
+  //       open('gating');
+  //     } else close('gating');
+  //   }
+  // }, [
+  //   address,
+  //   close,
+  //   daoSettings,
+  //   daoToken,
+  //   filteredMembers.length,
+  //   network,
+  //   open,
+  //   provider,
+  // ]);
 
   const gateMultisigProposal = useCallback(() => {
-    if ((daoSettings as MultisigVotingSettings).onlyListed === false) {
-      close('gating');
-    } else if (
+    // if ((daoSettings as MultisigVotingSettings).onlyListed === false) {
+    //   close('gating');
+    // } else
+    if (
       !filteredMembers.some(
         mem => mem.address.toLowerCase() === address?.toLowerCase()
       ) &&
       !membersAreLoading
     ) {
+      //console.log('open gating');
       open('gating');
     } else {
+      //console.log('close gating');
       close('gating');
     }
-  }, [membersAreLoading, close, daoSettings, open, address, filteredMembers]);
+  }, [membersAreLoading, close, open, address, filteredMembers]);
 
   /*************************************************
    *                     Effects                   *
@@ -155,29 +158,29 @@ const ProtectedRoute: React.FC = () => {
 
   // wallet connected and on right network, authenticate
   useEffect(() => {
-    if (status === 'connected' && !isOnWrongNetwork && pluginType) {
-      if (pluginType === 'token-voting.plugin.dao.eth') {
-        gateTokenBasedProposal();
-      } else {
-        gateMultisigProposal();
-      }
+    if (status === 'connected' && !isOnWrongNetwork) {
+      // if (pluginType === 'token-voting.plugin.dao.eth') {
+      //   gateTokenBasedProposal();
+      // } else {
+      //   gateMultisigProposal();
+      // }
+      gateMultisigProposal();
 
       // user has gone through login flow allow them to log out in peace
       userWentThroughLoginFlowRef.current = true;
     }
   }, [
     gateMultisigProposal,
-    gateTokenBasedProposal,
+    // gateTokenBasedProposal,
     isOnWrongNetwork,
-    pluginType,
+    // pluginType,
     status,
   ]);
 
   /*************************************************
    *                     Render                    *
    *************************************************/
-  if (detailsAreLoading || membersAreLoading || settingsAreLoading)
-    return <Loading />;
+  if (detailsAreLoading || membersAreLoading) return <Loading />;
 
   return (
     <>
@@ -185,8 +188,8 @@ const ProtectedRoute: React.FC = () => {
       {daoDetails && (
         <GatingMenu
           daoDetails={daoDetails}
-          pluginType={pluginType}
-          daoToken={daoToken}
+          pluginType="multisig.plugin.dao.eth"
+          // daoToken={daoToken}
         />
       )}
       <LoginRequired isOpen={showLoginModal} onClose={handleCloseLoginModal} />

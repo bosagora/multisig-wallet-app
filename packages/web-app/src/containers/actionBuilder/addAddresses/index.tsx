@@ -208,6 +208,7 @@ const AddAddresses: React.FC<AddAddressesProps> = ({
       })}
       <FormItem className="flex justify-between">
         <ButtonText
+          css={{}}
           label={t('labels.addWallet')}
           mode="secondary"
           size="large"
@@ -221,6 +222,7 @@ const AddAddresses: React.FC<AddAddressesProps> = ({
           sideOffset={4}
           trigger={
             <ButtonIcon
+              css={{}}
               size="large"
               mode="secondary"
               icon={<IconMenuVertical />}

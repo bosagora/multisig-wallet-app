@@ -1,4 +1,4 @@
-import {useApolloClient} from '@apollo/client';
+// import {useApolloClient} from '@apollo/client';
 import {
   AlertInline,
   DropdownInput,
@@ -26,7 +26,7 @@ import {useProviders} from 'context/providers';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
 import {useWallet} from 'hooks/useWallet';
 import {WithdrawAction} from 'pages/newWithdraw';
-import {fetchTokenData} from 'services/prices';
+// import {fetchTokenData} from 'services/prices';
 import {CHAIN_METADATA} from 'utils/constants';
 import {Web3Address, handleClipboardActions, toDisplayEns} from 'utils/library';
 import {fetchBalance, getTokenInfo, isNativeToken} from 'utils/tokens';
@@ -36,6 +36,8 @@ import {
   validateTokenAmount,
   validateWeb3Address,
 } from 'utils/validators';
+import {add} from 'date-fns';
+import {stripPlgnAdrFromProposalId} from '../../utils/proposals';
 
 type ConfigureWithdrawFormProps = ActionIndex; //extend if necessary
 
@@ -43,7 +45,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   actionIndex,
 }) => {
   const {t} = useTranslation();
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const {open} = useGlobalModalContext();
   const {network} = useNetwork();
   const {address} = useWallet();
@@ -121,7 +123,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
                 provider,
                 nativeCurrency
               ),
-          fetchTokenData(tokenAddress, client, network, tokenSymbol),
+          // fetchTokenData(tokenAddress, client, network, tokenSymbol),
           getTokenInfo(tokenAddress, provider, nativeCurrency),
         ]);
 
@@ -172,7 +174,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     setValue,
     tokenAddress,
     trigger,
-    client,
+    // client,
     network,
     daoDetails?.address,
     nativeCurrency,
@@ -233,6 +235,24 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
         resetField(`actions.${actionIndex}.tokenImgUrl`);
         resetField(`actions.${actionIndex}.tokenSymbol`);
         resetField(`actions.${actionIndex}.tokenBalance`);
+      } else {
+        const tokenStorage = localStorage.getItem('LOCAL_TOKENS');
+        const chainId = provider.network.chainId;
+
+        const value =
+          tokenStorage && tokenStorage[chainId]
+            ? JSON.parse(tokenStorage[chainId])
+            : [];
+        const newTokens = {
+          [chainId]: value.some(
+            (a: string) => a.toLowerCase() === address.toLowerCase()
+          )
+            ? value
+            : [...value, address],
+        };
+        const ret = JSON.stringify(newTokens);
+        console.log('tokenStorage > newTokens :', ret);
+        localStorage.setItem('LOCAL_TOKENS', ret);
       }
 
       return validationResult;

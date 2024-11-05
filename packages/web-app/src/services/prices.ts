@@ -155,6 +155,8 @@ async function fetchTokenPrice(
 ): Promise<number | undefined> {
   // check if token address is address zero, ie, native token of platform
   const nativeToken = isNativeToken(address);
+  //console.log(`address: ${address}`);
+  //console.log(`nativeToken: ${nativeToken}`);
   let fetchAddress = address;
   let fetchNetwork = network;
 
@@ -174,18 +176,20 @@ async function fetchTokenPrice(
   if (!platformId && !nativeToken) return;
 
   // build url based on whether token is ethereum
-  const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
+  const endPoint = `/simple/token_price/${platformId}?vs_currencies=krw&contract_addresses=`;
   const url = nativeToken
     ? `${BASE_URL}/simple/price?ids=${getNativeTokenId(
         fetchNetwork
-      )}&vs_currencies=usd`
+      )}&vs_currencies=krw`
     : `${BASE_URL}${endPoint}${fetchAddress}`;
 
   try {
     const res = await fetch(url);
     const data = await res.json();
 
-    return Object.values(data as object)[0]?.usd as number;
+    //console.log(data);
+
+    return Object.values(data as object)[0]?.krw as number;
   } catch (error) {
     console.error('Error fetching token price', error);
   }
@@ -201,8 +205,15 @@ async function fetchTokenPrice(
  * @returns native token id
  */
 function getNativeTokenId(network: SupportedNetworks): string {
-  if (network === 'polygon' || network === 'mumbai') {
-    return NATIVE_TOKEN_ID.polygon;
+  if (
+    network === 'bosagora_mainnet' ||
+    network === 'bosagora_testnet' ||
+    network === 'bosagora_devnet' ||
+    network === 'acc_sidechain_mainnet' ||
+    network === 'acc_sidechain_testnet' ||
+    network === 'acc_sidechain_devnet'
+  ) {
+    return NATIVE_TOKEN_ID.bosagora;
   }
 
   return NATIVE_TOKEN_ID.default;

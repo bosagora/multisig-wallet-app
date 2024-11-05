@@ -25,9 +25,9 @@ import {CHAIN_METADATA} from 'utils/constants';
 import PageEmptyState from 'containers/pageEmptyState';
 import {htmlIn} from 'utils/htmlIn';
 import useScreen from 'hooks/useScreen';
-import {useGovTokensWrapping} from 'context/govTokensWrapping';
-import {useExistingToken} from 'hooks/useExistingToken';
-import {Erc20WrapperTokenDetails} from '@aragon/sdk-client';
+// import {useGovTokensWrapping} from 'context/govTokensWrapping';
+// import {useExistingToken} from 'hooks/useExistingToken';
+// import {Erc20WrapperTokenDetails} from '@aragon/sdk-client';
 
 const MEMBERS_PER_PAGE = 20;
 
@@ -36,32 +36,36 @@ const Community: React.FC = () => {
   const {network} = useNetwork();
   const navigate = useNavigate();
   const {isMobile} = useScreen();
-  const {handleOpenModal} = useGovTokensWrapping();
+  // const {handleOpenModal} = useGovTokensWrapping();
 
   const [page, setPage] = useState(1);
   const [debouncedTerm, searchTerm, setSearchTerm] = useDebouncedState('');
 
   const {data: daoDetails, isLoading: detailsAreLoading} = useDaoDetailsQuery();
+  // const {
+  //   data: {members, filteredMembers, daoToken},
+  //   isLoading: membersLoading,
+  // } = useDaoMembers(
+  //   pluginAddress: daoDetails?.address || '',
+  //   pluginType: 'multisig.plugin.dao.eth',
+  // );
   const {
-    data: {members, filteredMembers, daoToken},
+    data: {members, filteredMembers},
     isLoading: membersLoading,
-  } = useDaoMembers(
-    daoDetails?.plugins[0].instanceAddress as string,
-    daoDetails?.plugins[0].id as PluginTypes,
-    debouncedTerm
-  );
+  } = useDaoMembers(daoDetails ? daoDetails.address : '', debouncedTerm);
 
-  const {isDAOTokenWrapped, isTokenMintable} = useExistingToken({
-    daoToken,
-    daoDetails,
-  });
-
+  // const {isDAOTokenWrapped, isTokenMintable} = useExistingToken({
+  //   daoToken,
+  //   daoDetails,
+  // });
+  //
+  //console.log('community > filteredMembers :', filteredMembers);
   const totalMemberCount = members.length;
   const filteredMemberCount = filteredMembers.length;
   const displayedMembers = filteredMemberCount > 0 ? filteredMembers : members;
 
-  const walletBased =
-    (daoDetails?.plugins[0].id as PluginTypes) === 'multisig.plugin.dao.eth';
+  const walletBased = true;
+  // (daoDetails?.plugins[0].id as PluginTypes) === 'multisig.plugin.dao.eth';
 
   /*************************************************
    *                    Handlers                   *
@@ -71,22 +75,23 @@ const Community: React.FC = () => {
   };
 
   const handleSecondaryButtonClick = () => {
-    window.open(
-      CHAIN_METADATA[network].explorer +
-        '/token/tokenholderchart/' +
-        daoToken?.address,
-      '_blank'
-    );
+    // window.open(
+    //   CHAIN_METADATA[network].explorer +
+    //     '/token/tokenholderchart/' +
+    //     daoToken?.address,
+    //   '_blank'
+    // );
   };
 
   const handlePrimaryClick = () => {
-    if (walletBased) {
-      navigate('manage-members');
-    } else if (isDAOTokenWrapped) {
-      handleOpenModal();
-    } else if (isTokenMintable) {
-      navigate('mint-tokens');
-    }
+    navigate('manage-members');
+    // if (walletBased) {
+    //   navigate('manage-members');
+    // } else if (isDAOTokenWrapped) {
+    //   handleOpenModal();
+    // } else if (isTokenMintable) {
+    //   navigate('mint-tokens');
+    // }
   };
 
   /*************************************************
@@ -94,83 +99,47 @@ const Community: React.FC = () => {
    *************************************************/
   if (detailsAreLoading || membersLoading) return <Loading />;
 
-  if (!totalMemberCount && isDAOTokenWrapped) {
-    return (
-      <PageEmptyState
-        title={t('community.emptyState.title')}
-        subtitle={htmlIn(t)('community.emptyState.desc', {
-          tokenSymbol:
-            (daoToken as Erc20WrapperTokenDetails)?.underlyingToken?.symbol ||
-            daoToken?.symbol,
-        })}
-        Illustration={
-          <div className="flex">
-            <IllustrationHuman
-              {...{
-                body: 'elevating',
-                expression: 'smile_wink',
-                hair: 'middle',
-                sunglass: 'big_rounded',
-                accessory: 'buddha',
-              }}
-              {...(isMobile
-                ? {height: 165, width: 295}
-                : {height: 225, width: 400})}
-            />
-          </div>
-        }
-        buttonLabel={t('community.emptyState.ctaLabel')}
-        onClick={handleOpenModal}
-      />
-    );
-  }
+  // if (!totalMemberCount && isDAOTokenWrapped) {
+  //   return (
+  //     <PageEmptyState
+  //       title={t('community.emptyState.title')}
+  //       subtitle={htmlIn(t)('community.emptyState.desc', {
+  //         tokenSymbol:
+  //           (daoToken as Erc20WrapperTokenDetails)?.underlyingToken?.symbol ||
+  //           daoToken?.symbol,
+  //       })}
+  //       Illustration={
+  //         <div className="flex">
+  //           <IllustrationHuman
+  //             {...{
+  //               body: 'elevating',
+  //               expression: 'smile_wink',
+  //               hair: 'middle',
+  //               sunglass: 'big_rounded',
+  //               accessory: 'buddha',
+  //             }}
+  //             {...(isMobile
+  //               ? {height: 165, width: 295}
+  //               : {height: 225, width: 400})}
+  //           />
+  //         </div>
+  //       }
+  //       buttonLabel={t('community.emptyState.ctaLabel')}
+  //       onClick={handleOpenModal}
+  //     />
+  //   );
+  // }
 
   return (
     <PageWrapper
       title={`${totalMemberCount} ${t('labels.members')}`}
-      {...(walletBased
-        ? {
-            description: t('explore.explorer.walletBased'),
-            primaryBtnProps: {
-              label: t('labels.manageMember'),
-              onClick: handlePrimaryClick,
-            },
-          }
-        : isDAOTokenWrapped
-        ? {
-            description: t('explore.explorer.tokenBased'),
-            primaryBtnProps: {
-              label: t('community.ctaMain.wrappedLabel'),
-              onClick: handlePrimaryClick,
-            },
-            secondaryBtnProps: {
-              label: t('labels.seeAllHolders'),
-              iconLeft: <IconLinkExternal />,
-              onClick: handleSecondaryButtonClick,
-            },
-          }
-        : isTokenMintable
-        ? {
-            description: t('explore.explorer.tokenBased'),
-            primaryBtnProps: {
-              label: t('labels.mintTokens'),
-              iconLeft: <IconAdd />,
-              onClick: handlePrimaryClick,
-            },
-            secondaryBtnProps: {
-              label: t('labels.seeAllHolders'),
-              iconLeft: <IconLinkExternal />,
-              onClick: handleSecondaryButtonClick,
-            },
-          }
-        : {
-            description: t('explore.explorer.tokenBased'),
-            secondaryBtnProps: {
-              label: t('labels.seeAllHolders'),
-              iconLeft: <IconLinkExternal />,
-              onClick: handleSecondaryButtonClick,
-            },
-          })}
+      {...{
+        description: t('explore.explorer.walletBased'),
+        // primaryBtnProps: {
+        //   label: t('labels.manageMember'),
+        //   onClick: handlePrimaryClick,
+        // },
+      }}
     >
       <BodyContainer>
         <SearchAndResultWrapper>
@@ -181,9 +150,9 @@ const Community: React.FC = () => {
               value={searchTerm}
               onChange={handleQueryChange}
             />
-            {!walletBased && (
-              <AlertInline label={t('alert.tokenBasedMembers') as string} />
-            )}
+            {/*{!walletBased && (*/}
+            {/*  <AlertInline label={t('alert.tokenBasedMembers') as string} />*/}
+            {/*)}*/}
           </InputWrapper>
 
           {/* Members List */}
@@ -209,7 +178,7 @@ const Community: React.FC = () => {
                     </ResultsCountLabel>
                   )}
                   <MembersList
-                    token={daoToken}
+                    // token={daoToken}
                     members={displayedMembers.slice(
                       (page - 1) * MEMBERS_PER_PAGE,
                       page * MEMBERS_PER_PAGE

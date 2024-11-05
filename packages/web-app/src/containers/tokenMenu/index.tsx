@@ -1,4 +1,3 @@
-import {AssetBalance} from '@aragon/sdk-client';
 import {
   ButtonText,
   IconAdd,
@@ -17,6 +16,7 @@ import {formatUnits} from 'utils/library';
 import {abbreviateTokenAmount} from 'utils/tokens';
 import {BaseTokenInfo, TokenWithMetadata} from 'utils/types';
 import TokenBox from './tokenBox';
+import {AssetBalance} from '../../utils/aragon/sdk-client-types';
 
 const customToken = {
   address: '',
@@ -161,6 +161,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           <RenderTokens />
         </TokensWrapper>
         <WideButton
+          css={{}}
           mode="secondary"
           size="large"
           label="Add Custom Token"

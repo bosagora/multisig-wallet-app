@@ -1,53 +1,25 @@
 // Library utils / Ethers for now
-import {ApolloClient} from '@apollo/client';
 import {
-  Client,
-  DaoDetails,
-  Erc20TokenDetails,
-  MintTokenParams,
-  MultisigClient,
-  MultisigVotingSettings,
   Context as SdkContext,
-  TokenVotingClient,
-  VotingMode,
-} from '@aragon/sdk-client';
+  SupportedNetwork as SdkSupportedNetworks,
+} from 'multisig-wallet-sdk-client';
 import {fetchEnsAvatar} from '@wagmi/core';
 
-import {
-  DaoAction,
-  SupportedNetwork as SdkSupportedNetworks,
-} from '@aragon/sdk-client-common';
-import {bytesToHex, resolveIpfsCid} from '@aragon/sdk-common';
-import {NavigationDao} from 'context/apolloClient';
 import {BigNumber, BigNumberish, constants, ethers, providers} from 'ethers';
 import {TFunction} from 'react-i18next';
 
 import {isAddress} from 'ethers/lib/utils';
-import {getEtherscanVerifiedContract} from 'services/etherscanAPI';
-import {fetchTokenData} from 'services/prices';
 import {
   BIGINT_PATTERN,
   CHAIN_METADATA,
   ISO_DATE_PATTERN,
   SupportedNetworks,
 } from 'utils/constants';
-import {
-  Action,
-  ActionAddAddress,
-  ActionExternalContract,
-  ActionMintToken,
-  ActionRemoveAddress,
-  ActionUpdateMetadata,
-  ActionUpdateMultisigPluginSettings,
-  ActionUpdatePluginSettings,
-  ActionWithdraw,
-  ExternalActionInput,
-  Input,
-} from 'utils/types';
+
 import {i18n} from '../../i18n.config';
-import {addABI, decodeMethod} from './abiDecoder';
-import {attachEtherNotice} from './contract';
 import {getTokenInfo} from './tokens';
+import {fetchTokenData} from '../services/prices';
+import {ActionWithdraw} from './types';
 
 export function formatUnits(amount: BigNumberish, decimals: number) {
   if (amount.toString().includes('.') || !decimals) {
@@ -120,10 +92,11 @@ export const toHex = (num: number | string) => {
  * @param network network of the dao
  * @returns Return Decoded Withdraw action
  */
+
 export async function decodeWithdrawToAction(
   data: Uint8Array | undefined,
   client: Client | undefined,
-  apolloClient: ApolloClient<object>,
+  // apolloClient: ApolloClient<object>,
   provider: providers.Provider,
   network: SupportedNetworks,
   to: string,
@@ -183,282 +156,6 @@ export async function decodeWithdrawToAction(
   }
 }
 
-/**
- * decodeAddMembersToAction
- * @param data Uint8Array action data
- * @param client SDK AddressListClient, Fetched using usePluginClient
- * @returns Return Decoded AddMembers action
- */
-export async function decodeMintTokensToAction(
-  data: Uint8Array[] | undefined,
-  client: TokenVotingClient | undefined,
-  daoTokenAddress: string,
-  totalVotingWeight: bigint,
-  provider: providers.Provider,
-  network: SupportedNetworks
-): Promise<ActionMintToken | undefined> {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-
-  try {
-    // get token info
-    const {symbol, decimals} = await getTokenInfo(
-      daoTokenAddress,
-      provider,
-      CHAIN_METADATA[network].nativeCurrency
-    );
-
-    // decode and calculate new tokens count
-    let newTokens = BigNumber.from(0);
-
-    const decoded = data.map(action => {
-      // decode action
-      const {amount, address}: MintTokenParams =
-        client.decoding.mintTokenAction(action);
-
-      // update new tokens count
-      newTokens = newTokens.add(amount);
-      return {address, amount: Number(formatUnits(amount, decimals))};
-    });
-
-    //TODO: That's technically not correct. The minting could go to addresses who already hold that token.
-    return Promise.resolve({
-      name: 'mint_tokens',
-      inputs: {
-        mintTokensToWallets: decoded,
-      },
-      summary: {
-        newTokens: Number(formatUnits(newTokens, decimals)),
-        tokenSupply: parseFloat(formatUnits(totalVotingWeight, decimals)),
-        newHoldersCount: decoded.length,
-        daoTokenSymbol: symbol,
-        daoTokenAddress: daoTokenAddress,
-      },
-    });
-  } catch (error) {
-    console.error('Error decoding mint token action', error);
-  }
-}
-
-/**
- * decodeAddMembersToAction
- * @param data Uint8Array action data
- * @param client SDK MultisigClient, Fetched using usePluginClient
- * @returns Return Decoded AddMembers action
- */
-export async function decodeAddMembersToAction(
-  data: Uint8Array | undefined,
-  client: MultisigClient | undefined
-): Promise<ActionAddAddress | undefined> {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-
-  const addresses = client.decoding.addAddressesAction(data)?.map(address => ({
-    address,
-    ensName: '',
-  }));
-
-  return Promise.resolve({
-    name: 'add_address',
-    inputs: {memberWallets: addresses},
-  });
-}
-
-/**
- * decodeRemoveMembersToAction
- * @param data Uint8Array action data
- * @param client SDK MultisigClient, Fetched using usePluginClient
- * @returns Return Decoded RemoveMembers action
- */
-export async function decodeRemoveMembersToAction(
-  data: Uint8Array | undefined,
-  client: MultisigClient | undefined
-): Promise<ActionRemoveAddress | undefined> {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-  const addresses = client.decoding
-    .removeAddressesAction(data)
-    ?.map(address => ({
-      address,
-      ensName: '',
-    }));
-
-  return Promise.resolve({
-    name: 'remove_address',
-    inputs: {memberWallets: addresses},
-  });
-}
-
-/**
- * Decode update plugin settings action
- * @param data Uint8Array action data
- * @param client SDK AddressList or Erc20 client
- * @returns decoded action
- */
-export async function decodePluginSettingsToAction(
-  data: Uint8Array | undefined,
-  client: TokenVotingClient | undefined,
-  totalVotingWeight: bigint,
-  token?: Erc20TokenDetails
-): Promise<ActionUpdatePluginSettings | undefined> {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-
-  return {
-    name: 'modify_token_voting_settings',
-    inputs: {
-      ...client.decoding.updatePluginSettingsAction(data),
-      token,
-      totalVotingWeight,
-    },
-  };
-}
-
-export function decodeMultisigSettingsToAction(
-  data: Uint8Array | undefined,
-  client: MultisigClient
-): ActionUpdateMultisigPluginSettings | undefined {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-
-  return {
-    name: 'modify_multisig_voting_settings',
-    inputs: client.decoding.updateMultisigVotingSettings(data),
-  };
-}
-
-/**
- * Decode update DAO metadata settings action
- * @param data Uint8Array action data
- * @param client SDK plugin-agnostic client
- * @returns decoded action
- */
-export async function decodeMetadataToAction(
-  data: Uint8Array | undefined,
-  client: Client | undefined
-): Promise<ActionUpdateMetadata | undefined> {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-
-  try {
-    const decodedMetadata = await client.decoding.updateDaoMetadataAction(data);
-
-    return {
-      name: 'modify_metadata',
-      inputs: decodedMetadata,
-    };
-  } catch (error) {
-    console.error('Error decoding update dao metadata action', error);
-  }
-}
-
-/**
- * Decodes the provided DAO action into an external action
- * (SCC or Wallet Connect).
- *
- * @param action - A DAO action to decode.
- * @param network - The network on which the action is to be performed.
- *
- * @returns A promise that resolves to the decoded action
- * or undefined if the action could not be decoded.
- */
-export async function decodeToExternalAction(
-  action: DaoAction,
-  network: SupportedNetworks,
-  t: TFunction
-): Promise<ActionExternalContract | undefined> {
-  try {
-    const etherscanData = await getEtherscanVerifiedContract(
-      action.to,
-      network
-    );
-
-    // Check if the contract data was fetched successfully and if the contract has a verified source code
-    if (
-      etherscanData.status === '1' &&
-      etherscanData.result[0].ABI !== 'Contract source code not verified'
-    ) {
-      addABI(JSON.parse(etherscanData.result[0].ABI));
-      const decodedData = decodeMethod(bytesToHex(action.data));
-
-      // Check if the action data was decoded successfully
-      if (decodedData) {
-        const notices = attachEtherNotice(
-          etherscanData.result[0].SourceCode,
-          etherscanData.result[0].ContractName,
-          JSON.parse(etherscanData.result[0].ABI)
-        ).find(notice => notice.name === decodedData.name);
-
-        const inputs: ExternalActionInput[] = decodedData.params.map(param => {
-          return {
-            ...param,
-            notice: notices?.inputs.find(
-              // multiple inputs may have the same name
-              notice => notice.name === param.name && notice.type === param.type
-            )?.notice,
-          };
-        });
-
-        if (BigNumber.from(action.value).gt(0)) {
-          inputs.push({
-            ...getDefaultPayableAmountInput(t, network),
-            type: 'string',
-            value: `${formatUnits(
-              BigNumber.from(action.value),
-              CHAIN_METADATA[network].nativeCurrency.decimals
-            )} ${CHAIN_METADATA[network].nativeCurrency.symbol}`,
-          } as ExternalActionInput);
-        }
-
-        return {
-          name: 'wallet_connect_action',
-          contractAddress: action.to,
-          contractName: etherscanData.result[0].ContractName,
-          functionName: decodedData.name,
-          inputs,
-          verified: true,
-          decoded: true,
-          notice: notices?.notice,
-        };
-      } else {
-        // verified but unable to be decoded
-        return {
-          name: 'wallet_connect_action',
-          contractAddress: action.to,
-          contractName: etherscanData.result[0].ContractName,
-          functionName: 'Unable to decode function name', // FIXME: crowdin key,
-          inputs: getEncodedActionInputs(action, network, t),
-          verified: true,
-          decoded: false,
-        };
-      }
-    } else {
-      return {
-        name: 'wallet_connect_action',
-        contractAddress: action.to,
-        contractName: action.to,
-        functionName: 'Unable to decode function name', // FIXME: crowdin key,
-        verified: false,
-        decoded: false,
-        inputs: getEncodedActionInputs(action, network, t),
-      };
-    }
-  } catch (error) {
-    console.error('Failed to decode external contract action:', error);
-  }
-}
 
 const FLAG_TYPED_ARRAY = 'FLAG_TYPED_ARRAY';
 /**
@@ -511,16 +208,6 @@ type DecodedVotingMode = {
   earlyExecution: boolean;
   voteReplacement: boolean;
 };
-
-export function decodeVotingMode(mode: VotingMode): DecodedVotingMode {
-  return {
-    // Note: This implies that earlyExecution and voteReplacement may never be
-    // both true at the same time, as they shouldn't.
-    earlyExecution: mode === VotingMode.EARLY_EXECUTION,
-    voteReplacement: mode === VotingMode.VOTE_REPLACEMENT,
-  };
-}
-
 /**
  * Get DAO resolved IPFS CID URL for the DAO avatar
  * @param avatar - avatar to be resolved. If it's an IPFS CID,
@@ -531,18 +218,7 @@ export function resolveDaoAvatarIpfsCid(
   network: SupportedNetworks,
   avatar?: string
 ): string | undefined {
-  if (avatar) {
-    if (/^ipfs/.test(avatar)) {
-      try {
-        const logoCid = resolveIpfsCid(avatar);
-        return `${CHAIN_METADATA[network].ipfs}/ipfs/${logoCid}`;
-      } catch (err) {
-        console.warn('Error resolving DAO avatar IPFS Cid', err);
-      }
-    } else {
-      return avatar;
-    }
-  }
+  return undefined;
 }
 
 export function readFile(file: Blob): Promise<ArrayBuffer> {
@@ -553,50 +229,6 @@ export function readFile(file: Blob): Promise<ArrayBuffer> {
     };
     fr.onerror = reject;
     fr.readAsArrayBuffer(file);
-  });
-}
-
-/**
- * Map a detailed DAO to a structure that can be favorited
- * @param dao - Detailed DAO fetched from SDK
- * @param network - network on which this DAO resides
- * @returns the DAO in it's favorited form
- */
-export function mapDetailedDaoToFavoritedDao(
-  dao: DaoDetails,
-  network: SupportedNetworks
-): NavigationDao {
-  return {
-    address: dao.address.toLocaleLowerCase(),
-    chain: CHAIN_METADATA[network].id,
-    ensDomain: dao.ensDomain,
-    plugins: dao.plugins,
-    metadata: {
-      name: dao.metadata.name,
-      avatar: dao.metadata.avatar,
-      description: dao.metadata.description,
-    },
-  };
-}
-
-/**
- * Filters out action containing unchanged min approvals
- * @param actions form actions
- * @param pluginSettings DAO plugin settings
- * @returns list of actions without update plugin settings action
- * if Multisig DAO minimum approvals did not change
- */
-export function removeUnchangedMinimumApprovalAction(
-  actions: Action[],
-  pluginSettings: MultisigVotingSettings
-) {
-  return actions.flatMap(action => {
-    if (
-      action.name === 'modify_multisig_voting_settings' &&
-      Number(action.inputs.minApprovals) === pluginSettings.minApprovals
-    )
-      return [];
-    else return action;
   });
 }
 
@@ -621,10 +253,20 @@ export const translateToAppNetwork = (
       return 'ethereum';
     case 'goerli':
       return 'goerli';
-    case 'maticmum':
-      return 'mumbai';
-    case 'matic':
-      return 'polygon';
+    case 'sepolia':
+      return 'sepolia';
+    case 'bosagora_mainnet':
+      return 'bosagora_mainnet';
+    case 'bosagora_testnet':
+      return 'bosagora_testnet';
+    case 'bosagora_devnet':
+      return 'bosagora_devnet';
+    case 'acc_sidechain_mainnet':
+      return 'acc_sidechain_mainnet';
+    case 'acc_sidechain_testnet':
+      return 'acc_sidechain_testnet';
+    case 'acc_sidechain_devnet':
+      return 'acc_sidechain_devnet';
   }
   return 'unsupported';
 };
@@ -642,14 +284,24 @@ export function translateToNetworkishName(
   }
 
   switch (appNetwork) {
-    case 'polygon':
-      return SdkSupportedNetworks.POLYGON;
-    case 'mumbai':
-      return SdkSupportedNetworks.MUMBAI;
     case 'ethereum':
-      return SdkSupportedNetworks.MAINNET;
+      return SdkSupportedNetworks.ETHEREUM_MAINNET;
     case 'goerli':
-      return SdkSupportedNetworks.GOERLI;
+      return SdkSupportedNetworks.ETHEREUM_GOERLI;
+    case 'sepolia':
+      return SdkSupportedNetworks.ETHEREUM_SEPOLIA;
+    case 'bosagora_mainnet':
+      return SdkSupportedNetworks.BOSAGORA_MAINNET;
+    case 'bosagora_testnet':
+      return SdkSupportedNetworks.BOSAGORA_TESTNET;
+    case 'bosagora_devnet':
+      return SdkSupportedNetworks.BOSAGORA_DEVNET;
+    case 'acc_sidechain_mainnet':
+      return SdkSupportedNetworks.ACC_SIDECHAIN_MAINNET;
+    case 'acc_sidechain_testnet':
+      return SdkSupportedNetworks.ACC_SIDECHAIN_TESTNET;
+    case 'acc_sidechain_devnet':
+      return SdkSupportedNetworks.ACC_SIDECHAIN_DEVNET;
   }
 
   return 'unsupported';
@@ -665,19 +317,6 @@ export function toDisplayEns(ensName?: string) {
 
   if (!ensName.includes('.dao.eth')) return `${ensName}.dao.eth`;
   return ensName;
-}
-
-export function getDefaultPayableAmountInput(
-  t: TFunction,
-  network: SupportedNetworks
-): Input {
-  return {
-    name: getDefaultPayableAmountInputName(t),
-    type: 'uint256',
-    notice: t('scc.inputPayableAmount.description', {
-      tokenSymbol: CHAIN_METADATA[network].nativeCurrency.symbol,
-    }),
-  };
 }
 
 export function getDefaultPayableAmountInputName(t: TFunction) {
@@ -701,7 +340,7 @@ export function getWCPayableAmount(
 }
 
 export function getEncodedActionInputs(
-  action: DaoAction,
+  action: any,
   network: SupportedNetworks,
   t: TFunction
 ) {

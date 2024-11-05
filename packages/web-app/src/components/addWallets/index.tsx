@@ -18,7 +18,7 @@ import Row from './row';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
-  const {address, ensName} = useWallet();
+  const {address} = useWallet();
 
   const {control, setValue, resetField, trigger} = useFormContext();
   const wallets = useWatch({name: 'wallets', control: control});
@@ -39,9 +39,9 @@ const AddWallets: React.FC = () => {
     if (address && !wallets) {
       // uncomment when minting to treasury is ready
       // insert(1, {address: address, amount: '0'});
-      append({address, ensName, amount: 1});
+      append({address, amount: 1});
     }
-  }, [address, append, ensName, wallets]);
+  }, [address, append, wallets]);
 
   const resetDistribution = () => {
     controlledFields.forEach((_, index) => {

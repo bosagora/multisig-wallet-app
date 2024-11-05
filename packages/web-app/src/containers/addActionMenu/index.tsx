@@ -39,10 +39,10 @@ const AddActionMenu: React.FC<AddActionMenuProps> = ({actions}) => {
             }
             iconRight={<IconChevronRight />}
             onClick={() => {
-              trackEvent('newProposal_action_selected', {
-                dao_address: daoAddressOrEns,
-                action: a.type,
-              });
+              // trackEvent('newProposal_action_selected', {
+              //   dao_address: daoAddressOrEns,
+              //   action: a.type,
+              // });
               addAction({
                 name: a.type,
               });

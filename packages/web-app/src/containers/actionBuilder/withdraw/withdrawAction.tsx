@@ -39,15 +39,15 @@ const WithdrawAction: React.FC<WithdrawActionProps> = ({
 
   const methodActions = (() => {
     const result = [
-      {
-        component: (
-          <ListItemAction title={t('labels.duplicateAction')} bgWhite />
-        ),
-        callback: () => {
-          duplicateAction(actionIndex);
-          alert(t('alert.chip.duplicateAction'));
-        },
-      },
+      // {
+      //   component: (
+      //     <ListItemAction title={t('labels.duplicateAction')} bgWhite />
+      //   ),
+      //   callback: () => {
+      //     duplicateAction(actionIndex);
+      //     alert(t('alert.chip.duplicateAction'));
+      //   },
+      // },
       {
         component: <ListItemAction title={t('labels.resetAction')} bgWhite />,
         callback: resetWithdrawFields,
@@ -75,7 +75,7 @@ const WithdrawAction: React.FC<WithdrawActionProps> = ({
       type="action-builder"
       methodName={t('TransferModal.item2Title')}
       dropdownItems={methodActions}
-      smartContractName={t('labels.aragonOSx')}
+      smartContractName={'BOSAgora'}
       methodDescription={t('AddActionModal.withdrawAssetsActionSubtitle')}
     >
       <FormItem className="py-3 space-y-3 rounded-b-xl">

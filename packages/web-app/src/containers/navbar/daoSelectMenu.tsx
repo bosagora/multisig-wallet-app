@@ -21,13 +21,12 @@ import {useGlobalModalContext} from 'context/globalModals';
 import useScreen from 'hooks/useScreen';
 import {getSupportedNetworkByChainId} from 'utils/constants';
 import {Dashboard} from 'utils/paths';
-import {toDisplayEns} from 'utils/library';
 
 const DaoSelectMenu: React.FC = () => {
   const {t} = useTranslation();
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
-  const currentDao = useReactiveVar(selectedDaoVar);
+  const currentWallet = useReactiveVar(selectedDaoVar);
   const favoriteDaoCache = useReactiveVar(favoriteDaosVar);
   const {isSelectDaoOpen, close, open} = useGlobalModalContext();
 
@@ -37,7 +36,7 @@ const DaoSelectMenu: React.FC = () => {
       navigate(
         generatePath(Dashboard, {
           network: getSupportedNetworkByChainId(dao.chain),
-          dao: toDisplayEns(dao.ensDomain) || dao.address,
+          dao: dao.address,
         })
       );
       close('selectDao');
@@ -54,7 +53,7 @@ const DaoSelectMenu: React.FC = () => {
     <ModalBottomSheetSwitcher
       isOpen={isSelectDaoOpen}
       onClose={() => close('selectDao')}
-      onOpenAutoFocus={e => e.preventDefault()}
+      onOpenAutoFocus={(e: any) => e.preventDefault()}
     >
       <div className="flex flex-col h-full" style={{maxHeight: '75vh'}}>
         <ModalHeader>
@@ -72,25 +71,24 @@ const DaoSelectMenu: React.FC = () => {
           <ListGroup>
             <ListItemDao
               selected
-              daoAddress={toDisplayEns(currentDao?.ensDomain)}
-              daoName={currentDao?.metadata.name}
-              daoLogo={currentDao?.metadata.avatar}
+              daoAddress={currentWallet?.address}
+              daoName={currentWallet?.metadata.name}
               onClick={() => close('selectDao')}
             />
-            {favoriteDaoCache.flatMap(dao => {
+            {favoriteDaoCache.flatMap(msw => {
               if (
-                dao.address === currentDao.address &&
-                dao.chain === currentDao.chain
+                msw.address.toLowerCase() ===
+                  currentWallet.address.toLowerCase() &&
+                msw.chain === currentWallet.chain
               ) {
                 return [];
               } else {
                 return (
                   <ListItemDao
-                    key={dao.address}
-                    daoAddress={toDisplayEns(dao.ensDomain)}
-                    daoName={dao.metadata.name}
-                    daoLogo={dao.metadata.avatar}
-                    onClick={() => handleDaoSelect(dao)}
+                    key={msw.address}
+                    daoAddress={msw.address}
+                    daoName={msw.metadata.name}
+                    onClick={() => handleDaoSelect(msw)}
                   />
                 );
               }

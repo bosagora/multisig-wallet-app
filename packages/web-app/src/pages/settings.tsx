@@ -1,4 +1,4 @@
-import {DaoDetails} from '@aragon/sdk-client';
+// import {DaoDetails} from '@aragon/sdk-client';
 import {
   AlertInline,
   AvatarDao,
@@ -15,7 +15,7 @@ import styled from 'styled-components';
 import {Dd, DescriptionListContainer, Dl, Dt} from 'components/descriptionList';
 import {Loading} from 'components/temporary';
 import {PageWrapper} from 'components/wrappers';
-import MajorityVotingSettings from 'containers/settings/majorityVoting';
+// import MajorityVotingSettings from 'containers/settings/majorityVoting';
 import MultisigSettings from 'containers/settings/multisig';
 import {useNetwork} from 'context/network';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
@@ -23,6 +23,7 @@ import {PluginTypes} from 'hooks/usePluginClient';
 import useScreen from 'hooks/useScreen';
 import {CHAIN_METADATA} from 'utils/constants';
 import {EditSettings} from 'utils/paths';
+import {DaoDetails} from '../utils/aragon/sdk-client-types';
 
 const Settings: React.FC = () => {
   const {t} = useTranslation();
@@ -51,7 +52,7 @@ const Settings: React.FC = () => {
         {/* BLOCKCHAIN SECTION */}
         <DescriptionListContainer
           title={t('labels.review.blockchain')}
-          tagLabel={t('labels.notChangeable')}
+          // tagLabel={t('labels.notChangeable')}
         >
           <Dl>
             <Dt>{t('labels.review.network')}</Dt>
@@ -79,12 +80,12 @@ const Settings: React.FC = () => {
             <Dt>{t('labels.daoName')}</Dt>
             <Dd>{daoDetails?.metadata.name}</Dd>
           </Dl>
-          {!isL2Network && (
-            <Dl>
-              <Dt>{t('labels.ens')}</Dt>
-              <Dd>{daoDetails?.ensDomain}</Dd>
-            </Dl>
-          )}
+          {/*{!isL2Network && (*/}
+          {/*  <Dl>*/}
+          {/*    <Dt>{t('labels.ens')}</Dt>*/}
+          {/*    <Dd>{daoDetails?.ensDomain}</Dd>*/}
+          {/*  </Dl>*/}
+          {/*)}*/}
           <Dl>
             <Dt>{t('labels.summary')}</Dt>
             <Dd>{daoDetails?.metadata.description}</Dd>
@@ -108,16 +109,17 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Edit */}
-      <div className="space-y-2">
-        <ButtonText
-          label={t('settings.edit')}
-          className="mt-5 desktop:mt-8 w-full tablet:w-max"
-          size="large"
-          iconLeft={<IconGovernance />}
-          onClick={() => navigate('edit')}
-        />
-        <AlertInline label={t('settings.proposeSettingsInfo')} />
-      </div>
+      {/*<div className="space-y-2">*/}
+      {/*  <ButtonText*/}
+      {/*    css={{}}*/}
+      {/*    label={t('settings.edit')}*/}
+      {/*    className="mt-5 desktop:mt-8 w-full tablet:w-max"*/}
+      {/*    size="large"*/}
+      {/*    iconLeft={<IconGovernance />}*/}
+      {/*    onClick={() => navigate('edit')}*/}
+      {/*  />*/}
+      {/*  <AlertInline label={t('settings.proposeSettingsInfo')} />*/}
+      {/*</div>*/}
     </SettingsWrapper>
   );
 };
@@ -129,20 +131,7 @@ export interface IPluginSettings {
 export const PluginSettingsWrapper: React.FC<IPluginSettings> = ({
   daoDetails,
 }) => {
-  // TODO: Create support for multiple plugin DAO once design is ready.
-  const pluginType = daoDetails?.plugins?.[0]?.id as PluginTypes;
-
-  switch (pluginType) {
-    case 'token-voting.plugin.dao.eth':
-      return <MajorityVotingSettings daoDetails={daoDetails} />;
-
-    case 'multisig.plugin.dao.eth':
-      return <MultisigSettings daoDetails={daoDetails} />;
-
-    default:
-      // TODO: need to be designed
-      return <div>Unsupported Plugin</div>;
-  }
+  return <MultisigSettings daoDetails={daoDetails} />;
 };
 
 export const SettingsWrapper: React.FC = ({children}) => {
@@ -157,17 +146,17 @@ export const SettingsWrapper: React.FC = ({children}) => {
     <PageWrapper
       title={t('labels.daoSettings')}
       // TODO add correct description once available in designs [VR 17-01-2023]
-      description="Review your DAO's settings"
-      primaryBtnProps={
-        isMobile
-          ? {
-              label: t('settings.edit'),
-              iconLeft: <IconGovernance />,
-              onClick: () =>
-                navigate(generatePath(EditSettings, {network, dao})),
-            }
-          : undefined
-      }
+      description="Review your Multisig wallet's settings"
+      // primaryBtnProps={
+      //   isMobile
+      //     ? {
+      //         label: t('settings.edit'),
+      //         iconLeft: <IconGovernance />,
+      //         onClick: () =>
+      //           navigate(generatePath(EditSettings, {network, dao})),
+      //       }
+      //     : undefined
+      // }
       customBody={<Layout>{children}</Layout>}
     />
   );

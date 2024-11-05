@@ -2,12 +2,11 @@
 // compatible with react-router-dom v6
 import React, {lazy, Suspense, useEffect} from 'react';
 import {Navigate, Outlet, Route, Routes, useLocation} from 'react-router-dom';
-
+// import ProtectedRoute from 'components/protectedRoute';
 // HACK: All pages MUST be exported with the withTransaction function
 // from the '@elastic/apm-rum-react' package in order for analytics to
 // work properly on the pages.
 import {GridLayout} from 'components/layout';
-import ProtectedRoute from 'components/protectedRoute';
 import {Loading} from 'components/temporary/loading';
 import ExploreFooter from 'containers/exploreFooter';
 import Footer from 'containers/footer';
@@ -15,10 +14,8 @@ import Navbar from 'containers/navbar';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 import ExploreNav from 'containers/navbar/exploreNav';
 import NetworkErrorMenu from 'containers/networkErrorMenu';
-import TransactionDetail from 'containers/transactionDetail';
 import TransferMenu from 'containers/transferMenu';
 import {WalletMenu} from 'containers/walletMenu';
-import {ProposalTransactionProvider} from 'context/proposalTransaction';
 import {useTransactionDetailContext} from 'context/transactionDetail';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
 import {useWallet} from 'hooks/useWallet';
@@ -29,29 +26,17 @@ import {NotFound} from 'utils/paths';
 import '../i18n.config';
 import DepositModal from 'containers/transactionModals/depositModal';
 import PoapClaimModal from 'containers/poapClaiming/PoapClaimModal';
-import {GovTokensWrappingProvider} from 'context/govTokensWrapping';
+import ProtectedRoute from './components/protectedRoute';
 
+import {ProposalTransactionProvider} from 'context/proposalTransaction';
+const ProposalPage = lazy(() => import('pages/proposal'));
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
-
-const DashboardPage = lazy(() => import('pages/dashboard'));
-const FinancePage = lazy(() => import('pages/finance'));
-const GovernancePage = lazy(() => import('pages/governance'));
-const CommunityPage = lazy(() => import('pages/community'));
 const SettingsPage = lazy(() => import('pages/settings'));
-const EditSettingsPage = lazy(() => import('pages/editSettings'));
-const ProposeSettingsPage = lazy(() => import('pages/proposeSettings'));
-
-const TokensPage = lazy(() => import('pages/tokens'));
-const TransfersPage = lazy(() => import('pages/transfers'));
-const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
-
+const DashboardPage = lazy(() => import('pages/dashboard'));
 const NewProposalPage = lazy(() => import('pages/newProposal'));
-const ProposalPage = lazy(() => import('pages/proposal'));
-
-const MintTokensProposalPage = lazy(() => import('pages/mintTokens'));
-const ManageMembersProposalPage = lazy(() => import('pages/manageMembers'));
-
+const CommunityPage = lazy(() => import('pages/community'));
+const GovernancePage = lazy(() => import('pages/governance'));
 function App() {
   // TODO this needs to be inside a Routes component. Will be moved there with
   // further refactoring of layout (see further below).
@@ -89,35 +74,15 @@ function App() {
           <Route element={<DaoWrapper />}>
             <Route path="/create" element={<CreateDAO />} />
           </Route>
-          <Route path="/daos/:network/:dao">
+          <Route path="/multisig-wallets/:network/:dao">
             <Route element={<DaoWrapper />}>
               <Route path="dashboard" element={<DashboardPage />} />
-              <Route path="finance" element={<FinancePage />} />
-              <Route path="finance/tokens" element={<TokensPage />} />
-              <Route path="finance/transfers" element={<TransfersPage />} />
+              {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
+              <Route index element={<Navigate to={'dashboard'} replace />} />
               <Route element={<ProtectedRoute />}>
-                <Route
-                  path="finance/new-withdrawal"
-                  element={<NewWithdrawPage />}
-                />
                 <Route
                   path="governance/new-proposal"
                   element={<NewProposalPage />}
-                />
-                <Route element={<NewSettingsWrapper />}>
-                  <Route path="settings/edit" element={<EditSettingsPage />} />
-                  <Route
-                    path="settings/new-proposal"
-                    element={<ProposeSettingsPage />}
-                  />
-                </Route>
-                <Route
-                  path="community/mint-tokens"
-                  element={<MintTokensProposalPage />}
-                />
-                <Route
-                  path="community/manage-members"
-                  element={<ManageMembersProposalPage />}
                 />
               </Route>
               <Route path="governance" element={<GovernancePage />} />
@@ -127,8 +92,6 @@ function App() {
               />
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
-              {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
-              <Route index element={<Navigate to={'dashboard'} replace />} />
             </Route>
           </Route>
           <Route path={NotFound} element={<NotFoundPage />} />
@@ -186,33 +149,25 @@ const ExploreWrapper: React.FC = () => (
 );
 
 const DaoWrapper: React.FC = () => {
-  const {data: daoDetails} = useDaoDetailsQuery();
+  // const {data: walletDetails} = useDaoDetailsQuery();
 
   // using isOpen to conditionally render TransactionDetail so that
   // api call is not made on mount regardless of whether the user
   // wants to open the modal
-  const {isOpen} = useTransactionDetailContext();
+  // const {isOpen} = useTransactionDetailContext();
 
   return (
-    <GovTokensWrappingProvider>
+    <>
       <Navbar />
       <div className="min-h-screen">
         <GridLayout>
           <Outlet />
           <TransferMenu />
           <DepositModal />
-          {daoDetails && isOpen && (
-            <TransactionDetail
-              daoAddress={daoDetails.address}
-              daoEns={daoDetails.ensDomain}
-              daoName={daoDetails.metadata.name}
-              daoPlugin={daoDetails.plugins[0]}
-            />
-          )}
         </GridLayout>
       </div>
       <Footer />
-    </GovTokensWrappingProvider>
+    </>
   );
 };
 

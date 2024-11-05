@@ -5,10 +5,11 @@ import {Loading} from 'components/temporary';
 import {ActionsProvider} from 'context/actions';
 import {CreateProposalProvider} from 'context/createProposal';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {PluginTypes} from 'hooks/usePluginClient';
-import {usePluginSettings} from 'hooks/usePluginSettings';
+// import {PluginTypes} from 'hooks/usePluginClient';
+// import {usePluginSettings} from 'hooks/usePluginSettings';
 import WithdrawStepper from 'containers/withdrawStepper';
 import {InputValue} from '@aragon/ui-components';
+import {PluginTypes} from '../utils/aragon/types';
 
 export type TokenFormData = {
   tokenName: string;
@@ -57,11 +58,11 @@ const NewWithdraw: React.FC = () => {
   const [showTxModal, setShowTxModal] = useState(false);
 
   const {data: daoDetails, isLoading: detailsLoading} = useDaoDetailsQuery();
-  const {data: pluginSettings, isLoading: settingsLoading} = usePluginSettings(
-    daoDetails?.plugins[0].instanceAddress as string,
-    daoDetails?.plugins[0].id as PluginTypes
-  );
-
+  // const {data: pluginSettings, isLoading: settingsLoading} = usePluginSettings(
+  //   daoDetails?.plugins[0].instanceAddress as string,
+  //   daoDetails?.plugins[0].id as PluginTypes
+  // );
+  //
   const formMethods = useForm<WithdrawFormData>({
     defaultValues,
     mode: 'onChange',
@@ -71,7 +72,7 @@ const NewWithdraw: React.FC = () => {
    *                    Render                     *
    *************************************************/
 
-  if (!daoDetails || !pluginSettings || detailsLoading || settingsLoading) {
+  if (!daoDetails || detailsLoading ) {
     return <Loading />;
   }
 
@@ -83,11 +84,11 @@ const NewWithdraw: React.FC = () => {
             showTxModal={showTxModal}
             setShowTxModal={setShowTxModal}
           >
-            <WithdrawStepper
-              daoDetails={daoDetails}
-              pluginSettings={pluginSettings}
-              enableTxModal={() => setShowTxModal(true)}
-            />
+            {/*<WithdrawStepper*/}
+            {/*  daoDetails={daoDetails}*/}
+            {/*  pluginSettings={pluginSettings}*/}
+            {/*  enableTxModal={() => setShowTxModal(true)}*/}
+            {/*/>*/}
           </CreateProposalProvider>
         </ActionsProvider>
       </FormProvider>

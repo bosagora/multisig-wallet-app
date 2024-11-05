@@ -1,5 +1,5 @@
-import {Erc20TokenDetails, InstalledPluginListItem} from '@aragon/sdk-client';
-import {Link, VoterType} from '@aragon/ui-components';
+// import {Erc20TokenDetails, InstalledPluginListItem} from '@aragon/sdk-client';
+import {Link, VoterType, WidgetStatus} from '@aragon/ui-components';
 import TipTapLink from '@tiptap/extension-link';
 import {EditorContent, useEditor} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -12,15 +12,14 @@ import * as Locales from 'date-fns/locale';
 
 import {ExecutionWidget} from 'components/executionWidget';
 import {useFormStep} from 'components/fullScreenStepper';
-import ResourceList from 'components/resourceList';
+// import ResourceList from 'components/resourceList';
 import {Loading} from 'components/temporary';
 import {VotingTerminal} from 'containers/votingTerminal';
 import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
 import {MultisigMember, useDaoMembers} from 'hooks/useDaoMembers';
-import {PluginTypes} from 'hooks/usePluginClient';
+// import {PluginTypes} from 'hooks/usePluginClient';
 import {
   isMultisigVotingSettings,
-  isTokenVotingSettings,
   usePluginSettings,
 } from 'hooks/usePluginSettings';
 import {useTokenSupply} from 'hooks/useTokenSupply';
@@ -32,8 +31,9 @@ import {
   getFormattedUtcOffset,
   minutesToMills,
 } from 'utils/date';
-import {getErc20VotingParticipation, getNonEmptyActions} from 'utils/proposals';
+import {getNonEmptyActions} from 'utils/proposals';
 import {ProposalResource, SupportedVotingSettings} from 'utils/types';
+import {InstalledPluginListItem, PluginTypes} from '../../utils/aragon/types';
 
 type ReviewProposalProps = {
   defineProposalStepNumber: number;
@@ -48,19 +48,19 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
   const {setStep} = useFormStep();
 
   const {data: daoDetails} = useDaoDetailsQuery();
-  const {id: pluginType, instanceAddress: pluginAddress} =
-    daoDetails?.plugins[0] || ({} as InstalledPluginListItem);
-
+  // const {id: pluginType, instanceAddress: pluginAddress} =
+  //   daoDetails?.plugins[0] || ({} as InstalledPluginListItem);
+  //
   const {data: daoSettings} = usePluginSettings(
-    pluginAddress,
-    pluginType as PluginTypes
+    daoDetails?.address as string,
+    'multisig.plugin.dao.eth' as PluginTypes
   );
 
   const {
-    data: {members, daoToken},
-  } = useDaoMembers(pluginAddress, pluginType as PluginTypes);
+    data: {members},
+  } = useDaoMembers(daoDetails?.address || '', '');
 
-  const {data: totalSupply} = useTokenSupply(daoToken?.address as string);
+  // const {data: totalSupply} = useTokenSupply(daoToken?.address as string);
 
   const {getValues, setValue} = useFormContext();
   const values = getValues();
@@ -196,12 +196,13 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
       getReviewProposalTerminalProps(
         t,
         daoSettings,
-        members,
-        daoToken,
-        totalSupply?.raw
+        members
+        // daoToken,
+        // totalSupply?.raw
       ),
-    [daoSettings, daoToken, members, t, totalSupply?.raw]
+    [daoSettings, members, t]
   );
+  //console.log('ReviewProposal terminalProps', terminalProps);
 
   /*************************************************
    *                    Effects                    *
@@ -215,11 +216,14 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
   /*************************************************
    *                    Render                     *
    *************************************************/
+
+  //console.log('ReviewProposal');
+  // console.log('editor :', editor);
   if (!editor) {
     return null;
   }
-
   if (!terminalProps) return <Loading />;
+  // console.log('ReviewProposal terminalProps', terminalProps);
 
   return (
     <>
@@ -250,7 +254,7 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
             startDate={formattedStartDate}
             endDate={formattedEndDate}
             preciseEndDate={formattedPreciseEndDate}
-            token={daoToken}
+            // token={daoToken}
             {...terminalProps}
           />
 
@@ -270,12 +274,13 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
         </ProposalContainer>
 
         <AdditionalInfoContainer>
-          <ResourceList
-            links={values.links.filter(
-              (l: ProposalResource) => l.name && l.url
-            )}
-            emptyStateButtonClick={() => setStep(defineProposalStepNumber)}
-          />
+          {/*  <ResourceList*/}
+          {/*    links={values.links.filter(*/}
+          {/*      (l: ProposalResource) => l.name && l.url*/}
+          {/*    )}*/}
+          {/*    emptyStateButtonClick={() => setStep(defineProposalStepNumber)}*/}
+          {/*  />*/}
+          <WidgetStatus steps={[]} />
         </AdditionalInfoContainer>
       </ContentContainer>
     </>
@@ -344,53 +349,51 @@ export const StyledEditorContent = styled(EditorContent)`
 function getReviewProposalTerminalProps(
   t: TFunction,
   daoSettings: SupportedVotingSettings,
-  daoMembers: Array<MultisigMember> | undefined,
-  daoToken: Erc20TokenDetails | undefined,
-  totalSupply: bigint | undefined
+  daoMembers: Array<MultisigMember> | undefined
+  // daoToken: Erc20TokenDetails | undefined,
+  // totalSupply: bigint | undefined
 ) {
-  if (isMultisigVotingSettings(daoSettings)) {
-    return {
-      minApproval: daoSettings.minApprovals,
-      strategy: t('votingTerminal.multisig'),
-      voteOptions: t('votingTerminal.approve'),
-      approvals: [],
-      voters:
-        daoMembers?.map(
-          m => ({wallet: m.address, option: 'none'} as VoterType)
-        ) || [],
-    };
-  }
-
-  if (isTokenVotingSettings(daoSettings) && daoToken && totalSupply) {
-    // calculate participation
-    const {currentPart, currentPercentage, minPart, missingPart, totalWeight} =
-      getErc20VotingParticipation(
-        daoSettings.minParticipation,
-        BigInt(0),
-        totalSupply,
-        daoToken.decimals
-      );
-
-    return {
-      currentParticipation: t('votingTerminal.participationErc20', {
-        participation: currentPart,
-        totalWeight,
-        tokenSymbol: daoToken.symbol,
-        percentage: currentPercentage,
-      }),
-
-      minParticipation: t('votingTerminal.participationErc20', {
-        participation: minPart,
-        totalWeight,
-        tokenSymbol: daoToken.symbol,
-        percentage: Math.round(daoSettings.minParticipation * 100),
-      }),
-
-      missingParticipation: missingPart,
-
-      strategy: t('votingTerminal.tokenVoting'),
-      voteOptions: t('votingTerminal.yes+no'),
-      supportThreshold: Math.round(daoSettings.supportThreshold * 100),
-    };
-  }
+  return {
+    minApproval: daoSettings?.minApprovals,
+    strategy: t('votingTerminal.multisig'),
+    voteOptions: t('votingTerminal.approve'),
+    approvals: [],
+    voters:
+      daoMembers?.map(
+        m => ({wallet: m.address, option: 'none'} as VoterType)
+      ) || [],
+  };
+  //
+  // if (isTokenVotingSettings(daoSettings) && daoToken && totalSupply) {
+  //   // calculate participation
+  //   const {currentPart, currentPercentage, minPart, missingPart, totalWeight} =
+  //     getErc20VotingParticipation(
+  //       daoSettings.minParticipation,
+  //       BigInt(0),
+  //       totalSupply,
+  //       daoToken.decimals
+  //     );
+  //
+  //   return {
+  //     currentParticipation: t('votingTerminal.participationErc20', {
+  //       participation: currentPart,
+  //       totalWeight,
+  //       tokenSymbol: daoToken.symbol,
+  //       percentage: currentPercentage,
+  //     }),
+  //
+  //     minParticipation: t('votingTerminal.participationErc20', {
+  //       participation: minPart,
+  //       totalWeight,
+  //       tokenSymbol: daoToken.symbol,
+  //       percentage: Math.round(daoSettings.minParticipation * 100),
+  //     }),
+  //
+  //     missingParticipation: missingPart,
+  //
+  //     strategy: t('votingTerminal.tokenVoting'),
+  //     voteOptions: t('votingTerminal.yes+no'),
+  //     supportThreshold: Math.round(daoSettings.supportThreshold * 100),
+  //   };
+  // }
 }

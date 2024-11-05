@@ -1,14 +1,10 @@
 import {
-  DaoMetadata,
-  Erc20TokenDetails,
   MultisigProposal,
   MultisigProposalListItem,
   MultisigVotingSettings,
-  TokenVotingProposal,
-  TokenVotingProposalListItem,
   VoteValues,
   VotingSettings,
-} from '@aragon/sdk-client';
+} from 'utils/aragon/types';
 import {BigNumber} from 'ethers';
 
 import {TimeFilter, TransferTypes} from './constants';
@@ -168,10 +164,8 @@ export type Erc20ProposalVote = {
   weight: bigint;
 };
 
-export type DetailedProposal = MultisigProposal | TokenVotingProposal;
-export type ProposalListItem =
-  | TokenVotingProposalListItem
-  | MultisigProposalListItem;
+export type DetailedProposal = MultisigProposal;
+export type ProposalListItem = MultisigProposalListItem;
 export type SupportedProposals = DetailedProposal | ProposalListItem;
 
 export type SupportedVotingSettings = MultisigVotingSettings | VotingSettings;
@@ -288,24 +282,6 @@ export type ActionMintToken = {
   };
 };
 
-export type ActionUpdateMultisigPluginSettings = {
-  name: 'modify_multisig_voting_settings';
-  inputs: MultisigVotingSettings;
-};
-
-export type ActionUpdatePluginSettings = {
-  name: 'modify_token_voting_settings';
-  inputs: VotingSettings & {
-    token?: Erc20TokenDetails;
-    totalVotingWeight: bigint;
-  };
-};
-
-export type ActionUpdateMetadata = {
-  name: 'modify_metadata';
-  inputs: DaoMetadata;
-};
-
 export type ActionSCC = {
   name: 'external_contract_action';
   contractName: string;
@@ -344,10 +320,7 @@ export type Action =
   | ActionAddAddress
   | ActionRemoveAddress
   | ActionMintToken
-  | ActionUpdatePluginSettings
-  | ActionUpdateMetadata
   | ActionUpdateMinimumApproval
-  | ActionUpdateMultisigPluginSettings
   | ActionSCC
   | ActionWC;
 

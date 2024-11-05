@@ -32,10 +32,10 @@ const TransferList: React.FC<TransferListProps> = ({
           tokenAmount={abbreviateTokenAmount(tokenAmount)}
           {...rest}
           onClick={() => {
-            trackEvent('finance_transactionDetails_clicked', {
-              transaction_hash: rest.id,
-              dao_address: dao,
-            });
+            // trackEvent('finance_transactionDetails_clicked', {
+            //   transaction_hash: rest.id,
+            //   dao_address: dao,
+            // });
             onTransferClick({tokenAmount, ...rest});
           }}
         />

@@ -1,44 +1,56 @@
-import {AssetBalance} from '@aragon/sdk-client';
-import {TokenType} from '@aragon/sdk-client-common';
-import {useEffect, useMemo, useState} from 'react';
-import {alchemyApiKeys, CHAIN_METADATA} from 'utils/constants';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {CHAIN_METADATA} from 'utils/constants';
 
 import {HookData} from 'utils/types';
-import {getTokenInfo} from 'utils/tokens';
+import {fetchBalance, getTokenInfo, isNativeToken} from 'utils/tokens';
 import {useSpecificProvider} from 'context/providers';
 import {useNetwork} from 'context/network';
+import {TokenType} from '../utils/aragon/sdk-client-common-types';
+import {AssetBalance} from '../utils/aragon/sdk-client-types';
+
+export const useLoadTokenLogoURL = (): {getImgUrl: any; tokenList: any} => {
+  const [tokenList, setTokenList] = useState({});
+  useEffect(() => {
+    async function loadTokens() {
+      const loadedTokensMeta = await fetch('/data/tokens.json') // 파일 경로를 지정합니다.
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(
+              'Network response was not ok ' + response.statusText
+            );
+          }
+          return response.json();
+        });
+      setTokenList(loadedTokensMeta);
+    }
+    loadTokens();
+  }, []);
+
+  const getImgUrl = useCallback(
+    (symbol: string, chainId: number) => {
+      if (!tokenList) return '';
+
+      const matched = tokenList.tokens.filter(
+        (t: {symbol: string; chainId: number}) =>
+          t.symbol === symbol && t.chainId === chainId
+      );
+      return matched ? matched[0].logoURI : '';
+    },
+    [tokenList]
+  );
+  return {getImgUrl, tokenList};
+};
 
 export const useDaoBalances = (
   daoAddress: string
 ): HookData<Array<AssetBalance> | undefined> => {
   const {network} = useNetwork();
-
   const [data, setData] = useState<Array<AssetBalance>>([]);
   const [error, setError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(false);
 
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
-
-  // Construct the Alchemy API URL
-  const url = `${CHAIN_METADATA[network].alchemyApi}/${alchemyApiKeys[network]}`;
-
-  // Memoize the options object to prevent unnecessary re-renders
-  const options = useMemo(
-    () => ({
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: 1,
-        jsonrpc: '2.0',
-        method: 'alchemy_getTokenBalances',
-        params: [daoAddress],
-      }),
-    }),
-    [daoAddress]
-  );
+  const {tokenList} = useLoadTokenLogoURL();
 
   // Use the useEffect hook to fetch DAO balances
   useEffect(() => {
@@ -46,45 +58,52 @@ export const useDaoBalances = (
       try {
         setIsLoading(true);
 
-        // Fetch the token list using the Alchemy API
-        const res = await fetch(url, options);
-        const tokenList = await res.json();
-        let nativeTokenBalances = [] as Array<AssetBalance>;
+        const loadedTokens = tokenList
+          ? tokenList.tokens
+              ?.filter((t: {address: string}) => !isNativeToken(t.address))
+              .map((t: {address: any}) => t.address)
+          : [];
 
-        // Filter out tokens with a zero balance
-        const nonZeroBalances = tokenList.result.tokenBalances?.filter(
-          (token: {tokenBalance: string}) => {
-            return BigInt(token.tokenBalance) !== BigInt(0);
-          }
-        );
+        const tokenStorage = localStorage.getItem('LOCAL_TOKENS');
+        const nonZeroBalancesBefore =
+          tokenStorage && tokenStorage[provider.network.chainId]
+            ? JSON.parse(tokenStorage[provider.network.chainId])
+            : [];
+        const nonZeroBalances = [
+          ...new Set(nonZeroBalancesBefore.concat(loadedTokens)),
+        ];
+
+        const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+        let nativeTokenBalances = [] as Array<AssetBalance>;
 
         const fetchNativeCurrencyBalance = provider.getBalance(daoAddress);
 
         // Define a list of promises to fetch ERC20 token balances
-        const tokenListPromises = nonZeroBalances.map(
-          async ({
-            contractAddress,
-            tokenBalance,
-          }: {
-            contractAddress: string;
-            tokenBalance: string;
-          }) => {
-            const {decimals, name, symbol} = await getTokenInfo(
-              contractAddress,
-              provider,
-              CHAIN_METADATA[network].nativeCurrency
-            );
-            return {
-              address: contractAddress,
-              name,
-              symbol,
-              updateDate: new Date(),
-              type: TokenType.ERC20,
-              balance: BigInt(tokenBalance),
-              decimals,
-            };
-          }
-        );
+        const tokenListPromises = !nonZeroBalances
+          ? []
+          : nonZeroBalances.map(async (contractAddress: string) => {
+              const {decimals, name, symbol} = await getTokenInfo(
+                contractAddress,
+                provider,
+                CHAIN_METADATA[network].nativeCurrency
+              );
+              const tokenBalance = await fetchBalance(
+                contractAddress,
+                daoAddress,
+                provider,
+                nativeCurrency,
+                false
+              );
+              return {
+                address: contractAddress,
+                name,
+                symbol,
+                updateDate: new Date(),
+                type: TokenType.ERC20,
+                balance: BigInt(tokenBalance),
+                decimals,
+              };
+            });
 
         // Wait for both native currency and ERC20 balances to be fetched
         const [nativeCurrencyBalance, erc20balances] = await Promise.all([
@@ -92,10 +111,10 @@ export const useDaoBalances = (
           Promise.all(tokenListPromises),
         ]);
 
-        // If the native currency balance is non-zero, add it to the list
         if (!nativeCurrencyBalance.eq(0)) {
           nativeTokenBalances = [
             {
+              id: '',
               type: TokenType.NATIVE,
               ...CHAIN_METADATA[network].nativeCurrency,
               updateDate: new Date(),
@@ -103,10 +122,13 @@ export const useDaoBalances = (
             },
           ];
         }
-
-        if (erc20balances) setData([...nativeTokenBalances, ...erc20balances]);
+        const erc20balancesWith = erc20balances?.filter(token => {
+          return token.balance !== BigInt(0);
+        });
+        if (erc20balances)
+          setData([...nativeTokenBalances, ...erc20balancesWith]);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         setError(error as Error);
       } finally {
         setIsLoading(false);
@@ -114,7 +136,7 @@ export const useDaoBalances = (
     }
 
     if (daoAddress) getBalances();
-  }, [daoAddress, network, options, provider, url]);
+  }, [daoAddress, network, provider, tokenList]);
 
   return {data, error, isLoading};
 };

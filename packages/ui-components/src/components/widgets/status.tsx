@@ -23,7 +23,10 @@ export const WidgetStatus: React.FC<WidgetStatusProps> = ({steps}) => {
           return <ProgressStatus key={s.label + s.mode} {...s} />;
         })
       ) : (
-        <p className="text-ui-400">Progress unavailable</p>
+        <p className="text-ui-400">
+          Status information is available after you publish the proposal.
+        </p>
+        // <p className="text-ui-400">Progress unavailable</p>
       )}
     </Card>
   );

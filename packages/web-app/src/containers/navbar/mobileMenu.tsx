@@ -9,13 +9,8 @@ import NavLinks from 'components/navLinks';
 import {selectedDaoVar} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {usePrivacyContext} from 'context/privacyContext';
-import {ButtonText, IconFeedback} from '@aragon/ui-components';
 
-type MobileNavMenuProps = {
-  onFeedbackClick: () => void;
-};
-
-const MobileNavMenu = (props: MobileNavMenuProps) => {
+const MobileNavMenu = () => {
   const currentDao = useReactiveVar(selectedDaoVar);
   const {open, close, isMobileMenuOpen} = useGlobalModalContext();
   const {t} = useTranslation();
@@ -27,9 +22,9 @@ const MobileNavMenu = (props: MobileNavMenuProps) => {
       <div className="tablet:w-50">
         <CardWrapper className="rounded-xl">
           <DaoSelector
-            daoAddress={currentDao.ensDomain}
-            daoName={currentDao?.metadata?.name || currentDao?.ensDomain}
-            src={currentDao.metadata.avatar}
+            daoAddress={currentDao.address}
+            daoName={currentDao.metadata.name}
+            src={currentDao.address}
             onClick={() => {
               close('mobileMenu');
               handleWithFunctionalPreferenceMenu(() => open('selectDao'));
@@ -38,15 +33,6 @@ const MobileNavMenu = (props: MobileNavMenuProps) => {
         </CardWrapper>
         <div className="py-3 px-2 space-y-3">
           <NavLinks onItemClick={() => close('mobileMenu')} />
-
-          <ButtonText
-            className="w-full"
-            size="large"
-            label={t('navButtons.giveFeedback')}
-            mode="secondary"
-            iconRight={<IconFeedback />}
-            onClick={props.onFeedbackClick}
-          />
         </div>
       </div>
     </BottomSheet>

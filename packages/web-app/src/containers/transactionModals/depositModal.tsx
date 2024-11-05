@@ -52,6 +52,7 @@ const DepositModal: React.FC = () => {
 
   // show the deposit modal again when user on right network and logged in
   useEffect(() => {
+    //console.log('DepositModal useEffect isConnected', isConnected);
     if (loginFlowTriggeredRef.current) {
       if (isConnected && !isOnWrongNetwork) {
         open('deposit');
@@ -129,20 +130,20 @@ const DepositModal: React.FC = () => {
           />
         </div>
 
-        <HStack>
-          <ButtonText
-            mode="primary"
-            size="large"
-            label={t('modal.deposit.ctaLabel')}
-            onClick={handleCtaClicked}
-          />
-          <ButtonText
-            mode="secondary"
-            size="large"
-            label={t('modal.deposit.cancelLabel')}
-            onClick={() => close('deposit')}
-          />
-        </HStack>
+        {/*<HStack>*/}
+        {/*  <ButtonText*/}
+        {/*    mode="primary"*/}
+        {/*    size="large"*/}
+        {/*    label={t('modal.deposit.ctaLabel')}*/}
+        {/*    onClick={handleCtaClicked}*/}
+        {/*  />*/}
+        {/*  <ButtonText*/}
+        {/*    mode="secondary"*/}
+        {/*    size="large"*/}
+        {/*    label={t('modal.deposit.cancelLabel')}*/}
+        {/*    onClick={() => close('deposit')}*/}
+        {/*  />*/}
+        {/*</HStack>*/}
       </Container>
     </ModalBottomSheetSwitcher>
   );

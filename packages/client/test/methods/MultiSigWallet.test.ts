@@ -78,7 +78,7 @@ describe("SDK Client", () => {
                         break;
                     case NormalSteps.SUCCESS:
                         walletAddresses.push(step.address);
-                        console.log(`Address of MultiSigWallet: ${step.address}`);
+                        //console.log(`Address of MultiSigWallet: ${step.address}`);
                         break;
                     default:
                         throw new Error("Unexpected step: " + JSON.stringify(step, null, 2));
@@ -90,7 +90,7 @@ describe("SDK Client", () => {
     it("deploy token", async () => {
         for (let idx = 0; idx < 3; idx++) {
             const contract = await ContractDeployer.deployToken(deployer, walletAddresses[idx]);
-            console.log(`Address of MultiSigToken: ${contract.address}`);
+            //console.log(`Address of MultiSigToken: ${contract.address}`);
             tokenContracts.push(contract);
         }
     });

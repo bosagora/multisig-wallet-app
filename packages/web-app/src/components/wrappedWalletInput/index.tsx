@@ -59,7 +59,7 @@ export const WrappedWalletInput = forwardRef(
       setAddressValidated(true);
     }, []);
 
-    const networkSupportsENS = ENS_SUPPORTED_NETWORKS.includes(network);
+    const networkSupportsENS = false;
 
     return (
       <>
@@ -74,10 +74,6 @@ export const WrappedWalletInput = forwardRef(
           placeholder={
             networkSupportsENS ? t('inputWallet.placeholder') : '0x…'
           }
-          {...(networkSupportsENS && {
-            resolveEnsNameFromAddress,
-            resolveAddressFromEnsName,
-          })}
           {...props}
           ref={ref}
         />

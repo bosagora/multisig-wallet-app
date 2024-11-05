@@ -20,7 +20,7 @@ import {Row} from './row';
 export const MultisigWallets = () => {
   const {t} = useTranslation();
   const {alert} = useAlertContext();
-  const {address, ensName} = useWallet();
+  const {address} = useWallet();
 
   const {control, trigger, setFocus} = useFormContext();
   const multisigWallets = useWatch({name: 'multisigWallets', control});
@@ -38,13 +38,13 @@ export const MultisigWallets = () => {
 
   useEffect(() => {
     if (address && !multisigWallets) {
-      append({address, ensName});
+      append({address});
     }
-  }, [address, append, ensName, multisigWallets]);
+  }, [address, append, multisigWallets]);
 
   // add empty wallet
   const handleAdd = () => {
-    append({address: '', ensName: ''});
+    append({address: ''});
     alert(t('alert.chip.addressAdded'));
     const id = `multisigWallets.${controlledWallets.length}`;
     setTimeout(() => {
@@ -62,14 +62,14 @@ export const MultisigWallets = () => {
 
   // remove all wallets
   const handleDeleteAll = () => {
-    replace([{address, ensName}]);
+    replace([{address}]);
     alert(t('alert.chip.removedAllAddresses'));
     setTimeout(() => trigger('multisigWallets'), 50);
   };
 
   // reset wallet
   const handleResetEntry = (index: number) => {
-    update(index, {address: '', ensName: ''});
+    update(index, {address: ''});
     alert(t('alert.chip.resetAddress'));
     trigger('multisigWallets');
   };
@@ -79,7 +79,7 @@ export const MultisigWallets = () => {
     controlledWallets.forEach((_, index) => {
       // skip the first one because is the own address
       if (index > 0) {
-        update(index, {address: '', ensName: ''});
+        update(index, {address: ''});
       }
     });
     alert(t('alert.chip.resetAllAddresses'));
@@ -123,14 +123,6 @@ export const MultisigWallets = () => {
               bgWhite
               onClick={handleAdd}
             />
-            {/*
-          To be enabled when csv functionality is there
-          <ButtonText
-            label={t('labels.whitelistWallets.uploadCSV')}
-            mode="ghost"
-            size="large"
-            onClick={() => alert('upload CSV here')}
-          /> */}
           </TextButtonsContainer>
           <Dropdown
             side="bottom"

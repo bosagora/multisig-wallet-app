@@ -3,7 +3,7 @@ import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
-import {abbreviateTokenAmount} from 'utils/tokens';
+// import {abbreviateTokenAmount} from 'utils/tokens';
 import {VotingTerminalProps} from '.';
 
 const NumberFormatter = new Intl.NumberFormat('en-US', {
@@ -110,15 +110,7 @@ const InfoTab: React.FC<Props> = ({
                   />
                 )}
                 <p className="text-right text-ui-400 ft-text-sm">
-                  {minimumReached
-                    ? t('votingTerminal.noVotesMissing')
-                    : t('votingTerminal.missingVotes', {
-                        votes: abbreviateTokenAmount(
-                          parseFloat(
-                            missingApprovalOrParticipation.toFixed(2)
-                          ).toString()
-                        ),
-                      })}
+                  {minimumReached ? t('votingTerminal.noVotesMissing') : ''}
                 </p>
               </div>
             </CurrentParticipationWrapper>
@@ -164,26 +156,26 @@ const InfoTab: React.FC<Props> = ({
           </InfoLine>
         )}
       </VStackSection>
-      <VStackSection isLast={status ? false : true}>
-        <SectionHeader>{t('votingTerminal.duration')}</SectionHeader>
-        <InfoLine>
-          <p>{t('votingTerminal.startDate')}</p>
-          <Strong>{startDate}</Strong>
-        </InfoLine>
-        <InfoLine>
-          <p>{t('votingTerminal.endDate')}</p>
-          <EndDateWrapper>
-            <Strong>{endDate}</Strong>
-            {preciseEndDate && (
-              <div className="flex gap-x-1 justify-end">
-                <p className="text-right text-ui-400 ft-text-sm">
-                  {preciseEndDate}
-                </p>
-              </div>
-            )}
-          </EndDateWrapper>
-        </InfoLine>
-      </VStackSection>
+      {/*<VStackSection isLast={status ? false : true}>*/}
+      {/*  <SectionHeader>{t('votingTerminal.duration')}</SectionHeader>*/}
+      {/*  <InfoLine>*/}
+      {/*    <p>{t('votingTerminal.startDate')}</p>*/}
+      {/*    <Strong>{startDate}</Strong>*/}
+      {/*  </InfoLine>*/}
+      {/*  <InfoLine>*/}
+      {/*    <p>{t('votingTerminal.endDate')}</p>*/}
+      {/*    <EndDateWrapper>*/}
+      {/*      <Strong>{endDate}</Strong>*/}
+      {/*      {preciseEndDate && (*/}
+      {/*        <div className="flex gap-x-1 justify-end">*/}
+      {/*          <p className="text-right text-ui-400 ft-text-sm">*/}
+      {/*            {preciseEndDate}*/}
+      {/*          </p>*/}
+      {/*        </div>*/}
+      {/*      )}*/}
+      {/*    </EndDateWrapper>*/}
+      {/*  </InfoLine>*/}
+      {/*</VStackSection>*/}
     </>
   );
 };

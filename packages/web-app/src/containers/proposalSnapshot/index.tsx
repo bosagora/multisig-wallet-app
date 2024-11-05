@@ -14,7 +14,7 @@ import {proposal2CardProps} from 'components/proposalList';
 import {StateEmpty} from 'components/stateEmpty';
 import {useNetwork} from 'context/network';
 import {useDaoMembers} from 'hooks/useDaoMembers';
-import {PluginTypes} from 'hooks/usePluginClient';
+// import {PluginTypes} from 'hooks/usePluginClient';
 import {htmlIn} from 'utils/htmlIn';
 import {Governance, NewProposal} from 'utils/paths';
 import {ProposalListItem} from 'utils/types';
@@ -22,25 +22,24 @@ import {useWallet} from 'hooks/useWallet';
 
 type Props = {
   daoAddressOrEns: string;
-  pluginAddress: string;
-  pluginType: PluginTypes;
   proposals: ProposalListItem[];
+  proposalLength: number;
 };
 
 const ProposalSnapshot: React.FC<Props> = ({
   daoAddressOrEns,
-  pluginAddress,
-  pluginType,
   proposals,
+  proposalLength,
 }) => {
+  //console.log'ProposalSnapshot');
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {address} = useWallet();
   const {network} = useNetwork(); // TODO ensure this is the dao network
 
   const {data: members, isLoading: areMembersLoading} = useDaoMembers(
-    pluginAddress,
-    pluginType
+    daoAddressOrEns,
+    ''
   );
 
   const mappedProposals = useMemo(
@@ -66,8 +65,8 @@ const ProposalSnapshot: React.FC<Props> = ({
       address,
     ]
   );
-
-  if (proposals.length === 0 || areMembersLoading) {
+  //console.log'mappedProposals : ', mappedProposals);
+  if (proposalLength === 0 || areMembersLoading) {
     return (
       <StateEmpty
         type="Human"
@@ -95,7 +94,7 @@ const ProposalSnapshot: React.FC<Props> = ({
     <Container>
       <ListItemHeader
         icon={<IconGovernance />}
-        value={proposals.length.toString()}
+        value={proposalLength.toString()}
         label={t('dashboard.proposalsTitle')}
         buttonText={t('newProposal.title')}
         orientation="horizontal"
@@ -109,6 +108,7 @@ const ProposalSnapshot: React.FC<Props> = ({
       ))}
 
       <ButtonText
+        css={{}}
         mode="secondary"
         size="large"
         iconRight={<IconChevronRight />}

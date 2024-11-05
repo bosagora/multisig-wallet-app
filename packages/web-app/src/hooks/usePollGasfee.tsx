@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from 'react';
 
 import {useNetwork} from 'context/network';
 import {fetchTokenPrice} from 'services/prices';
-import {GasFeeEstimation} from '@aragon/sdk-client-common';
+import {GasFeeEstimation} from 'multisig-wallet-sdk-client';
 
 /**
  * This hook returns the gas estimation for a particular transaction and
@@ -31,15 +31,20 @@ export const usePollGasFee = (
   useEffect(() => {
     async function getFeesAndPrice() {
       try {
-        const results = await Promise.all([
-          estimationFunction(),
-          fetchTokenPrice(constants.AddressZero, network),
-        ]);
-
-        setTokenPrice(results[1] || 0);
-        setMaxFee(results[0]?.max);
-        setAverageFee(results[0]?.average);
+        const estimation = await estimationFunction();
+        setMaxFee(estimation?.max);
+        setAverageFee(estimation?.average);
         setError(undefined);
+        // const results = await Promise.all([
+        //   estimationFunction(),
+        //   fetchTokenPrice(constants.AddressZero, network),
+        // ]);
+        //
+        // console.log('usePollGasFee > results :', results);
+        // setTokenPrice(results[1] || 0);
+        // setMaxFee(results[0]?.max);
+        // setAverageFee(results[0]?.average);
+        // setError(undefined);
       } catch (err) {
         setError(err as Error);
         setMaxFee(undefined);
@@ -47,7 +52,6 @@ export const usePollGasFee = (
         console.log('Error fetching gas fees and price', err);
       }
     }
-
     if (shouldPoll) getFeesAndPrice();
   }, [estimationFunction, network, shouldPoll]);
 

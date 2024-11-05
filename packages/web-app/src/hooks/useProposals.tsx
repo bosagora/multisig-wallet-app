@@ -1,45 +1,11 @@
-import {useReactiveVar} from '@apollo/client';
-import {
-  MultisigProposal,
-  ProposalSortBy,
-  TokenVotingProposal,
-} from '@aragon/sdk-client';
-import {ProposalStatus, SortDirection} from '@aragon/sdk-client-common';
-import {useCallback, useEffect, useState} from 'react';
+import {ProposalStatus} from 'utils/aragon/sdk-client-common-types';
+import {useEffect, useState} from 'react';
 
-import {
-  CachedProposal,
-  pendingMultisigApprovalsVar,
-  pendingMultisigExecutionVar,
-  pendingMultisigProposalsVar,
-  pendingTokenBasedExecutionVar,
-  pendingTokenBasedProposalsVar,
-  pendingTokenBasedVotesVar,
-} from 'context/apolloClient';
-import {usePrivacyContext} from 'context/privacyContext';
-import {
-  PENDING_EXECUTION_KEY,
-  PENDING_MULTISIG_EXECUTION_KEY,
-  PENDING_MULTISIG_PROPOSALS_KEY,
-  PENDING_PROPOSALS_KEY,
-} from 'utils/constants';
-import {customJSONReplacer} from 'utils/library';
-import {
-  addApprovalToMultisigToProposal,
-  addVoteToProposal,
-  augmentProposalWithCachedExecution,
-  isTokenBasedProposal,
-  recalculateStatus,
-} from 'utils/proposals';
-import {
-  DetailedProposal,
-  HookData,
-  ProposalId,
-  ProposalListItem,
-} from 'utils/types';
+import {recalculateStatus} from 'utils/proposals';
+import {DetailedProposal, HookData, ProposalListItem} from 'utils/types';
 import {useDaoDetailsQuery} from './useDaoDetails';
-import {useDaoToken} from './useDaoToken';
-import {PluginTypes, usePluginClient} from './usePluginClient';
+import {PluginTypes} from 'utils/aragon/types';
+import {useClient} from './useClient';
 
 /**
  * Retrieves list of proposals from SDK
@@ -51,158 +17,28 @@ import {PluginTypes, usePluginClient} from './usePluginClient';
 export function useProposals(
   daoAddress: string,
   type: PluginTypes,
-  limit = 6,
+  limit = 3,
   skip = 0,
   status?: ProposalStatus
-): HookData<Array<ProposalListItem>> {
+): HookData<Array<ProposalListItem>> & {totalCount: number} {
   const [data, setData] = useState<Array<ProposalListItem>>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [error, setError] = useState<Error>();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const {data: daoDetails} = useDaoDetailsQuery();
-  const {data: daoToken} = useDaoToken(
-    daoDetails?.plugins[0].instanceAddress || ''
-  );
 
-  const client = usePluginClient(type);
-  const {preferences} = usePrivacyContext();
-
-  const cachedMultisigVotes = useReactiveVar(pendingMultisigApprovalsVar);
-  const cachedTokenBasedVotes = useReactiveVar(pendingTokenBasedVotesVar);
-
-  const cachedMultisigExecutions = useReactiveVar(pendingMultisigExecutionVar);
-  const cachedTokenBaseExecutions = useReactiveVar(
-    pendingTokenBasedExecutionVar
-  );
-
-  const cachedMultisigProposals = useReactiveVar(pendingMultisigProposalsVar);
-  const cachedTokenBasedProposals = useReactiveVar(
-    pendingTokenBasedProposalsVar
-  );
+  const {client} = useClient();
+  client?.multiSigWallet.attach(daoAddress);
 
   const isMultisigPlugin = type === 'multisig.plugin.dao.eth';
   const isTokenBasedPlugin = type === 'token-voting.plugin.dao.eth';
 
-  // return cache keys and variables based on the type of plugin;
-  const getCachedProposalData = useCallback(() => {
-    if (isMultisigPlugin) {
-      return {
-        proposalCacheKey: PENDING_MULTISIG_PROPOSALS_KEY,
-        proposalCacheVar: pendingMultisigProposalsVar,
-        proposalCache: cachedMultisigProposals,
-        executions: cachedMultisigExecutions,
-      };
-    }
-
-    // token voting
-    if (isTokenBasedPlugin) {
-      return {
-        proposalCacheKey: PENDING_PROPOSALS_KEY,
-        proposalCacheVar: pendingTokenBasedProposalsVar,
-        proposalCache: cachedTokenBasedProposals,
-        executions: cachedTokenBaseExecutions,
-      };
-    }
-  }, [
-    cachedMultisigExecutions,
-    cachedMultisigProposals,
-    cachedTokenBaseExecutions,
-    cachedTokenBasedProposals,
-    isMultisigPlugin,
-    isTokenBasedPlugin,
-  ]);
-
-  const augmentProposalsWithCache = useCallback(
-    (fetchedProposals: ProposalListItem[]) => {
-      // get proposal cached data
-      const cachedData = getCachedProposalData();
-
-      // no cache for current plugin return proposals from subgraph
-      if (!cachedData) return fetchedProposals;
-
-      // get all cached proposals for current dao
-      const daoCachedProposals = {...cachedData.proposalCache[daoAddress]};
-
-      // fetched proposals + cached ones
-      const totalProposals: Array<CachedProposal | ProposalListItem> = [
-        ...fetchedProposals,
-      ];
-
-      for (const proposalId in daoCachedProposals) {
-        // if proposal already picked up by subgraph, remove it
-        // from the cache.
-        if (fetchedProposals.some(p => proposalId === p.id.toString())) {
-          delete daoCachedProposals[proposalId];
-          // update cache to new values
-          const newCache = {
-            ...cachedData.proposalCache,
-            [daoAddress]: {...daoCachedProposals},
-          };
-          cachedData.proposalCacheVar(newCache);
-          // update local storage to match cache
-          if (preferences?.functional) {
-            localStorage.setItem(
-              cachedData.proposalCacheKey,
-              JSON.stringify(newCache, customJSONReplacer)
-            );
-          }
-        } else {
-          // add cached proposal that is not in the list of fetched proposals to
-          // the list of total proposals
-          totalProposals.unshift({
-            ...daoCachedProposals[proposalId],
-          });
-        }
-      }
-
-      // augment all proposals with cached execution and vote/approval
-      return totalProposals.map(proposal => {
-        const id = new ProposalId(proposal.id).makeGloballyUnique(daoAddress);
-
-        // add cached approval and execution to multisig proposal=
-        if (isMultisigPlugin) {
-          return augmentProposalWithCachedExecution(
-            addApprovalToMultisigToProposal(
-              proposal as MultisigProposal,
-              cachedMultisigVotes[id]
-            ) as DetailedProposal,
-            daoAddress,
-            cachedData.executions,
-            preferences?.functional,
-            pendingMultisigExecutionVar,
-            PENDING_MULTISIG_EXECUTION_KEY
-          ) as ProposalListItem;
-        }
-
-        if (isTokenBasedPlugin) {
-          return augmentProposalWithCachedExecution(
-            addVoteToProposal(
-              proposal as TokenVotingProposal,
-              cachedTokenBasedVotes[id]
-            ),
-            daoAddress,
-            cachedData.executions,
-            preferences?.functional,
-            pendingTokenBasedExecutionVar,
-            PENDING_EXECUTION_KEY
-          ) as ProposalListItem;
-        }
-
-        // unsupported plugin really
-        return proposal as ProposalListItem;
-      });
-    },
-
-    // intentionally leaving out proposalCache so that this doesn't
-    // get re-run when items are removed from the cache
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [daoAddress, getCachedProposalData, preferences?.functional]
-  );
-
   useEffect(() => {
     async function getDaoProposals() {
+      //console.log('getDaoProposals > daoAddress:', daoAddress);
       try {
         if (skip === 0) {
           setIsLoading(true);
@@ -210,33 +46,58 @@ export function useProposals(
           setIsLoadingMore(true);
         }
 
-        const response = await client?.methods.getProposals({
-          daoAddressOrEns: daoAddress,
-          status,
-          limit,
-          skip,
-          sortBy: ProposalSortBy.CREATED_AT,
-          direction: SortDirection.DESC,
-        });
+        const txCount =
+          (await client?.multiSigWallet.getTransactionCount()) || 0;
+        setTotalCount(txCount);
 
-        /**
-         * NOTE: This needs to be removed once the SDK has taken cared
-         * of prioritizing the active state over the successful one
-         * when the end date has not yet been reached
-         */
-        const proposals = response?.map(proposalEntity => {
-          let proposal = proposalEntity;
+        if (skip < txCount) {
+          const from = txCount - limit - skip < 0 ? 0 : txCount - limit - skip;
+          const to =
+            from === 0
+              ? txCount % limit === 0
+                ? limit
+                : txCount % limit
+              : from + limit;
+          const requiredCount = await client?.multiSigWallet.getRequired();
 
-          if (isTokenBasedProposal(proposal)) {
+          // console.log('txCount : ', txCount);
+          // console.log('skip : ', skip);
+          // console.log('requiredCount : ', requiredCount);
+          // console.log('from, to : ', from, to);
+          let response = limit
+            ? await client?.multiSigWallet.getTransactionsInRange(from, to)
+            : await client?.multiSigWallet.getTransactionsInRange(0, txCount);
+
+          if (status && response) {
+            response = (await response).filter(
+              p => p.executed === (status === ProposalStatus.EXECUTED)
+            );
+          }
+          const sortedResponse = response ? response.reverse() : response;
+          // console.log('sortedResponse : ', sortedResponse);
+          /**
+           * NOTE: This needs to be removed once the SDK has taken cared
+           * of prioritizing the active state over the successful one
+           * when the end date has not yet been reached
+           */
+          const proposals = sortedResponse?.map(proposal => {
             proposal = {
               ...proposal,
-              token: proposal.token || daoToken || null,
-            };
-          }
+              dao: {
+                address: daoDetails?.address,
+                name: daoDetails?.metadata.name,
+              },
+              settings: {minApprovals: requiredCount, onlyListed: true},
+            } as unknown as DetailedProposal;
 
-          return recalculateStatus(proposal) as ProposalListItem;
-        });
-        setData([...augmentProposalsWithCache(proposals || [])]);
+            return recalculateStatus(
+              proposal as DetailedProposal
+            ) as DetailedProposal;
+          });
+          setData(proposals || []);
+        } else {
+          setData([]);
+        }
       } catch (err) {
         console.error(err);
         setError(err as Error);
@@ -247,18 +108,12 @@ export function useProposals(
       }
     }
 
-    if (
-      daoAddress &&
-      client?.methods &&
-      (isMultisigPlugin || (isTokenBasedPlugin && daoToken))
-    ) {
+    if (daoAddress && client) {
       getDaoProposals();
     }
   }, [
-    augmentProposalsWithCache,
-    client?.methods,
+    client,
     daoAddress,
-    daoToken,
     isMultisigPlugin,
     isTokenBasedPlugin,
     limit,
@@ -266,5 +121,5 @@ export function useProposals(
     status,
   ]);
 
-  return {data, error, isLoading, isInitialLoading, isLoadingMore};
+  return {data, totalCount, error, isLoading, isInitialLoading, isLoadingMore};
 }

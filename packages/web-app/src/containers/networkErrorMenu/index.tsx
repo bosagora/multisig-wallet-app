@@ -23,7 +23,7 @@ const NetworkErrorMenu = () => {
   const {isNetworkOpen, close} = useGlobalModalContext();
   const {network} = useNetwork();
   const {switchWalletNetwork} = useSwitchNetwork();
-  const {address, ensName, ensAvatarUrl, connectorName} = useWallet();
+  const {address, connectorName} = useWallet();
   const {isDesktop} = useScreen();
   const {t} = useTranslation();
   const {alert} = useAlertContext();
@@ -35,10 +35,10 @@ const NetworkErrorMenu = () => {
     >
       <ModalHeader>
         <AvatarAddressContainer>
-          <Avatar src={ensAvatarUrl || address || ''} size="small" />
+          <Avatar src={address || ''} size="small" />
           <AddressContainer>
-            <Title>{ensName ? ensName : shortenAddress(address)}</Title>
-            {ensName && <SubTitle>{shortenAddress(address)}</SubTitle>}
+            <Title>{shortenAddress(address)}</Title>
+            {<SubTitle>{shortenAddress(address)}</SubTitle>}
           </AddressContainer>
         </AvatarAddressContainer>
         <ButtonIcon
@@ -79,8 +79,8 @@ const NetworkErrorMenu = () => {
             label={t('alert.wrongNetwork.buttonLabel', {
               network: CHAIN_METADATA[network].name,
             })}
-            onClick={() => {
-              switchWalletNetwork();
+            onClick={async () => {
+              await switchWalletNetwork();
               close('network');
             }}
             size="large"

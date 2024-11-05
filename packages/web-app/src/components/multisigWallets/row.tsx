@@ -20,7 +20,6 @@ import {validateWeb3Address} from 'utils/validators';
 export type MultisigWalletField = {
   id: string;
   address: string;
-  ensName: string;
 };
 
 type MultisigWalletsRowProps = {
@@ -39,7 +38,7 @@ export const Row = ({index, ...props}: MultisigWalletsRowProps) => {
   const multisigWallets = useWatch({name: 'multisigWallets', control});
 
   const addressValidator = async (value: InputValue, index: number) => {
-    const wallet = new Web3Address(provider, value?.address, value?.ensName);
+    const wallet = new Web3Address(provider, value?.address);
 
     let validationResult = await validateWeb3Address(
       wallet,
@@ -49,11 +48,8 @@ export const Row = ({index, ...props}: MultisigWalletsRowProps) => {
 
     if (multisigWallets) {
       multisigWallets.forEach(
-        ({address, ensName}: MultisigWalletField, itemIndex: number) => {
-          if (
-            (address === wallet.address || ensName === wallet.ensName) &&
-            itemIndex !== index
-          ) {
+        ({address}: MultisigWalletField, itemIndex: number) => {
+          if (address === wallet.address && itemIndex !== index) {
             validationResult = t('errors.duplicateAddress');
           }
         }
@@ -67,7 +63,7 @@ export const Row = ({index, ...props}: MultisigWalletsRowProps) => {
       {isMobile && <Title>{t('labels.whitelistWallets.address')}</Title>}
       <Controller
         name={`multisigWallets.${index}`}
-        defaultValue={{address: '', ensName: ''}}
+        defaultValue={{address: ''}}
         control={control}
         rules={{validate: value => addressValidator(value, index)}}
         render={({

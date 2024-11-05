@@ -6,13 +6,16 @@ import {constants, ethers, providers as EthersProviders} from 'ethers';
 import {formatUnits} from 'utils/library';
 import {NativeTokenData, TimeFilter, TOKEN_AMOUNT_REGEX} from './constants';
 import {add} from 'date-fns';
-import {Transfer, TransferType} from '@aragon/sdk-client';
-import {TokenType} from '@aragon/sdk-client-common';
+import {Transfer} from 'utils/types';
+import {TokenType, TransferType} from 'utils/aragon/types';
+// import {Transfer, TransferType} from '@aragon/sdk-client';
+// import {TokenType} from '@aragon/sdk-client-common';
 import {ownableABI} from 'abis/ownableABI';
 import {votesUpgradeableABI} from 'abis/governanceWrappedERC20TokenABI';
 import {erc1155TokenABI} from 'abis/erc1155TokenABI';
 import {erc721TokenABI} from 'abis/erc721TokenABI';
 import {aragonTokenABI} from 'abis/aragonTokenABI';
+
 
 /**
  * This method sorts a list of array information. It is applicable to any field

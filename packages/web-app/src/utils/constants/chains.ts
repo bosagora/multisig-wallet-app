@@ -2,7 +2,9 @@
 
 import {infuraApiKey} from './api';
 
-export const SUPPORTED_CHAIN_ID = [1, 5, 137, 80001, 42161, 421613] as const;
+export const SUPPORTED_CHAIN_ID = [
+  1, 5, 2151, 2019, 24600, 24680, 215110, 215115, 11155111,
+] as const;
 export type SupportedChainID = typeof SUPPORTED_CHAIN_ID[number];
 
 export function isSupportedChainId(
@@ -11,18 +13,26 @@ export function isSupportedChainId(
   return SUPPORTED_CHAIN_ID.some(id => id === chainId);
 }
 
-export const ENS_SUPPORTED_NETWORKS = ['ethereum', 'goerli'];
+export const ENS_SUPPORTED_NETWORKS = [];
 
 const SUPPORTED_NETWORKS = [
   'ethereum',
   'goerli',
-  'polygon',
-  'mumbai',
-  'arbitrum',
-  'arbitrum-test',
+  'sepolia',
+  'bosagora_mainnet',
+  'bosagora_testnet',
+  'bosagora_devnet',
+  'acc_sidechain_mainnet',
+  'acc_sidechain_testnet',
+  'acc_sidechain_devnet',
 ] as const;
 
-export type availableNetworks = 'mainnet' | 'goerli' | 'polygon' | 'mumbai';
+export type availableNetworks =
+  | 'mainnet'
+  | 'goerli'
+  | 'sepolia'
+  | 'bosagora_devnet'
+  | 'acc_sidechain_devnet';
 
 export type SupportedNetworks =
   | typeof SUPPORTED_NETWORKS[number]
@@ -55,7 +65,7 @@ export function getSupportedNetworkByChainId(
   }
 }
 
-export type NetworkDomain = 'L1 Blockchain' | 'L2 Blockchain';
+export type NetworkDomain = 'Main Chain' | 'Side Chain';
 
 /* CHAIN DATA =============================================================== */
 
@@ -83,32 +93,13 @@ export type ChainData = {
 };
 
 const etherscanApiKey = import.meta.env.VITE_ETHERSCAN_API_KEY;
-const polygonscanApiKey = import.meta.env.VITE_POLYGONSCAN_API_KEY;
 
 export type ChainList = Record<SupportedNetworks, ChainData>;
 export const CHAIN_METADATA: ChainList = {
-  arbitrum: {
-    id: 42161,
-    name: 'Arbitrum One',
-    domain: 'L2 Blockchain',
-    logo: 'https://bridge.arbitrum.io/logo.png',
-    explorer: 'https://arbiscan.io/',
-    testnet: false,
-    rpc: ['https://arb1.arbitrum.io/rpc', 'wss://arb1.arbitrum.io/ws'],
-    nativeCurrency: {
-      name: 'Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    etherscanApi: 'https://api.arbiscan.io/api',
-    alchemyApi: 'https://arb-mainnet.g.alchemy.com/v2',
-    supportsEns: false,
-    ipfs: 'https://prod.ipfs.aragon.network',
-  },
   ethereum: {
     id: 1,
     name: 'Ethereum',
-    domain: 'L1 Blockchain',
+    domain: 'Main Chain',
     logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
     explorer: 'https://etherscan.io/',
     testnet: false,
@@ -125,54 +116,13 @@ export const CHAIN_METADATA: ChainList = {
     etherscanApiKey: etherscanApiKey,
     covalentApi: 'https://api.covalenthq.com/v1/eth-mainnet',
     alchemyApi: 'https://eth-mainnet.g.alchemy.com/v2',
-    supportsEns: true,
-    ipfs: 'https://prod.ipfs.aragon.network',
-  },
-  polygon: {
-    id: 137,
-    name: 'Polygon',
-    domain: 'L2 Blockchain',
-    logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
-    explorer: 'https://polygonscan.com/',
-    testnet: false,
-    rpc: [
-      `https://polygon-mainnet.infura.io/v3/${infuraApiKey}`,
-      `wss://polygon-mainnet.infura.io/ws/v3/${infuraApiKey}`,
-    ],
-    nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
-    etherscanApi: 'https://api.polygonscan.com/api',
-    etherscanApiKey: polygonscanApiKey,
-    covalentApi: 'https://api.covalenthq.com/v1/matic-mainnet',
-    alchemyApi: 'https://polygon-mainnet.g.alchemy.com/v2',
     supportsEns: false,
     ipfs: 'https://prod.ipfs.aragon.network',
-  },
-  'arbitrum-test': {
-    id: 421613,
-    name: 'Arbitrum Goerli',
-    domain: 'L2 Blockchain',
-    logo: 'https://bridge.arbitrum.io/logo.png',
-    explorer: 'https://testnet.arbiscan.io/',
-    testnet: true,
-    rpc: ['https://goerli-rollup.arbitrum.io/rpc'],
-    nativeCurrency: {
-      name: 'Goerli Ether',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    etherscanApi: 'https://api-goerli.arbiscan.io/api',
-    alchemyApi: 'https://arb-goerli.g.alchemy.com/v2',
-    supportsEns: false,
-    ipfs: 'https://test.ipfs.aragon.network',
   },
   goerli: {
     id: 5,
     name: 'Goerli',
-    domain: 'L1 Blockchain',
+    domain: 'Main Chain',
     logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
     explorer: 'https://goerli.etherscan.io/',
     testnet: true,
@@ -189,36 +139,156 @@ export const CHAIN_METADATA: ChainList = {
     etherscanApiKey: etherscanApiKey,
     covalentApi: 'https://api.covalenthq.com/v1/eth-goerli',
     alchemyApi: 'https://eth-goerli.g.alchemy.com/v2',
-    supportsEns: true,
+    supportsEns: false,
     ipfs: 'https://test.ipfs.aragon.network',
   },
-  mumbai: {
-    id: 80001,
-    name: 'Mumbai',
-    domain: 'L2 Blockchain',
-    logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
-    explorer: 'https://mumbai.polygonscan.com/',
-    testnet: true,
-    rpc: [
-      `https://polygon-mumbai.infura.io/v3/${infuraApiKey}`,
-      `wss://polygon-mumbai.infura.io/ws/v3/${infuraApiKey}`,
-    ],
+  bosagora_mainnet: {
+    id: 2151,
+    name: 'bosagora_mainnet',
+    domain: 'Main Chain',
+    logo: 'https://assets.coingecko.com/coins/images/9202/standard/Picture1.png?1696509320',
+    explorer: 'https://boascan.io/',
+    testnet: false,
+    rpc: ['https://mainnet.bosagora.org'],
     nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
+      name: 'BOA',
+      symbol: 'BOA',
       decimals: 18,
     },
-    etherscanApi: 'https://api-testnet.polygonscan.com/api',
-    etherscanApiKey: polygonscanApiKey,
-    covalentApi: 'https://api.covalenthq.com/v1/matic-mumbai',
-    alchemyApi: 'https://polygon-mumbai.g.alchemy.com/v2',
+    etherscanApi: '',
+    etherscanApiKey: '',
+    covalentApi: '',
+    alchemyApi: '',
+    supportsEns: false,
+    ipfs: '',
+  },
+  bosagora_testnet: {
+    id: 2019,
+    name: 'bosagora_testnet',
+    domain: 'Main Chain',
+    logo: 'https://assets.coingecko.com/coins/images/9202/standard/Picture1.png?1696509320',
+    explorer: 'https://testnet.boascan.io/',
+    testnet: true,
+    rpc: ['https://testnet.bosagora.org'],
+    nativeCurrency: {
+      name: 'BOA',
+      symbol: 'BOA',
+      decimals: 18,
+    },
+    etherscanApi: '',
+    etherscanApiKey: '',
+    covalentApi: '',
+    alchemyApi: '',
+    supportsEns: false,
+    ipfs: '',
+  },
+  bosagora_devnet: {
+    id: 24600,
+    name: 'bosagora_devnet',
+    domain: 'Main Chain',
+    logo: 'https://assets.coingecko.com/coins/images/9202/standard/Picture1.png?1696509320',
+    explorer: 'https://testnet.boascan.io/',
+    testnet: true,
+    rpc: ['http://localhost:8540'],
+    nativeCurrency: {
+      name: 'BOA',
+      symbol: 'BOA',
+      decimals: 18,
+    },
+    etherscanApi: '',
+    etherscanApiKey: '',
+    covalentApi: '',
+    alchemyApi: '',
+    supportsEns: false,
+    ipfs: '',
+  },
+
+  acc_sidechain_mainnet: {
+    id: 215110,
+    name: 'acc_sidechain_mainnet',
+    domain: 'Side Chain',
+    logo: 'https://assets.coingecko.com/coins/images/9202/standard/Picture1.png?1696509320',
+    explorer: 'https://boascan.io/',
+    testnet: false,
+    rpc: ['https://rpc.main.acccoin.io'],
+    nativeCurrency: {
+      name: 'BOA',
+      symbol: 'BOA',
+      decimals: 18,
+    },
+    etherscanApi: '',
+    etherscanApiKey: '',
+    covalentApi: '',
+    alchemyApi: '',
+    supportsEns: false,
+    ipfs: '',
+  },
+  acc_sidechain_testnet: {
+    id: 215115,
+    name: 'acc_sidechain_testnet',
+    domain: 'Side Chain',
+    logo: 'https://assets.coingecko.com/coins/images/9202/standard/Picture1.png?1696509320',
+    explorer: 'https://testnet.boascan.io/',
+    testnet: true,
+    rpc: ['https://rpc.test.acccoin.io'],
+    nativeCurrency: {
+      name: 'BOA',
+      symbol: 'BOA',
+      decimals: 18,
+    },
+    etherscanApi: '',
+    etherscanApiKey: '',
+    covalentApi: '',
+    alchemyApi: '',
+    supportsEns: false,
+    ipfs: '',
+  },
+  acc_sidechain_devnet: {
+    id: 24680,
+    name: 'acc_sidechain_devnet',
+    domain: 'Side Chain',
+    logo: 'https://assets.coingecko.com/coins/images/9202/standard/Picture1.png?1696509320',
+    explorer: 'http://localhost:14000/',
+    testnet: true,
+    rpc: ['http://localhost:8545'],
+    nativeCurrency: {
+      name: 'BOA',
+      symbol: 'BOA',
+      decimals: 18,
+    },
+    etherscanApi: '',
+    etherscanApiKey: '',
+    covalentApi: '',
+    alchemyApi: '',
+    supportsEns: false,
+    ipfs: '',
+  },
+  sepolia: {
+    id: 11155111,
+    name: 'Ethereum Sepolia',
+    domain: 'Main Chain',
+    logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
+    explorer: 'https://sepolia.etherscan.io/',
+    testnet: true,
+    rpc: [
+      `https://sepolia.infura.io/v3/${infuraApiKey}`,
+      `wss://sepolia.infura.io/ws/v3/${infuraApiKey}`,
+    ],
+    nativeCurrency: {
+      name: 'SepoliaETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    etherscanApi: 'https://api-sepolia.etherscan.io/api',
+    etherscanApiKey: etherscanApiKey,
+    alchemyApi: 'https://eth-sepolia.g.alchemy.com/v2',
     supportsEns: false,
     ipfs: 'https://test.ipfs.aragon.network',
   },
   unsupported: {
     id: 1,
     name: 'Unsupported',
-    domain: 'L1 Blockchain',
+    domain: 'Main Chain',
     logo: '',
     explorer: '',
     testnet: false,

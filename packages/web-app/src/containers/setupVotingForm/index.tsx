@@ -2,18 +2,19 @@ import React, {useEffect} from 'react';
 import {useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
 
-import {
-  isMultisigVotingSettings,
-  isTokenVotingSettings,
-} from 'hooks/usePluginSettings';
+// import {
+//   isMultisigVotingSettings,
+//   isTokenVotingSettings,
+// } from 'hooks/usePluginSettings';
 import {StringIndexed, SupportedVotingSettings} from 'utils/types';
 import SetupMultisigVotingForm from './multisig';
-import SetupTokenVotingForm from './tokenVoting';
+// import SetupTokenVotingForm from './tokenVoting';
 
 type Props = {
   pluginSettings: SupportedVotingSettings;
 };
 
+// const SetupVotingForm: React.FC<Props> = ({pluginSettings}) => {
 const SetupVotingForm: React.FC<Props> = ({pluginSettings}) => {
   const {setError, clearErrors} = useFormContext();
 
@@ -29,14 +30,7 @@ const SetupVotingForm: React.FC<Props> = ({pluginSettings}) => {
   }, [clearErrors, pluginSettings, setError]);
 
   // Display plugin screens
-  if (isTokenVotingSettings(pluginSettings)) {
-    return <SetupTokenVotingForm pluginSettings={pluginSettings} />;
-  } else if (isMultisigVotingSettings(pluginSettings)) {
-    return <SetupMultisigVotingForm />;
-  }
-
-  // TODO: We need an error output/boundary for when a network error occurs
-  return null;
+  return <SetupMultisigVotingForm />;
 };
 
 export default SetupVotingForm;

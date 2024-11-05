@@ -7,16 +7,10 @@ import useScreen from 'hooks/useScreen';
 import Green from 'public/greenGradient.svg';
 import IconLogo from 'public/iconLogo.svg';
 import Purple from 'public/purpleGradient.svg';
-import {EXPLORE_NAV_LINKS, PRIVACY_NAV_LINKS} from 'utils/constants';
+import {PRIVACY_NAV_LINKS} from 'utils/constants';
 
 const Footer: React.FC = () => {
   const {isDesktop} = useScreen();
-
-  const ExploreNavLinks = EXPLORE_NAV_LINKS.map(item => (
-    <li key={item.label}>
-      <Link href={item.path} label={item.label} type="secondary" />
-    </li>
-  ));
 
   const PrivacyNavLinks = PRIVACY_NAV_LINKS.map(item => (
     <li key={item.label}>
@@ -36,23 +30,19 @@ const Footer: React.FC = () => {
             {isDesktop ? (
               <>
                 <FlexDiv>
-                  <LogoContainer src={IconLogo} />
-                  <StyledNavList>{ExploreNavLinks}</StyledNavList>
+                  <></>
                 </FlexDiv>
                 <FlexDiv>
-                  <StyledNavList>{PrivacyNavLinks}</StyledNavList>
                   <Copyright>
-                    &copy;{`  ${new Date().getFullYear()}  `}Aragon
+                    &copy;{`  ${new Date().getFullYear()}  `}BOSagora
                   </Copyright>
                 </FlexDiv>
               </>
             ) : (
               <>
-                <LogoContainer src={IconLogo} />
-                <StyledNavList>{ExploreNavLinks}</StyledNavList>
-                <StyledNavList>{PrivacyNavLinks}</StyledNavList>
+                <></>
                 <Copyright>
-                  &copy;{`  ${new Date().getFullYear()}  `}Aragon
+                  &copy;{`  ${new Date().getFullYear()}  `}BOSagora
                 </Copyright>
               </>
             )}
@@ -61,7 +51,7 @@ const Footer: React.FC = () => {
       </GridLayout>
       <div className="flex z-10 justify-center items-center py-0.5 space-x-1 text-sm text-ui-0 bg-primary-400">
         <IconInfo />
-        <span>Aragon App Public Beta</span>
+        <span>Multisig Wallet App Public Beta</span>
       </div>
     </Section>
   );

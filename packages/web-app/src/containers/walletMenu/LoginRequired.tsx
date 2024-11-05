@@ -42,6 +42,7 @@ export const LoginRequired: React.FC<Props> = props => {
         <Title>{t('alert.loginRequired.headerTitle')}</Title>
         {isDesktop && (
           <ButtonIcon
+            css={{}}
             mode="ghost"
             icon={<IconClose />}
             size="small"
@@ -58,6 +59,7 @@ export const LoginRequired: React.FC<Props> = props => {
           </WarningDescription>
         </WarningContainer>
         <ButtonText
+          css={{}}
           label={t('alert.loginRequired.buttonLabel')}
           onClick={() => {
             close('wallet');

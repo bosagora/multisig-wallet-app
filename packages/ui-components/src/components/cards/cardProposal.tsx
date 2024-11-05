@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {shortenAddress} from '../../utils/addresses';
 import {AlertInline} from '../alerts';
 import {AvatarDao} from '../avatar';
 import {IconClock} from '../icons';
@@ -73,7 +72,9 @@ export type CardProposalProps = {
   stateLabel: string[];
 };
 
-export const CardProposal: React.FC<CardProposalProps> = ({
+export const CardProposal: React.FC<
+  CardProposalProps & {addressLabel: string}
+> = ({
   process = 'pending',
   title,
   description,
@@ -93,9 +94,9 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   daoLogo,
   daoName,
   onClick,
-}: CardProposalProps) => {
+  addressLabel,
+}: CardProposalProps & {addressLabel: string}) => {
   const addressExploreUrl = `${explorer}address/${publisherAddress}`;
-
   return (
     <Card data-testid="cardProposal" onClick={onClick}>
       <Header>
@@ -119,9 +120,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
           <Link
             external
             href={addressExploreUrl}
-            label={shortenAddress(
-              (isExploreProposal(type) ? daoName : publisherAddress) || ''
-            )}
+            label={addressLabel}
             className="text-sm"
           />
         </Publisher>
@@ -189,13 +188,13 @@ const HeaderOptions: React.VFC<HeaderOptionProps> = ({
           {!isExploreProposal(type) && (
             <Tag label={stateLabel[2]} colorScheme={'info'} />
           )}
-          {alertMessage && (
-            <AlertInline
-              label={alertMessage}
-              icon={<IconClock className="text-info-500" />}
-              mode="neutral"
-            />
-          )}
+          {/*{alertMessage && (*/}
+          {/*  <AlertInline*/}
+          {/*    label={alertMessage}*/}
+          {/*    icon={<IconClock className="text-info-500" />}*/}
+          {/*    mode="neutral"*/}
+          {/*  />*/}
+          {/*)}*/}
         </>
       );
     case 'executed':

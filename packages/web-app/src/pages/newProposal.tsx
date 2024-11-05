@@ -31,9 +31,7 @@ const NewProposal: React.FC = () => {
    *                    Render                     *
    *************************************************/
   if (isLoading) return <Loading />;
-
   if (!data) return null;
-
   return (
     <FormProvider {...formMethods}>
       <ActionsProvider daoId={data.address}>

@@ -82,7 +82,8 @@ const determineNetwork = (
  */
 export function NetworkProvider({children}: NetworkProviderProps) {
   const navigate = useNavigate();
-  const urlNetwork = useMatch('daos/:network/*');
+  const urlNetwork = useMatch('multisig-wallets/:network/*');
+  const isCreatePage = Boolean(useMatch('create'));
   const networkUrlSegment = urlNetwork?.params?.network;
   const {chain} = useWagmiNetwork();
   const chainId = chain?.id || 0;
@@ -90,11 +91,12 @@ export function NetworkProvider({children}: NetworkProviderProps) {
   const status = wagmiStatus === 'reconnecting' ? 'connecting' : wagmiStatus;
   const [networkState, setNetworkState] = useState<
     SupportedNetworks | 'unsupported'
-  >(determineNetwork(networkUrlSegment, chainId, status));
+  >('unsupported');
 
   useEffect(() => {
-    setNetworkState(determineNetwork(networkUrlSegment, chainId, status));
-  }, [chainId, networkUrlSegment, status]);
+    if (!isCreatePage)
+      setNetworkState(determineNetwork(networkUrlSegment, chainId, status));
+  }, [chainId, isCreatePage, networkUrlSegment, status]);
 
   const isL2Network = ['polygon', 'mumbai'].includes(networkState);
 
@@ -112,8 +114,8 @@ export function NetworkProvider({children}: NetworkProviderProps) {
   useEffect(() => {
     // unsupported network based on the networkUrlSegment network
     if (networkState === 'unsupported' && networkUrlSegment) {
-      console.warn('network unsupported');
-      navigate(NotFound, {replace: true});
+      console.warn('network unsupported : ', networkUrlSegment);
+      //navigate(NotFound, {replace: true});
     }
   }, [networkState, navigate, networkUrlSegment]);
 

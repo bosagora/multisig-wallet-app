@@ -18,7 +18,7 @@ Dao.args = {
   created_at: 'March 2022',
   daoChain: 'Arbitrum',
   daoType: 'Wallet Based',
-  daoUrl: 'app.aragon.org/#/daos/arbitrum/daoName',
+  daoUrl: 'app.aragon.org/#/multisig-wallets/arbitrum/daoName',
   translation: {
     readMore: 'Read more',
     readLess: 'Read less',

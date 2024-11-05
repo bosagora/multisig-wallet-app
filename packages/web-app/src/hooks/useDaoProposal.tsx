@@ -1,37 +1,22 @@
 import {useReactiveVar} from '@apollo/client';
 import {useCallback, useEffect, useState} from 'react';
 
-import {
-  PendingMultisigApprovals,
-  pendingMultisigApprovalsVar,
-  PendingMultisigExecution,
-  pendingMultisigExecutionVar,
-  pendingMultisigProposalsVar,
-  PendingTokenBasedExecution,
-  pendingTokenBasedExecutionVar,
-  pendingTokenBasedProposalsVar,
-  PendingTokenBasedVotes,
-  pendingTokenBasedVotesVar,
-} from 'context/apolloClient';
 import {usePrivacyContext} from 'context/privacyContext';
-import {
-  PENDING_EXECUTION_KEY,
-  PENDING_MULTISIG_EXECUTION_KEY,
-  PENDING_MULTISIG_PROPOSALS_KEY,
-  PENDING_PROPOSALS_KEY,
-} from 'utils/constants';
-import {customJSONReplacer} from 'utils/library';
-import {
-  augmentProposalWithCachedExecution,
-  augmentProposalWithCachedVote,
-  isMultisigProposal,
-  isTokenBasedProposal,
-  recalculateStatus,
-} from 'utils/proposals';
+import {CHAIN_METADATA, PENDING_MULTISIG_PROPOSALS_KEY} from 'utils/constants';
+import {formatUnits} from 'utils/library';
 import {DetailedProposal, HookData, ProposalId} from 'utils/types';
 import {useDaoDetailsQuery} from './useDaoDetails';
-import {useDaoToken} from './useDaoToken';
-import {PluginTypes, usePluginClient} from './usePluginClient';
+import {useClient} from './useClient';
+import {BigNumber, constants} from 'ethers';
+import {PluginTypes, ProposalStatus} from '../utils/aragon/types';
+import {
+  ABIStorage,
+  ISmartContractFunctionData,
+} from 'multisig-wallet-sdk-client';
+import {getTokenInfo} from '../utils/tokens';
+import {useSpecificProvider} from '../context/providers';
+import {useNetwork} from '../context/network';
+import {pendingMultisigApprovalsVar} from '../context/apolloClient';
 
 /**
  * Retrieve a single detailed proposal
@@ -55,26 +40,13 @@ export const useDaoProposal = (
   const [numberOfRuns, setNumberOfRuns] = useState(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
 
-  const pluginClient = usePluginClient(pluginType);
   const {preferences} = usePrivacyContext();
-
+  const {network} = useNetwork();
+  const provider = useSpecificProvider(CHAIN_METADATA[network].id);
+  const {client} = useClient();
   const {data: daoDetails} = useDaoDetailsQuery();
-  const {data: daoToken} = useDaoToken(
-    daoDetails?.plugins[0].instanceAddress || ''
-  );
 
   const cachedMultisigVotes = useReactiveVar(pendingMultisigApprovalsVar);
-  const cachedTokenBasedVotes = useReactiveVar(pendingTokenBasedVotesVar);
-
-  const cachedMultisigProposals = useReactiveVar(pendingMultisigProposalsVar);
-  const cachedTokenBasedProposals = useReactiveVar(
-    pendingTokenBasedProposalsVar
-  );
-
-  const cachedMultisigExecutions = useReactiveVar(pendingMultisigExecutionVar);
-  const cachedTokenBaseExecutions = useReactiveVar(
-    pendingTokenBasedExecutionVar
-  );
 
   const proposalGuid = proposalId?.makeGloballyUnique(pluginAddress);
   const isMultisigPlugin = pluginType === 'multisig.plugin.dao.eth';
@@ -86,37 +58,25 @@ export const useDaoProposal = (
       if (pluginType === 'multisig.plugin.dao.eth') {
         return {
           proposalCacheKey: PENDING_MULTISIG_PROPOSALS_KEY,
-          proposalCacheVar: pendingMultisigProposalsVar,
-          proposalCache: cachedMultisigProposals,
-          proposal: cachedMultisigProposals[daoAddress]?.[proposalGuid],
           votes: cachedMultisigVotes,
-          executions: cachedMultisigExecutions,
-        };
-      }
-
-      // token voting
-      if (pluginType === 'token-voting.plugin.dao.eth') {
-        return {
-          proposalCacheKey: PENDING_PROPOSALS_KEY,
-          proposalCacheVar: pendingTokenBasedProposalsVar,
-          proposalCache: cachedTokenBasedProposals,
-          proposal: cachedTokenBasedProposals[daoAddress]?.[proposalGuid],
-          votes: cachedTokenBasedVotes,
-          executions: cachedTokenBaseExecutions,
         };
       }
     },
-    [
-      cachedMultisigExecutions,
-      cachedMultisigProposals,
-      cachedMultisigVotes,
-      cachedTokenBaseExecutions,
-      cachedTokenBasedProposals,
-      cachedTokenBasedVotes,
-      daoAddress,
-      pluginType,
-    ]
+    [cachedMultisigVotes, daoAddress, pluginType]
   );
+
+  function displayFunctionData2(data: ISmartContractFunctionData): object {
+    const contents: string[] = [];
+    contents.push(`Interface: ${data.interfaceName}`);
+    contents.push(`Function: ${data.fragment.name}`);
+    contents.push('Parameter:');
+    const tt = {};
+    for (let idx = 0; idx < data.fragment.inputs.length; idx++) {
+      tt[data.fragment.inputs[idx].name] = String(data.parameter[idx]);
+    }
+
+    return tt;
+  }
 
   useEffect(() => {
     if ((intervalInMills || 0) > 0) {
@@ -147,57 +107,52 @@ export const useDaoProposal = (
         if (numberOfRuns === 0) {
           setIsLoading(true);
         }
-
-        let proposal = recalculateStatus(
-          await pluginClient?.methods.getProposal(proposalGuid)
+        const proposal = await client?.multiSigWallet.getTransaction(
+          BigNumber.from(proposalId?.export())
         );
 
-        if (isTokenBasedProposal(proposal)) {
-          proposal = {
-            ...proposal,
-            token: proposal.token || daoToken || null,
-          };
-        }
-
-        if (proposal && cacheData) {
-          setData(
-            // add cached executions and votes to the fetched proposal
-            getAugmentedProposal(
-              proposal,
-              daoAddress,
-              cacheData.executions,
-              cacheData.votes,
-              preferences?.functional
-            )
-          );
-
-          // remove cached proposal if it exists
-          if (cacheData.proposal) {
-            const newCache = {...cacheData.proposalCache};
-            delete newCache[daoAddress][proposalGuid];
-
-            // update new values
-            cacheData.proposalCacheVar(newCache);
-
-            if (preferences?.functional) {
-              localStorage.setItem(
-                cacheData.proposalCacheKey,
-                JSON.stringify(newCache, customJSONReplacer)
-              );
+        if (proposal) {
+          let ret;
+          if (proposal.data !== '0x') {
+            const res = ABIStorage.decodeFunctionData(proposal.data);
+            if (res) {
+              console.log(ABIStorage.displayFunctionData(res));
+              ret = displayFunctionData2(res);
             }
           }
-        } else if (cacheData?.proposal) {
-          // proposal is not yet indexed but is in the cache, augment it
-          // with cached votes and execution
-          setData(
-            getAugmentedProposal(
-              cacheData.proposal as DetailedProposal,
-              daoAddress,
-              cacheData.executions,
-              cacheData.votes,
-              preferences?.functional
-            )
+          const tokenAddress =
+            proposal.data === '0x'
+              ? constants.AddressZero
+              : proposal.destination;
+          const toAddress =
+            proposal.data === '0x' ? proposal.destination : ret?.to;
+          const amount =
+            proposal.data === '0x'
+              ? Number(formatUnits(proposal.value, 18))
+              : Number(formatUnits(ret?.amount, 18));
+          const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+          const token = await getTokenInfo(
+            tokenAddress || '',
+            provider,
+            nativeCurrency
           );
+
+          const requiredCount = await client?.multiSigWallet.getRequired();
+          setData({
+            ...proposal,
+            dao: {
+              address: daoDetails?.address,
+              name: daoDetails?.metadata.name,
+            },
+            settings: {minApprovals: requiredCount, onlyListed: true},
+            token,
+            tokenAddress,
+            to: toAddress,
+            amount,
+            status: proposal.executed
+              ? ProposalStatus.EXECUTED
+              : ProposalStatus.ACTIVE,
+          } as unknown as DetailedProposal);
         }
       } catch (err) {
         console.error(err);
@@ -207,72 +162,24 @@ export const useDaoProposal = (
       }
     };
 
-    if (
-      daoAddress &&
-      proposalGuid &&
-      (isMultisigPlugin || (isTokenBasedPlugin && daoToken))
-    )
+    if (daoAddress && proposalGuid && (isMultisigPlugin || isTokenBasedPlugin))
       getDaoProposal(proposalGuid);
   }, [
     daoAddress,
     getCachedProposalData,
-    pluginClient?.methods,
     pluginType,
-    preferences?.functional,
     proposalGuid,
     pluginAddress,
     numberOfRuns,
-    daoToken,
     isMultisigPlugin,
     isTokenBasedPlugin,
+    client?.multiSigWallet,
+    proposalId,
+    network,
+    provider,
+    daoDetails?.address,
+    daoDetails?.metadata.name,
   ]);
 
   return {data, error, isLoading};
 };
-
-// extracted for readability
-function getAugmentedProposal(
-  proposal: DetailedProposal,
-  daoAddress: string,
-  cachedExecutions: PendingTokenBasedExecution | PendingMultisigExecution,
-  cachedVotes: PendingTokenBasedVotes | PendingMultisigApprovals,
-  functionalCookiesEnabled: boolean | undefined
-): DetailedProposal {
-  if (isTokenBasedProposal(proposal)) {
-    return {
-      ...augmentProposalWithCachedExecution(
-        augmentProposalWithCachedVote(
-          proposal,
-          daoAddress,
-          cachedVotes,
-          functionalCookiesEnabled
-        ) as DetailedProposal,
-        daoAddress,
-        cachedExecutions,
-        functionalCookiesEnabled,
-        pendingTokenBasedExecutionVar,
-        PENDING_EXECUTION_KEY
-      ),
-    };
-  }
-
-  if (isMultisigProposal(proposal)) {
-    return {
-      ...augmentProposalWithCachedExecution(
-        augmentProposalWithCachedVote(
-          proposal,
-          daoAddress,
-          cachedVotes,
-          functionalCookiesEnabled
-        ) as DetailedProposal,
-        daoAddress,
-        cachedExecutions,
-        functionalCookiesEnabled,
-        pendingMultisigExecutionVar,
-        PENDING_MULTISIG_EXECUTION_KEY
-      ),
-    };
-  }
-
-  return proposal;
-}

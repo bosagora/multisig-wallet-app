@@ -27,16 +27,16 @@ export class ContractDeployer {
         const [deployer] = accounts;
 
         try {
-            console.log("Start Deploy");
+            //console.log("Start Deploy");
 
-            console.log("Deploy MultiSigWalletFactory");
+            //console.log("Deploy MultiSigWalletFactory");
             const walletFactory: MultiSigWalletFactory = await ContractDeployer.deployMultiSigWalletFactory(deployer);
 
             LIVE_CONTRACTS.bosagora_devnet.MultiSigWalletFactoryAddress = walletFactory.address;
 
             contextParamsLocalChain.walletFactoryAddress = walletFactory.address;
 
-            console.log("Complete Deploy");
+            //console.log("Complete Deploy");
             return {
                 provider: provider,
                 walletFactory: walletFactory

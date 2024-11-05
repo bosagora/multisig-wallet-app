@@ -137,7 +137,7 @@ const CustomLabel: React.FC<CustomLabelProps> = ({label, helpText}) => {
       <LabelLine>
         <Heading>{label}</Heading>
       </LabelLine>
-      {helpText && <HelpText>{helpText}</HelpText>}
+      {/*{helpText && <HelpText>{helpText}</HelpText>}*/}
     </VStack>
   );
 };
