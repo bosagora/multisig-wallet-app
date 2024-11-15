@@ -302,6 +302,8 @@ const Proposal: React.FC = () => {
     if (isOnWrongNetwork || !isConnected || !canVote) {
       // console.log('vip false on wrongnetwork');
       setVotingInProcess(false);
+    } else {
+      setVotingInProcess(true);
     }
     // if (canVote) {
     //   // console.log('set vip true');
@@ -326,13 +328,13 @@ const Proposal: React.FC = () => {
   ]);
 
   // show voter tab once user has voted
-  useEffect(() => {
-    if (voteSubmitted) {
-      setTerminalTab('voters');
-      setVotingInProcess(false);
-      // console.log('vip false on voteSubmmited');
-    }
-  }, [voteSubmitted]);
+  // useEffect(() => {
+  //   if (voteSubmitted) {
+  //     setTerminalTab('voters');
+  //     setVotingInProcess(false);
+  //     // console.log('vip false on voteSubmmited');
+  //   }
+  // }, [voteSubmitted]);
 
   useEffect(() => {
     if (proposal) {
