@@ -22,6 +22,7 @@ import BreakdownTab from './breakdownTab';
 import InfoTab from './infoTab';
 import {ProposalStatus} from '../../utils/aragon/sdk-client-common-types';
 import {VoteValues} from '../../utils/aragon/sdk-client-multisig-types';
+import {useAccount} from 'wagmi';
 
 export type ProposalVoteResults = {
   yes: {value: string | number; percentage: number};
@@ -102,6 +103,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   const [selectedVote, setSelectedVote] = useState<VoteValues>(VoteValues.YES);
   const {t} = useTranslation();
 
+  const {address} = useAccount();
   const displayedVoters = useMemo(() => {
     return query === ''
       ? voters
@@ -259,7 +261,9 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                 css={{}}
                 label={
                   isMember
-                    ? 'Approved'
+                    ? approvals?.includes(address || '')
+                      ? 'Approved'
+                      : 'Executed'
                     : status === ProposalStatus.EXECUTED
                     ? 'Concluded'
                     : 'Member Only'
