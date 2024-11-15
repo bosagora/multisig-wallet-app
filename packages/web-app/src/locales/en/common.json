@@ -3,9 +3,9 @@
   "menu": "Menu",
   "navLinks": {
     "dashboard": "Dashboard",
-    "governance": "Governance",
+    "governance": "Proposals",
     "finance": "Finance",
-    "community": "Community",
+    "community": "Members",
     "explore": "Explore",
     "learn": "Learn",
     "build": "Build",
