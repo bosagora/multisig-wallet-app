@@ -20080,10 +20080,10 @@ multihashes@^0.4.15, multihashes@~0.4.15:
     multibase "^0.7.0"
     varint "^5.0.0"
 
-multisig-wallet-contracts-lib@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/multisig-wallet-contracts-lib/-/multisig-wallet-contracts-lib-2.0.1.tgz#f8720dc109a31f0edb4b75ff96a191351399145a"
-  integrity sha512-v60/zk/Lj0nMT2GKGkcZ5+izoLOhS5qAyRH+5uOcLj6B6FLI6qEER52/7USFt7vDFzrzxmSfRpFBjy6sFPLnoQ==
+multisig-wallet-contracts-lib@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/multisig-wallet-contracts-lib/-/multisig-wallet-contracts-lib-2.0.2.tgz#86747e7d1889f32bfa8c0e86b56249f13fd10074"
+  integrity sha512-g7Yui/+mEkTBqjfRiMQhaB4fheySFFr3N5BDCaa+8tT8HCBSIxwB3nTgX4fb60sTt+6R7t7PKH+0HPE1/9WYGA==
   dependencies:
     ethers "^5.7.0"
 
