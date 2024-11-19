@@ -60,7 +60,8 @@ export const useDaoBalances = (
 
         const loadedTokens = tokenList
           ? tokenList.tokens
-              ?.filter((t: {address: string}) => !isNativeToken(t.address))
+              ?.filter(t => t.chainId === CHAIN_METADATA[network].id)
+              .filter((t: {address: string}) => !isNativeToken(t.address))
               .map((t: {address: any}) => t.address)
           : [];
 
