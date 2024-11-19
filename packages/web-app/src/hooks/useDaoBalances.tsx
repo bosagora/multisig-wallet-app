@@ -7,23 +7,29 @@ import {useSpecificProvider} from 'context/providers';
 import {useNetwork} from 'context/network';
 import {TokenType} from '../utils/aragon/sdk-client-common-types';
 import {AssetBalance} from '../utils/aragon/sdk-client-types';
+import loadedTokensMeta from '../../data/tokens.json';
 
 export const useLoadTokenLogoURL = (): {getImgUrl: any; tokenList: any} => {
   const [tokenList, setTokenList] = useState({});
   useEffect(() => {
-    async function loadTokens() {
-      const loadedTokensMeta = await fetch('/data/tokens.json') // 파일 경로를 지정합니다.
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(
-              'Network response was not ok ' + response.statusText
-            );
-          }
-          return response.json();
-        });
-      setTokenList(loadedTokensMeta);
-    }
-    loadTokens();
+    // async function loadTokens() {
+    //   // const loadedTokensMeta = await fetch('/data/tokens.json') // 파일 경로를 지정합니다.
+    //   const loadedTokensMeta = await fetch(
+    //     'https://raw.githubusercontent.com/bosagora/multisig-wallet-app/v0.x.x/packages/web-app/data/tokens.json'
+    //   ) // 파일 경로를 지정합니다.
+    //     .then(response => {
+    //       if (!response.ok) {
+    //         throw new Error(
+    //           'Network response was not ok ' + response.statusText
+    //         );
+    //       }
+    //       return response.json();
+    //     });
+    //   setTokenList(loadedTokensMeta);
+    // }
+    // loadTokens();
+
+    setTokenList(loadedTokensMeta);
   }, []);
 
   const getImgUrl = useCallback(
