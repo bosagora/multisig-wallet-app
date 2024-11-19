@@ -105,17 +105,21 @@ type SelectableNetworks = Record<
 
 const networks: SelectableNetworks = {
   main: {
-    cost: ['bosagora_mainnet', 'acc_sidechain_mainnet', 'ethereum'],
+    cost: [
+      'bosagora_mainnet',
+      'ethereum',
+      // 'acc_sidechain_mainnet'
+    ],
     popularity: ['bosagora_mainnet', 'acc_sidechain_mainnet', 'ethereum'],
     security: ['bosagora_mainnet', 'acc_sidechain_mainnet', 'ethereum'],
   },
   test: {
     cost: [
       'bosagora_testnet',
-      'bosagora_devnet',
-      'acc_sidechain_testnet',
-      'acc_sidechain_devnet',
-      'sepolia',
+      // 'bosagora_devnet',
+      // 'acc_sidechain_testnet',
+      // 'acc_sidechain_devnet',
+      // 'sepolia',
     ],
     popularity: [
       'bosagora_testnet',
