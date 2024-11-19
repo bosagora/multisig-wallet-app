@@ -129,7 +129,7 @@ const PublishModal: React.FC<PublishModalProps> = ({
               <div className="truncate">{formattedAverage}</div>
               <div>{`${nativeCurrency.symbol}`}</div>
             </StrongText>
-            <p className="text-sm text-right text-ui-500">{totalCost}</p>
+            {/*<p className="text-sm text-right text-ui-500">{totalCost}</p>*/}
           </VStack>
         </GasTotalCostEthContainer>
       </GasCostTableContainer>
