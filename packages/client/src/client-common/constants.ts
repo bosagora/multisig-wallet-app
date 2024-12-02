@@ -4,7 +4,7 @@ import { Network } from "@ethersproject/networks";
 
 export const LIVE_CONTRACTS: { [K in SupportedNetwork]: NetworkDeployment } = {
     [SupportedNetwork.ETHEREUM_MAINNET]: {
-        MultiSigWalletFactoryAddress: activeContractsList.bosagora_mainnet.MultiSigWalletFactory
+        MultiSigWalletFactoryAddress: activeContractsList.ethereum_mainnet.MultiSigWalletFactory
     },
     [SupportedNetwork.ETHEREUM_GOERLI]: {
         MultiSigWalletFactoryAddress: activeContractsList.bosagora_testnet.MultiSigWalletFactory
