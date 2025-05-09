@@ -29,7 +29,7 @@ export default function TokenBox({
 }
 
 const Box = styled.div.attrs({
-  className: `flex items-center gap-x-2 py-1.5 px-2 
+  className: `flex items-center gap-x-2 py-1.5 px-2
     bg-white rounded-xl cursor-pointer
     hover:text-ui-800 hover:bg-ui-100`,
 })``;
@@ -46,6 +46,5 @@ const Name = styled.span.attrs({
 })``;
 
 const Price = styled.span.attrs({
-  className:
-    'ft-text-base font-normal flex-none w-1/3 text-ui-500 text-right truncate',
+  className: 'ft-text-base font-normal flex-none text-ui-500 text-right',
 })``;

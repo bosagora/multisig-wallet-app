@@ -6,10 +6,8 @@ export const FEEDBACK_FORM =
   'https://aragonassociation.atlassian.net/servicedesk/customer/portal/3';
 
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
-  ethereum:
-    'https://subgraph.satsuma-prod.com/qHR2wGfc5RLi6/aragon/osx-mainnet/version/v1.2.1/api',
-  goerli:
-    'https://subgraph.satsuma-prod.com/qHR2wGfc5RLi6/aragon/osx-goerli/version/v1.2.2/api',
+  ethereum: undefined,
+  goerli: undefined,
   sepolia: undefined,
   bosagora_mainnet: undefined,
   bosagora_testnet: undefined,

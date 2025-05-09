@@ -16,7 +16,6 @@ import {erc1155TokenABI} from 'abis/erc1155TokenABI';
 import {erc721TokenABI} from 'abis/erc721TokenABI';
 import {aragonTokenABI} from 'abis/aragonTokenABI';
 
-
 /**
  * This method sorts a list of array information. It is applicable to any field
  * of the information object that can be compared using '<', '>'.
@@ -336,23 +335,22 @@ export function abbreviateTokenAmount(amount: string): string {
   const decimals = regexp_res[2];
   const symbol = regexp_res[3];
 
-  if (integers?.length > 4) {
-    const integerNumber = Number.parseInt(integers);
-    const magnitude = Math.floor((integers.length - 1) / 3);
-    const lead = Math.floor(integerNumber / Math.pow(10, magnitude * 3));
-    const magnitude_letter = ['k', 'M', 'G'];
+  if (integers) {
+    // 정수 부분이 7자리 이상인 경우
+    if (integers.length >= 7) {
+      const integerNum = Number.parseInt(integers);
+      return `${integerNum.toLocaleString()}${symbol && ' ' + symbol}`;
+    }
 
-    return `${lead}${
-      magnitude < 4
-        ? magnitude_letter[magnitude - 1]
-        : '*10^' + Math.floor(magnitude) * 3
-    }${symbol && ' ' + symbol}`;
+    // 7자리 미만인 경우 소수점도 표시
+    const num = Number(amount);
+    return `${num.toLocaleString()}${symbol && ' ' + symbol}`;
   }
 
   if (decimals) {
     const fraction = '0.' + decimals;
     const fractionNumber = Number.parseFloat(fraction);
-    const intNumber = Number.parseInt(integers);
+    const intNumber = Number.parseInt(integers || '0');
     const totalNumber = intNumber + fractionNumber;
 
     if (totalNumber < 0.01) {
@@ -362,50 +360,50 @@ export function abbreviateTokenAmount(amount: string): string {
     return `${totalNumber.toFixed(2)}${symbol && ' ' + symbol}`;
   }
 
-  return `${Number.parseInt(integers)}${symbol && ' ' + symbol}`;
+  return `${Number.parseInt(integers || '0')}${symbol && ' ' + symbol}`;
 }
-
-export function historicalTokenBalances(
-  transfers: Transfer[],
-  tokenBalances: TokenWithMetadata[],
-  pastIntervalMins: number
-) {
-  const historicalBalances = {} as Record<string, TokenWithMetadata>;
-  tokenBalances.forEach(
-    bal => (historicalBalances[bal.metadata.id.toLowerCase()] = {...bal})
-  );
-  const nowMs = new Date().getTime();
-
-  // transfers assumed in reverse date order. Reverses effect on balances of all transactions which
-  // occurred in pastIntervalMins.
-  for (let i = 0; i < transfers.length; i++) {
-    const transfer = transfers[i];
-    // a transfer without a creationDate is pending and so always included
-    const transferTimeMs = transfers[i].creationDate?.getTime();
-    if (transferTimeMs && nowMs - transferTimeMs > pastIntervalMins * 60000)
-      break;
-
-    const tokenId =
-      transfer.tokenType === TokenType.ERC20
-        ? transfer.token.address
-        : constants.AddressZero;
-
-    // reverse change to balance from transfer
-    if (
-      transfer.tokenType !== TokenType.ERC721 &&
-      // This condition will ignore the tokens that has history in transfer list but doesn't exist in balances
-      historicalBalances[tokenId?.toLowerCase()]
-    ) {
-      // TODO Handle ERC721
-      historicalBalances[tokenId.toLowerCase()].balance -=
-        transfer.type === TransferType.DEPOSIT
-          ? transfer.amount
-          : -transfer.amount;
-    }
-  }
-
-  return historicalBalances;
-}
+//
+// export function historicalTokenBalances(
+//   transfers: Transfer[],
+//   tokenBalances: TokenWithMetadata[],
+//   pastIntervalMins: number
+// ) {
+//   const historicalBalances = {} as Record<string, TokenWithMetadata>;
+//   tokenBalances.forEach(
+//     bal => (historicalBalances[bal.metadata.id.toLowerCase()] = {...bal})
+//   );
+//   const nowMs = new Date().getTime();
+//
+//   // transfers assumed in reverse date order. Reverses effect on balances of all transactions which
+//   // occurred in pastIntervalMins.
+//   for (let i = 0; i < transfers.length; i++) {
+//     const transfer = transfers[i];
+//     // a transfer without a creationDate is pending and so always included
+//     const transferTimeMs = transfers[i].creationDate?.getTime();
+//     if (transferTimeMs && nowMs - transferTimeMs > pastIntervalMins * 60000)
+//       break;
+//
+//     const tokenId =
+//       transfer.tokenType === TokenType.ERC20
+//         ? transfer.token.address
+//         : constants.AddressZero;
+//
+//     // reverse change to balance from transfer
+//     if (
+//       transfer.tokenType !== TokenType.ERC721 &&
+//       // This condition will ignore the tokens that has history in transfer list but doesn't exist in balances
+//       historicalBalances[tokenId?.toLowerCase()]
+//     ) {
+//       // TODO Handle ERC721
+//       historicalBalances[tokenId.toLowerCase()].balance -=
+//         transfer.type === TransferType.DEPOSIT
+//           ? transfer.amount
+//           : -transfer.amount;
+//     }
+//   }
+//
+//   return historicalBalances;
+// }
 
 export function timeFilterToMinutes(tf: TimeFilter) {
   const now = new Date();

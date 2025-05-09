@@ -72,7 +72,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@ethersproject/random": "^5.7.0",
     "@ethersproject/wallet": "^5.7.0",
-    "multisig-wallet-contracts-lib": "^2.0.3",
+    "multisig-wallet-contracts-lib": "^2.0.4",
     "multisig-wallet-sdk-common": "^1.1.0"
   },
   "jest": {
