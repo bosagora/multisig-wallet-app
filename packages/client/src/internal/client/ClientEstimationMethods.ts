@@ -24,13 +24,11 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         required: number,
         seed: number
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
@@ -39,7 +37,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
 
         const factoryInstance: MultiSigWalletFactory = MultiSigWalletFactory__factory.connect(
             this.web3.getWalletFactoryAddress(),
-            signer
+          provider
         );
         const gasEstimation = await factoryInstance.estimateGas.create(name, description, owners, required, seed);
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
@@ -53,19 +51,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         value: BigNumberish,
         data: string
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(
             title,
             description,
@@ -77,37 +73,33 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
     }
 
     public async confirmTransaction(walletAddress: string, transactionId: BigNumber): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const gasEstimation = await walletInstance.estimateGas.confirmTransaction(transactionId);
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
     public async revokeConfirmation(walletAddress: string, transactionId: BigNumber): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const gasEstimation = await walletInstance.estimateGas.confirmTransaction(transactionId);
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
@@ -118,19 +110,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         description: string,
         owner: string
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "addOwner", [owner]);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(
             title,
@@ -148,19 +138,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         description: string,
         owner: string
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "removeOwner", [owner]);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(
             title,
@@ -179,19 +167,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         owner: string,
         newOwner: string
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "replaceOwner", [owner, newOwner]);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(
             title,
@@ -210,19 +196,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         to: string,
         amount: BigNumber
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(title, description, to, amount, "0x");
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
@@ -235,19 +219,18 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         to: string,
         amount: BigNumber
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
+        console.log(`submitTransactionTokenTransfer: ${network.name} - ${providerNetwork.chainId}`)
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigToken", "transfer", [to, amount]);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(
             title,
@@ -267,19 +250,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         spender: string,
         amount: BigNumber
     ): Promise<GasFeeEstimation> {
-        const signer = this.web3.getConnectedSigner();
-        if (!signer) {
-            throw new NoSignerError();
-        } else if (!signer.provider) {
+        const provider = this.web3.getProvider()
+        if (!provider) {
             throw new NoProviderError();
         }
-        const providerNetwork = await signer.provider.getNetwork();
+        const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
         }
-        const walletInstance = MultiSigWallet__factory.connect(walletAddress, signer);
+        const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigToken", "approve", [spender, amount]);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(
             title,

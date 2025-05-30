@@ -34,6 +34,18 @@ export const LIVE_CONTRACTS: { [K in SupportedNetwork]: NetworkDeployment } = {
 
 export const ADDITIONAL_NETWORKS: Network[] = [
     {
+        name: SupportedNetwork.ETHEREUM_MAINNET,
+        chainId: 1,
+    },
+    {
+        name: SupportedNetwork.ETHEREUM_GOERLI,
+        chainId: 5,
+    },
+    {
+        name: SupportedNetwork.ETHEREUM_SEPOLIA,
+        chainId: 11155111,
+    },
+    {
         name: SupportedNetwork.BOSAGORA_MAINNET,
         chainId: 2151,
     },
