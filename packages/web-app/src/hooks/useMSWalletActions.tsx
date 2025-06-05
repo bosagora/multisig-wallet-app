@@ -1,45 +1,11 @@
 import {useTranslation} from 'react-i18next';
 
 import {ActionParameter, HookData} from 'utils/types';
-import {useDaoQuery} from './useDaoDetails';
-import {getDaoTokenOwner} from 'utils/tokens';
-// import {useDaoToken} from './useDaoToken';
-import {useProviders} from 'context/providers';
-import {useEffect, useState} from 'react';
+import {useMSWalletQuery} from './useMSWalletDetails';
 
-export function useDaoActions(dao: string): HookData<ActionParameter[]> {
-  const {data: daoDetails, error, isLoading} = useDaoQuery(dao);
-  // const multisig = daoDetails?.plugins[0].id === 'multisig.plugin.dao.eth';
+export function useMSWalletActions(dao: string): HookData<ActionParameter[]> {
+  const {error, isLoading} = useMSWalletQuery(dao);
   const multisig = true;
-  const [showMintOption, setShowMintOption] = useState(false);
-
-  const {infura: provider} = useProviders();
-
-  // const {data: daoToken} = useDaoToken(
-  //   daoDetails?.plugins[0].instanceAddress || ''
-  // );
-  //
-  // useEffect(() => {
-  //   async function fetch() {
-  //     const daoTokenView = await getDaoTokenOwner(
-  //       daoToken?.address || '',
-  //       provider
-  //     );
-  //
-  //     setShowMintOption(
-  //       daoTokenView?.toLocaleLowerCase() === daoDetails?.address
-  //     );
-  //   }
-  //
-  //   fetch();
-  // }, [
-  //   dao,
-  //   daoDetails,
-  //   daoDetails?.address,
-  //   // daoToken?.address,
-  //   provider,
-  //   showMintOption,
-  // ]);
 
   const {t} = useTranslation();
 

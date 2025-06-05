@@ -15,7 +15,7 @@ type AddActionMenuProps = {
 };
 
 const AddActionMenu: React.FC<AddActionMenuProps> = ({actions}) => {
-  const {dao: daoAddressOrEns} = useParams();
+  const {dao: multisigWalletAddress} = useParams();
   const {isAddActionOpen, close} = useGlobalModalContext();
   const {actions: usedActions, addAction} = useActionsContext();
   const {t} = useTranslation();
@@ -39,10 +39,10 @@ const AddActionMenu: React.FC<AddActionMenuProps> = ({actions}) => {
             }
             iconRight={<IconChevronRight />}
             onClick={() => {
-              // trackEvent('newProposal_action_selected', {
-              //   dao_address: daoAddressOrEns,
-              //   action: a.type,
-              // });
+              trackEvent('newProposal_action_selected', {
+                dao_address: multisigWalletAddress,
+                action: a.type,
+              });
               addAction({
                 name: a.type,
               });

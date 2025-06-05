@@ -13,21 +13,20 @@ import styled from 'styled-components';
 import {proposal2CardProps} from 'components/proposalList';
 import {StateEmpty} from 'components/stateEmpty';
 import {useNetwork} from 'context/network';
-import {useDaoMembers} from 'hooks/useDaoMembers';
-// import {PluginTypes} from 'hooks/usePluginClient';
+import {useMSWalletMembers} from '../../hooks/useMSWalletMembers';
 import {htmlIn} from 'utils/htmlIn';
 import {Governance, NewProposal} from 'utils/paths';
 import {ProposalListItem} from 'utils/types';
 import {useWallet} from 'hooks/useWallet';
 
 type Props = {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   proposals: ProposalListItem[];
   proposalLength: number;
 };
 
 const ProposalSnapshot: React.FC<Props> = ({
-  daoAddressOrEns,
+  multisigWalletAddress,
   proposals,
   proposalLength,
 }) => {
@@ -37,8 +36,8 @@ const ProposalSnapshot: React.FC<Props> = ({
   const {address} = useWallet();
   const {network} = useNetwork(); // TODO ensure this is the dao network
 
-  const {data: members, isLoading: areMembersLoading} = useDaoMembers(
-    daoAddressOrEns,
+  const {data: members, isLoading: areMembersLoading} = useMSWalletMembers(
+    multisigWalletAddress,
     ''
   );
 
@@ -51,7 +50,7 @@ const ProposalSnapshot: React.FC<Props> = ({
           network,
           navigate,
           t,
-          daoAddressOrEns,
+          multisigWalletAddress,
           address
         );
       }),
@@ -61,7 +60,7 @@ const ProposalSnapshot: React.FC<Props> = ({
       network,
       navigate,
       t,
-      daoAddressOrEns,
+      multisigWalletAddress,
       address,
     ]
   );
@@ -82,7 +81,7 @@ const ProposalSnapshot: React.FC<Props> = ({
           label: t('TransactionModal.createProposal'),
           onClick: () =>
             navigate(
-              generatePath(NewProposal, {network, dao: daoAddressOrEns})
+              generatePath(NewProposal, {network, dao: multisigWalletAddress})
             ),
         }}
         renderHtml
@@ -99,7 +98,9 @@ const ProposalSnapshot: React.FC<Props> = ({
         buttonText={t('newProposal.title')}
         orientation="horizontal"
         onClick={() =>
-          navigate(generatePath(NewProposal, {network, dao: daoAddressOrEns}))
+          navigate(
+            generatePath(NewProposal, {network, dao: multisigWalletAddress})
+          )
         }
       />
 
@@ -114,7 +115,9 @@ const ProposalSnapshot: React.FC<Props> = ({
         iconRight={<IconChevronRight />}
         label={t('labels.seeAll')}
         onClick={() =>
-          navigate(generatePath(Governance, {network, dao: daoAddressOrEns}))
+          navigate(
+            generatePath(Governance, {network, dao: multisigWalletAddress})
+          )
         }
       />
     </Container>

@@ -1,4 +1,4 @@
-import {CreateDAO} from 'utils/paths';
+import {CreateMSWallet} from 'utils/paths';
 
 import learnImg from '../../public/learnDao.svg';
 import buildFaster from '../../public/buildFaster.svg';
@@ -10,7 +10,7 @@ const CTACards = [
   {
     actionAvailable: true,
     actionLabel: i18n.t('cta.create.actionLabel'),
-    path: CreateDAO,
+    path: CreateMSWallet,
     imgSrc: createDaoImg,
     subtitle: i18n.t('cta.create.description'),
     title: i18n.t('cta.create.title'),

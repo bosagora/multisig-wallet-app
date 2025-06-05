@@ -8,18 +8,18 @@ import {NotFound} from 'utils/paths';
 import {useClient} from './useClient';
 import {SupportedNetworks} from 'utils/constants';
 
-async function fetchDaoDetails(
+async function fetchMSWalletDetails(
   client: Client | undefined,
-  daoAddressOrEns: string | undefined
+  multisigWalletAddress: string | undefined
 ): Promise<WalletDetails | null> {
-  if (!daoAddressOrEns)
+  if (!multisigWalletAddress)
     return Promise.reject(new Error('walletAddress must be defined'));
 
   if (!client) return Promise.reject(new Error('client must be defined'));
 
   try {
     return await client.multiSigWalletFactory.getWalletDetail(
-      daoAddressOrEns.toLowerCase()
+      multisigWalletAddress.toLowerCase()
     );
   } catch (e) {
     return Promise.reject(new Error('getWalletDetail failed'));
@@ -28,12 +28,12 @@ async function fetchDaoDetails(
 
 /**
  * Custom hook to fetch DAO details for a given DAO address or ENS name using the current network and client.
- * @param daoAddressOrEns - The DAO address or ENS name to fetch details for.
+ * @param multisigWalletAddress - The DAO address or ENS name to fetch details for.
  * @param refetchInterval
  * @returns An object with the status of the query and the DAO details, if available.
  */
-export const useDaoQuery = (
-  daoAddressOrEns: string | undefined,
+export const useMSWalletQuery = (
+  multisigWalletAddress: string | undefined,
   refetchInterval = 0
 ) => {
   const {network, networkUrlSegment} = useNetwork();
@@ -46,14 +46,14 @@ export const useDaoQuery = (
 
   // make sure that the network and the url match up with client network before making the request
   const enabled =
-    !!daoAddressOrEns && !!client && clientNetwork === queryNetwork;
+    !!multisigWalletAddress && !!client && clientNetwork === queryNetwork;
 
   const queryFn = useCallback(() => {
-    return fetchDaoDetails(client, daoAddressOrEns);
-  }, [client, daoAddressOrEns]);
+    return fetchMSWalletDetails(client, multisigWalletAddress);
+  }, [client, multisigWalletAddress]);
 
   return useQuery<WalletDetails | null>({
-    queryKey: ['daoDetails', daoAddressOrEns, queryNetwork],
+    queryKey: ['walletDetails', multisigWalletAddress, queryNetwork],
     queryFn,
     select: addAvatarToWallet(network),
     enabled,
@@ -62,18 +62,18 @@ export const useDaoQuery = (
   });
 };
 
-export const useDaoDetailsQuery = () => {
+export const useMSWalletDetailsQuery = () => {
   const {dao} = useParams();
   const navigate = useNavigate();
 
-  const daoAddressOrEns = dao?.toLowerCase();
-  const apiResponse = useDaoQuery(daoAddressOrEns);
+  const multisigWalletAddress = dao?.toLowerCase();
+  const apiResponse = useMSWalletQuery(multisigWalletAddress);
   useEffect(() => {
     if (apiResponse.isFetched) {
       if (apiResponse.error || apiResponse.data === null) {
         navigate(NotFound, {
           replace: true,
-          state: {incorrectDao: daoAddressOrEns},
+          state: {incorrectDao: multisigWalletAddress},
         });
       }
     }
@@ -81,7 +81,7 @@ export const useDaoDetailsQuery = () => {
     apiResponse.data,
     apiResponse.error,
     apiResponse.isFetched,
-    daoAddressOrEns,
+    multisigWalletAddress,
     navigate,
   ]);
   return apiResponse;

@@ -1,15 +1,10 @@
 import {useEffect, useState} from 'react';
 import {TimeFilter} from 'utils/constants';
 import {formatUnits} from 'utils/library';
-// import {historicalTokenBalances, timeFilterToMinutes} from 'utils/tokens';
 
 import {PollTokenOptions, VaultToken} from 'utils/types';
-import {useDaoBalances} from './useDaoBalances';
-import {useDaoDetailsQuery} from './useDaoDetails';
-// import {useDaoTransfers} from './useDaoTransfers';
-import {usePollTokenPrices} from './usePollTokenPrices';
-// import {usePollTransfersPrices} from './usePollTransfersPrices';
-import {useTokenMetadata} from './useTokenMetadata';
+import {useMSWalletBalances} from './useMSWalletBalances';
+import {useMSWalletDetailsQuery} from './useMSWalletDetails';
 
 /**
  * Hook encapsulating the logic for fetching the assets from the DAO vault, mapping them
@@ -19,19 +14,19 @@ import {useTokenMetadata} from './useTokenMetadata';
  * @returns A list of transfers and of tokens in the DAO treasury,
  * current USD sum value of all assets, and the price change in USD based on the filter.
  */
-export const useDaoVault = (
+export const useMSWalletVault = (
   options: PollTokenOptions = {filter: TimeFilter.day, interval: 300000}
 ) => {
   //console.log('useDaoVault > ');
-  const {data: daoDetails} = useDaoDetailsQuery();
-  //console.log('daoDetails :', daoDetails);
+  const {data: walletDetails} = useMSWalletDetailsQuery();
+  //console.log('walletDetails :', walletDetails);
 
-  const {data: balances} = useDaoBalances(daoDetails?.address || '');
+  const {data: balances} = useMSWalletBalances(walletDetails?.address || '');
   //console.log('balances :', balances);
   // const {data: tokensWithMetadata} = useTokenMetadata(balances || []);
   // const {data} = usePollTokenPrices(tokensWithMetadata, options);
 
-  // const {data: transfers} = useDaoTransfers(daoDetails?.address || '');
+  // const {data: transfers} = useDaoTransfers(walletDetails?.address || '');
   // const {data: transferPrices} = usePollTransfersPrices(transfers);
   // const [tokens, setTokens] = useState<VaultToken[]>([]);
 
@@ -85,7 +80,7 @@ export const useDaoVault = (
     // data,
     options.filter,
     // transfers,
-    daoDetails?.address,
+    walletDetails?.address,
   ]);
 
   // TODO: this is temporary. undo when refactoring hook with react query

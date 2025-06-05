@@ -32,7 +32,7 @@ export type DaoMetadata = {
   avatar?: string;
   links: DaoResourceLink[];
 };
-export type DaoDetails = {
+export type walletDetails = {
   address: string;
   ensDomain: string;
   metadata: DaoMetadata;
@@ -138,7 +138,7 @@ export type PluginRepoListItem = PluginRepoBase;
 
 /* Deposits */
 type DepositBaseParams = {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
 };
 
 export type DepositEthParams = DepositBaseParams & {
@@ -207,12 +207,12 @@ type WithdrawErc721Params = WithdrawParamsBase & {
   type: TokenType.ERC721;
   tokenAddress: string;
   tokenId: bigint;
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
 };
 
 type WithdrawErc1155Params = WithdrawParamsBase & {
   type: TokenType.ERC1155;
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   tokenAddress: string;
   tokenIds: bigint[];
   amounts: bigint[];
@@ -264,7 +264,7 @@ type Erc1155AssetBalance = AssetBalanceBase & {
 
 export type DaoBalancesQueryParams = Pagination & {
   sortBy?: AssetBalanceSortBy;
-  daoAddressOrEns?: string;
+  multisigWalletAddress?: string;
 };
 export enum AssetBalanceSortBy {
   LAST_UPDATED = 'lastUpdated',
@@ -345,7 +345,7 @@ export type Withdraw = (
 export type TransferQueryParams = Pagination & {
   sortBy?: TransferSortBy;
   type?: TransferType;
-  daoAddressOrEns?: string;
+  multisigWalletAddress?: string;
 };
 export enum TransferSortBy {
   CREATED_AT = 'createdAt',
@@ -392,7 +392,7 @@ export type GrantPermissionWithConditionDecodedParams = PermissionParamsBase & {
 };
 
 export type HasPermissionParams = PermissionParamsBase & {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   data?: Uint8Array;
 };
 
@@ -498,7 +498,7 @@ export type PluginPreparationQueryParams = Pagination & {
   type?: PluginPreparationType;
   pluginAddress?: string;
   pluginRepoAddress?: string;
-  daoAddressOrEns?: string;
+  multisigWalletAddress?: string;
 };
 export enum PluginPreparationType {
   INSTALLATION = 'Installation',

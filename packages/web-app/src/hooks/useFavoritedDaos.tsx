@@ -22,7 +22,6 @@ import {
   SupportedNetworks,
   getSupportedNetworkByChainId,
 } from 'utils/constants';
-import {resolveDaoAvatarIpfsCid} from 'utils/library';
 
 const DEFAULT_QUERY_PARAMS = {
   skip: 0,
@@ -128,7 +127,7 @@ export const useUpdateFavoritedDaoMutation = () => {
  * Add a favorited DAO to the cache
  * @param onSuccess callback to run once DAO has been added to the cache
  */
-export const useAddFavoriteDaoMutation = (onSuccess?: () => void) => {
+export const useaddFavoriteMSWalletMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -147,7 +146,7 @@ export const useAddFavoriteDaoMutation = (onSuccess?: () => void) => {
  * Remove a favorited DAO from the cache
  * @param onSuccess callback to run once favorited DAO has been removed successfully
  */
-export const useRemoveFavoriteDaoMutation = (onSuccess?: () => void) => {
+export const useremoveFavoriteMSWalletMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({

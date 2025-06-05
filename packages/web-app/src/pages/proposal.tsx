@@ -41,11 +41,10 @@ import {useProposalTransactionContext} from 'context/proposalTransaction';
 import {useSpecificProvider} from 'context/providers';
 import {useCache} from 'hooks/useCache';
 import {useClient} from 'hooks/useClient';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {MultisigMember, useDaoMembers} from 'hooks/useDaoMembers';
-import {useDaoProposal} from 'hooks/useDaoProposal';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
+import {MultisigMember, useMSWalletMembers} from '../hooks/useMSWalletMembers';
+import {useMSWalletProposal} from '../hooks/useMSWalletProposal';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
-// import {PluginTypes, usePluginClient} from 'hooks/usePluginClient';
 import {
   isTokenVotingSettings,
   usePluginSettings,
@@ -96,7 +95,7 @@ import {getFormattedUtcOffset, KNOWN_FORMATS} from '../utils/date';
 // import {fetchBalance, getTokenInfo, isNativeToken} from '../utils/tokens';
 // import {constants} from 'ethers';
 import {useWalletCanVote} from '../hooks/useWalletCanVote';
-import {useLoadTokenLogoURL} from '../hooks/useDaoBalances';
+import {useLoadTokenLogoURL} from '../hooks/useMSWalletBalances';
 
 // TODO: @Sepehr Please assign proper tags on action decoding
 // const PROPOSAL_TAGS = ['Finance', 'Withdraw'];
@@ -120,19 +119,23 @@ const Proposal: React.FC = () => {
   const {getImgUrl} = useLoadTokenLogoURL();
   // console.log('>>>>> tokenList :', tokenList)
 
-  const {data: daoDetails, isLoading: detailsAreLoading} = useDaoDetailsQuery();
+  const {data: walletDetails, isLoading: detailsAreLoading} =
+    useMSWalletDetailsQuery();
   const {
     data: {members: daoMemebers},
     isLoading,
-  } = useDaoMembers(daoDetails?.address || '', 'multisig.plugin.dao.eth');
+  } = useMSWalletMembers(
+    walletDetails?.address || '',
+    'multisig.plugin.dao.eth'
+  );
 
   const {data: daoSettings} = usePluginSettings(
-    daoDetails?.address as string,
+    walletDetails?.address as string,
     'multisig.plugin.dao.eth' as PluginTypes
   );
   // const {
   //   data: {members},
-  // } = useDaoMembers(daoDetails?.address || '', 'multisig.plugin.dao.eth');
+  // } = useDaoMembers(walletDetails?.address || '', 'multisig.plugin.dao.eth');
   //
   const multisigDAO = true;
 
@@ -170,8 +173,8 @@ const Proposal: React.FC = () => {
     data: proposal,
     error: proposalError,
     isLoading: proposalIsLoading,
-  } = useDaoProposal(
-    daoDetails?.address as string,
+  } = useMSWalletProposal(
+    walletDetails?.address as string,
     proposalId!,
     pluginType,
     pluginAddress,
@@ -193,8 +196,6 @@ const Proposal: React.FC = () => {
   );
   // const canVote = true;
   // console.log('canVote >>>> :', canVote);
-
-  // const pluginClient = usePluginClient(pluginType);
 
   // ref used to hold "memories" of previous "state"
   // across renders in order to automate the following states:
@@ -258,7 +259,7 @@ const Proposal: React.FC = () => {
       to: {address: proposal.to || ''},
       tokenBalance: 0,
       tokenAddress: proposal.tokenAddress,
-      tokenImgUrl: getImgUrl(proposal.token.symbol, daoDetails?.chain || 1),
+      tokenImgUrl: getImgUrl(proposal.token.symbol, walletDetails?.chain || 1),
       tokenName: proposal.token.name,
       tokenPrice: 0,
       tokenSymbol: proposal.token.symbol,
@@ -268,7 +269,7 @@ const Proposal: React.FC = () => {
 
     // );
     setDecodedActions([withdrawAction]);
-  }, [client, daoDetails?.chain, getImgUrl, network, proposal, provider, t]);
+  }, [client, walletDetails?.chain, getImgUrl, network, proposal, provider, t]);
 
   // caches the status for breadcrumb
   useEffect(() => {
@@ -604,7 +605,7 @@ const Proposal: React.FC = () => {
               navigate(
                 generatePath(path, {
                   network,
-                  dao: daoDetails?.address,
+                  dao: walletDetails?.address,
                 })
               )
             }

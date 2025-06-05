@@ -5,9 +5,7 @@ import {TFunction, useTranslation} from 'react-i18next';
 import {NavigateFunction, generatePath, useNavigate} from 'react-router-dom';
 
 import {useNetwork} from 'context/network';
-import {useDaoMembers} from 'hooks/useDaoMembers';
-// import {PluginTypes} from 'hooks/usePluginClient';
-// import {trackEvent} from 'services/analytics';
+import {useMSWalletMembers} from '../../hooks/useMSWalletMembers';
 import {
   CHAIN_METADATA,
   PROPOSAL_STATE_LABELS,
@@ -29,9 +27,7 @@ import {shortenAddress} from '../../utils/library';
 
 type ProposalListProps = {
   proposals: Array<ProposalListItem>;
-  daoAddressOrEns: string;
-  pluginAddress: string;
-  pluginType: PluginTypes;
+  multisigWalletAddress: string;
   isLoading?: boolean;
 };
 
@@ -52,9 +48,7 @@ function isMultisigProposalListItem(
 
 const ProposalList: React.FC<ProposalListProps> = ({
   proposals,
-  daoAddressOrEns,
-  pluginAddress,
-  pluginType,
+  multisigWalletAddress,
   isLoading,
 }) => {
   const {t} = useTranslation();
@@ -62,9 +56,8 @@ const ProposalList: React.FC<ProposalListProps> = ({
   const {address} = useWallet();
   const navigate = useNavigate();
 
-  const {data: members, isLoading: areMembersLoading} = useDaoMembers(
-    pluginAddress,
-    pluginType
+  const {data: members, isLoading: areMembersLoading} = useMSWalletMembers(
+    multisigWalletAddress
   );
 
   const mappedProposals: ({id: string} & CardProposalProps)[] = useMemo(
@@ -76,7 +69,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
           network,
           navigate,
           t,
-          daoAddressOrEns,
+          multisigWalletAddress,
           address
         )
       ),
@@ -86,7 +79,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       network,
       navigate,
       t,
-      daoAddressOrEns,
+      multisigWalletAddress,
       address,
     ]
   );
@@ -110,7 +103,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   return (
     <div className="space-y-3" data-testid="proposalList">
       {mappedProposals.map(({id, ...p}) => (
-        <CardProposal {...p} key={id} />
+        <CardProposal addressLabel={''} {...p} key={id} />
       ))}
     </div>
   );
@@ -139,7 +132,7 @@ export function proposal2CardProps(
   network: SupportedNetworks,
   navigate: NavigateFunction,
   t: TFunction,
-  daoAddressOrEns: string,
+  multisigWalletAddress: string,
   address: string | null
 ): {id: string; addressLabel: string} & CardProposalProps {
   //console.log('proposal.id.toString() : ', proposal.id.toString());
@@ -164,133 +157,16 @@ export function proposal2CardProps(
       navigate(
         generatePath(Proposal, {
           network,
-          dao: daoAddressOrEns,
+          dao: multisigWalletAddress,
           id: proposal.id.toString(),
         })
       );
     },
   };
 
-  // if (isErc20VotingProposal(proposal)) {
-  //   const specificProps = {
-  //     voteTitle: t('governance.proposals.voteTitle'),
-  //     stateLabel: PROPOSAL_STATE_LABELS,
-  //
-  //     alertMessage: translateProposalDate(
-  //       proposal.status,
-  //       proposal.startDate,
-  //       proposal.endDate
-  //     ),
-  //   };
-  //
-  //   const proposalProps = {...props, ...specificProps};
-  //
-  //   // calculate winning option for active proposal
-  //   if (proposal.status.toLowerCase() === 'active') {
-  //     const results = getErc20Results(
-  //       proposal.result,
-  //       proposal.token.decimals,
-  //       proposal.totalVotingWeight
-  //     );
-  //
-  //     // The winning option is the outcome of the proposal if duration was to be reached
-  //     // as is. Note that the "yes" option can only be "winning" if it has met the support
-  //     // threshold criteria (N_yes / (N_yes + N_no)) > supportThreshold
-  //     let winningOption: OptionResult[TokenVotingOptions] | undefined;
-  //
-  //     const yesNoCount = BigNumber.from(proposal.result.yes).add(
-  //       proposal.result.no
-  //     );
-  //
-  //     // if there are any votes find the winning option
-  //     if (yesNoCount.gt(0)) {
-  //       if (
-  //         BigNumber.from(proposal.result.yes).div(yesNoCount).toNumber() >
-  //         proposal.settings.supportThreshold
-  //       ) {
-  //         winningOption = {...results.yes, option: 'yes'};
-  //       } else {
-  //         // technically abstain never "wins" the vote, but showing on UI
-  //         // if there are more 'abstain' votes than 'no' votes
-  //         winningOption = BigNumber.from(proposal.result.no).gte(
-  //           proposal.result.abstain
-  //         )
-  //           ? {...results.no, option: 'no'}
-  //           : {...results.abstain, option: 'abstain'};
-  //       }
-  //     } else {
-  //       if (BigNumber.from(proposal.result.abstain).gt(0))
-  //         winningOption = {...results.abstain, option: 'abstain'};
-  //     }
-  //
-  //     // show winning vote option
-  //     if (winningOption) {
-  //       const options: {[k in TokenVotingOptions]: string} = {
-  //         yes: t('votingTerminal.yes'),
-  //         no: t('votingTerminal.no'),
-  //         abstain: t('votingTerminal.abstain'),
-  //       };
-  //
-  //       const votedAlertLabel = proposal.votes?.some(
-  //         v => v.address.toLowerCase() === address?.toLowerCase()
-  //       )
-  //         ? t('governance.proposals.alert.voted')
-  //         : undefined;
-  //
-  //       const activeProps = {
-  //         voteProgress: winningOption.percentage,
-  //         voteLabel: options[winningOption.option],
-  //         tokenSymbol: proposal.token.symbol,
-  //         tokenAmount: winningOption.value.toString(),
-  //         votedAlertLabel,
-  //       };
-  //       return {...proposalProps, ...activeProps};
-  //     }
-  //
-  //     // don't show any voting options if neither of them has greater than
-  //     // defined support threshold
-  //     return proposalProps;
-  //   } else {
-  //     return proposalProps;
-  //   }
-  // } else if (isMultisigProposalListItem(proposal)) {
-  //   const specificProps = {
-  //     voteTitle: t('votingTerminal.approvedBy'),
-  //     stateLabel: PROPOSAL_STATE_LABELS,
-  //     alertMessage: translateProposalDate(
-  //       proposal.status,
-  //       proposal.startDate,
-  //       proposal.endDate
-  //     ),
-  //   };
-  //   if (proposal.status.toLowerCase() === 'active') {
-  //     const votedAlertLabel = proposal.approvals?.some(
-  //       v =>
-  //         stripPlgnAdrFromProposalId(v).toLowerCase() === address?.toLowerCase()
-  //     )
-  //       ? t('governance.proposals.alert.voted')
-  //       : undefined;
-  //
-  //     const activeProps = {
-  //       votedAlertLabel,
-  //       voteProgress: relativeVoteCount(proposal.approvals.length, memberCount),
-  //       winningOptionValue: `${proposal.approvals.length} ${t(
-  //         'votingTerminal.ofMemberCount',
-  //         {memberCount}
-  //       )}`,
-  //     };
-  //     return {...props, ...specificProps, ...activeProps};
-  //   } else {
-  //     return {...props, ...specificProps};
-  //   }
   const specificProps = {
     voteTitle: t('votingTerminal.approvedBy'),
     stateLabel: PROPOSAL_STATE_LABELS,
-    // alertMessage: translateProposalDate(
-    //   proposal.status,
-    //   proposal.startDate,
-    //   proposal.endDate
-    // ),
     alertMessage: 'alert message',
   };
   if (proposal.status.toLowerCase() === 'active') {

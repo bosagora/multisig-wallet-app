@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 
 import {recalculateStatus} from 'utils/proposals';
 import {DetailedProposal, HookData, ProposalListItem} from 'utils/types';
-import {useDaoDetailsQuery} from './useDaoDetails';
+import {useMSWalletDetailsQuery} from './useMSWalletDetails';
 import {PluginTypes} from 'utils/aragon/types';
 import {useClient} from './useClient';
 
@@ -28,7 +28,7 @@ export function useProposals(
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {data: daoDetails} = useDaoDetailsQuery();
+  const {data: walletDetails} = useMSWalletDetailsQuery();
 
   const {client} = useClient();
   client?.multiSigWallet.attach(daoAddress);
@@ -84,8 +84,8 @@ export function useProposals(
             proposal = {
               ...proposal,
               dao: {
-                address: daoDetails?.address,
-                name: daoDetails?.metadata.name,
+                address: walletDetails?.address,
+                name: walletDetails?.metadata.name,
               },
               settings: {minApprovals: requiredCount, onlyListed: true},
             } as unknown as DetailedProposal;

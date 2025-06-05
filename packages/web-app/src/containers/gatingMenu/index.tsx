@@ -13,20 +13,11 @@ import {
 } from 'containers/networkErrorMenu';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
-// import {PluginTypes} from 'hooks/usePluginClient';
 import WalletIcon from 'public/wallet.svg';
 import {Governance, Dashboard} from 'utils/paths';
-// import {
-//   DaoDetails,
-//   Erc20TokenDetails,
-//   Erc20WrapperTokenDetails,
-// } from '@aragon/sdk-client';
-// import {toDisplayEns} from 'utils/library';
-// import {useExistingToken} from 'hooks/useExistingToken';
 import {htmlIn} from 'utils/htmlIn';
 import {PluginTypes} from '../../utils/aragon/types';
 import {WalletDetails} from 'multisig-wallet-sdk-client';
-// import {useGovTokensWrapping} from 'context/govTokensWrapping';
 
 const TokenContainer = ({tokenName}: {tokenName: string}) => {
   const {t} = useTranslation();
@@ -73,14 +64,14 @@ const WalletContainer = () => {
 };
 
 type Props = {
-  // daoDetails: DaoDetails;
-  daoDetails: WalletDetails;
+  // walletDetails: walletDetails;
+  walletDetails: WalletDetails;
   pluginType: PluginTypes;
   // daoToken?: Erc20TokenDetails | Erc20WrapperTokenDetails;
 };
 
 export const GatingMenu: React.FC<Props> = ({
-  daoDetails,
+  walletDetails,
   pluginType,
   // daoToken,
 }) => {
@@ -91,7 +82,7 @@ export const GatingMenu: React.FC<Props> = ({
   // const {handleOpenModal} = useGovTokensWrapping();
   const handleOpenModal = () => {};
 
-  // const {isDAOTokenWrapped} = useExistingToken({daoDetails, daoToken});
+  // const {isDAOTokenWrapped} = useExistingToken({walletDetails, daoToken});
 
   const isTokenAbsenceAlert = pluginType === 'token-voting.plugin.dao.eth';
 
@@ -127,7 +118,7 @@ export const GatingMenu: React.FC<Props> = ({
         {/*          generatePath(Community, {*/}
         {/*            network,*/}
         {/*            dao:*/}
-        {/*              toDisplayEns(daoDetails.ensDomain) || daoDetails.address,*/}
+        {/*              toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
         {/*          })*/}
         {/*        );*/}
         {/*      }}*/}
@@ -141,7 +132,7 @@ export const GatingMenu: React.FC<Props> = ({
         {/*          generatePath(Governance, {*/}
         {/*            network,*/}
         {/*            dao:*/}
-        {/*              toDisplayEns(daoDetails.ensDomain) || daoDetails.address,*/}
+        {/*              toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
         {/*          })*/}
         {/*        );*/}
         {/*        close('gating');*/}
@@ -156,7 +147,7 @@ export const GatingMenu: React.FC<Props> = ({
         {/*      navigate(*/}
         {/*        generatePath(Governance, {*/}
         {/*          network,*/}
-        {/*          dao: toDisplayEns(daoDetails.ensDomain) || daoDetails.address,*/}
+        {/*          dao: toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
         {/*        })*/}
         {/*      );*/}
         {/*      close('gating');*/}
@@ -172,7 +163,7 @@ export const GatingMenu: React.FC<Props> = ({
             navigate(
               generatePath(Dashboard, {
                 network,
-                dao: daoDetails.address,
+                dao: walletDetails.address,
               })
             );
             close('gating');

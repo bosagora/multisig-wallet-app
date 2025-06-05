@@ -5,7 +5,7 @@ import {usePrivacyContext} from 'context/privacyContext';
 import {CHAIN_METADATA, PENDING_MULTISIG_PROPOSALS_KEY} from 'utils/constants';
 import {formatUnits} from 'utils/library';
 import {DetailedProposal, HookData, ProposalId} from 'utils/types';
-import {useDaoDetailsQuery} from './useDaoDetails';
+import {useMSWalletDetailsQuery} from './useMSWalletDetails';
 import {useClient} from './useClient';
 import {BigNumber, constants} from 'ethers';
 import {PluginTypes, ProposalStatus} from '../utils/aragon/types';
@@ -26,7 +26,7 @@ import {pendingMultisigApprovalsVar} from '../context/apolloClient';
  * @param pluginAddress plugin address
  * @returns a detailed proposal
  */
-export const useDaoProposal = (
+export const useMSWalletProposal = (
   daoAddress: string,
   proposalId: ProposalId | undefined,
   pluginType: PluginTypes,
@@ -44,7 +44,7 @@ export const useDaoProposal = (
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
   const {client} = useClient();
-  const {data: daoDetails} = useDaoDetailsQuery();
+  const {data: walletDetails} = useMSWalletDetailsQuery();
 
   const cachedMultisigVotes = useReactiveVar(pendingMultisigApprovalsVar);
 
@@ -65,12 +65,15 @@ export const useDaoProposal = (
     [cachedMultisigVotes, daoAddress, pluginType]
   );
 
-  function displayFunctionData2(data: ISmartContractFunctionData): object {
+  function displayFunctionData2(data: ISmartContractFunctionData): {
+    to?: string;
+    amount?: string;
+  } {
     const contents: string[] = [];
     contents.push(`Interface: ${data.interfaceName}`);
     contents.push(`Function: ${data.fragment.name}`);
     contents.push('Parameter:');
-    const tt = {};
+    const tt: {[key: string]: string} = {};
     for (let idx = 0; idx < data.fragment.inputs.length; idx++) {
       tt[data.fragment.inputs[idx].name] = String(data.parameter[idx]);
     }
@@ -129,7 +132,9 @@ export const useDaoProposal = (
           const amount =
             proposal.data === '0x'
               ? Number(formatUnits(proposal.value, 18))
-              : Number(formatUnits(ret?.amount, 18));
+              : ret?.amount
+              ? Number(formatUnits(ret.amount, 18))
+              : 0;
           const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
           const token = await getTokenInfo(
             tokenAddress || '',
@@ -141,8 +146,8 @@ export const useDaoProposal = (
           setData({
             ...proposal,
             dao: {
-              address: daoDetails?.address,
-              name: daoDetails?.metadata.name,
+              address: walletDetails?.address,
+              name: walletDetails?.metadata.name,
             },
             settings: {minApprovals: requiredCount, onlyListed: true},
             token,
@@ -177,8 +182,8 @@ export const useDaoProposal = (
     proposalId,
     network,
     provider,
-    daoDetails?.address,
-    daoDetails?.metadata.name,
+    walletDetails?.address,
+    walletDetails?.metadata.name,
   ]);
 
   return {data, error, isLoading};

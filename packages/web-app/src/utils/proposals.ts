@@ -40,21 +40,6 @@ import {
   ProposalMetadata,
   ProposalStatus,
 } from 'utils/aragon/types';
-
-// import {ProposalVoteResults} from 'containers/votingTerminal';
-// import {
-//   CachedProposal,
-//   PendingMultisigApprovals,
-//   pendingMultisigApprovalsVar,
-//   PendingMultisigExecution,
-//   PendingTokenBasedExecution,
-//   PendingTokenBasedVotes,
-//   pendingTokenBasedVotesVar,
-// } from 'context/apolloClient';
-// import {MultisigMember} from 'hooks/useDaoMembers';
-// import {PluginTypes} from 'hooks/usePluginClient';
-// import {isMultisigVotingSettings} from 'hooks/usePluginSettings';
-import {i18n} from '../../i18n.config';
 import {getFormattedUtcOffset, KNOWN_FORMATS} from './date';
 // import {
 //   PENDING_EXECUTION_KEY,

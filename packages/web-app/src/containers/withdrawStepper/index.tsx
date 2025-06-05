@@ -21,13 +21,13 @@ import {WalletDetails} from 'multisig-wallet-sdk-client';
 
 interface WithdrawStepperProps {
   enableTxModal: () => void;
-  daoDetails: WalletDetails;
+  walletDetails: WalletDetails;
   pluginSettings: SupportedVotingSettings;
 }
 
 const WithdrawStepper: React.FC<WithdrawStepperProps> = ({
   enableTxModal,
-  daoDetails,
+  walletDetails,
   pluginSettings,
 }) => {
   const {t} = useTranslation();
@@ -55,7 +55,7 @@ const WithdrawStepper: React.FC<WithdrawStepperProps> = ({
         processType="ProposalCreation"
         returnPath={generatePath(Finance, {
           network,
-          dao: toDisplayEns(daoDetails?.ensDomain) || daoDetails?.address,
+          dao: walletDetails?.address,
         })}
       >
         <Step

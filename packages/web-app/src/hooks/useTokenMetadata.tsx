@@ -6,7 +6,7 @@ import {CHAIN_METADATA} from 'utils/constants';
 import {HookData, TokenWithMetadata} from 'utils/types';
 import {AssetBalance} from '../utils/aragon/sdk-client-types';
 import {TokenType} from '../utils/aragon/sdk-client-common-types';
-import {useLoadTokenLogoURL} from './useDaoBalances';
+import {useLoadTokenLogoURL} from './useMSWalletBalances';
 
 export const useTokenMetadata = (
   assets: AssetBalance[]
@@ -24,7 +24,10 @@ export const useTokenMetadata = (
 
         // map metadata to token balances
         const tokensWithMetadata = assets?.map((asset, index) => ({
-          balance: asset.type !== TokenType.ERC721 ? asset.balance : BigInt(0),
+          balance:
+            asset.type === TokenType.ERC20 || asset.type === TokenType.NATIVE
+              ? asset.balance
+              : BigInt(0),
           metadata: {
             ...(asset.type === TokenType.ERC20
               ? {
@@ -41,8 +44,14 @@ export const useTokenMetadata = (
                 }),
 
             price: 1,
-            apiId: index,
-            imgUrl: getImgUrl(asset.symbol, CHAIN_METADATA[network].id) || '',
+            apiId: String(index),
+            imgUrl:
+              getImgUrl(
+                asset.type === TokenType.ERC20
+                  ? asset.symbol
+                  : CHAIN_METADATA[network].nativeCurrency.symbol,
+                CHAIN_METADATA[network].id
+              ) || '',
           },
         }));
 

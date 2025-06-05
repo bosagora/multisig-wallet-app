@@ -4,10 +4,8 @@ import {formatUnits, isAddress} from 'ethers/lib/utils';
 import React, {useEffect, useState} from 'react';
 
 import {useNetwork} from 'context/network';
-// import {useSpecificProvider} from 'context/providers';
-import {MultisigMember} from 'hooks/useDaoMembers';
+import {MultisigMember} from '../../hooks/useMSWalletMembers';
 import {CHAIN_METADATA} from 'utils/constants';
-// import {getTokenInfo} from 'utils/tokens';
 
 type MembersListProps = {
   members: Array<MultisigMember>;

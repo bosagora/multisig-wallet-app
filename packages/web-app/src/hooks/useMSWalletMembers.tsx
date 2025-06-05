@@ -23,12 +23,12 @@ export type DaoMembers = {
 async function fetchDaoMembers(
   client: Client | undefined,
   address: string | null,
-  daoAddressOrEns: string
+  multisigWalletAddress: string
 ) {
   if (client && address) {
-    client.multiSigWallet.attach(daoAddressOrEns);
-    const isOwner = await client.multiSigWallet.isOwner(address);
-    //console.log('isOwner :', isOwner);
+    client.multiSigWallet.attach(multisigWalletAddress);
+    // const isOwner = await client.multiSigWallet.isOwner(address);
+    // console.log('isOwner :', isOwner);
     return client
       ? await client.multiSigWallet.getMembers()
       : Promise.reject(new Error('Client not defined'));
@@ -41,14 +41,13 @@ async function fetchDaoMembers(
  * totalMembers included in the response is the total number of members in the
  * DAO, and not the number of members returned when filtering by search term.
  *
- * @param pluginAddress plugin from which members will be retrieved
- * @param pluginType plugin type
+ * @param multisigWalletAddress
  * @param searchTerm Optional member search term  (e.g. '0x...')
  * @returns A list of DAO members, the total number of members in the DAO and
  * the DAO token (if token-based)
  */
-export const useDaoMembers = (
-  daoAddressOrEns: string,
+export const useMSWalletMembers = (
+  multisigWalletAddress: string,
   searchTerm?: string
 ): HookData<DaoMembers> => {
   const [data, setData] = useState<MultisigMember[]>([]);
@@ -60,7 +59,6 @@ export const useDaoMembers = (
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
 
-  const pluginType = 'multisig.plugin.dao.eth';
   const {client} = useClient();
 
   const {address} = useWallet();
@@ -68,31 +66,26 @@ export const useDaoMembers = (
   // Fetch the list of members for a this DAO.
   useEffect(() => {
     // console.log(
-    //   'useDaoMembers > useEffect > daoAddressOrEns:',
-    //   daoAddressOrEns
+    //   'useDaoMembers > useEffect > multisigWalletAddress:',
+    //   multisigWalletAddress
     // );
     async function fetchMembers() {
       try {
+        setIsLoading(true);
 
-        if (pluginType === 'multisig.plugin.dao.eth' || network === 'goerli') {
-          setIsLoading(true);
+        const response = await fetchDaoMembers(
+          client,
+          address,
+          multisigWalletAddress
+        );
+        //console.log('response :', response);
 
-          const response = await fetchDaoMembers(
-            client,
-            address,
-            daoAddressOrEns
-          );
-          //console.log('response :', response);
-
-          if (!response) {
-            setData([]);
-            return;
-          }
-
-          setRawMembers(response);
-        } else {
-          setData([] as MultisigMember[]);
+        if (!response) {
+          setData([]);
+          return;
         }
+
+        setRawMembers(response);
         setIsLoading(false);
         setError(undefined);
       } catch (err) {
@@ -102,7 +95,7 @@ export const useDaoMembers = (
     }
 
     fetchMembers();
-  }, [address, client, daoAddressOrEns, network, pluginType, provider]);
+  }, [address, client, multisigWalletAddress, network, provider]);
 
   // map the members to the desired structure
   // Doing this separately to get rid of duplicate calls
@@ -131,7 +124,7 @@ export const useDaoMembers = (
         )
       );
     }
-  }, [data, daoAddressOrEns, searchTerm]);
+  }, [data, multisigWalletAddress, searchTerm]);
   //
   return {
     data: {

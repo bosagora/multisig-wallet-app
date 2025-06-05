@@ -17,7 +17,7 @@ type OverviewDAOHeaderProps = {
   onExitButtonClick?: () => void;
 };
 
-export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
+export const OverviewMSWalletHeader: React.FC<OverviewDAOHeaderProps> = ({
   navLabel,
   returnPath,
   onExitButtonClick,
@@ -99,7 +99,7 @@ const OverviewCards = [
   />,
 ];
 
-export const OverviewDAOStep: React.FC = () => {
+export const OverviewMSWalletStep: React.FC = () => {
   const {isDesktop} = useScreen();
 
   if (isDesktop) {

@@ -45,7 +45,7 @@ export async function getFavoritedDaoFromCache(
   chain: SupportedChainID
 ) {
   if (!daoAddress)
-    return Promise.reject(new Error('daoAddressOrEns must be defined'));
+    return Promise.reject(new Error('multisigWalletAddress must be defined'));
 
   if (!chain) return Promise.reject(new Error('chain must be defined'));
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {Action} from 'utils/types';
 // import {AddAddressCard} from './actions/addAddressCard';
 // import {MintTokenCard} from './actions/mintTokenCard';
@@ -17,7 +17,7 @@ type ActionsFilterProps = {
 };
 
 export const ActionsFilter: React.FC<ActionsFilterProps> = ({action}) => {
-  const {data: dao} = useDaoDetailsQuery();
+  const {data: dao} = useMSWalletDetailsQuery();
 
   // all actions have names
   switch (action.name) {
@@ -31,12 +31,12 @@ export const ActionsFilter: React.FC<ActionsFilterProps> = ({action}) => {
     //   return <RemoveAddressCard action={action} />;
     // case 'mint_tokens':
     //   return <MintTokenCard action={action} />;
-    case 'modify_metadata':
-      return <ModifyMetadataCard action={action} />;
-    case 'modify_token_voting_settings':
-      return <ModifyMvSettingsCard action={action} />;
-    case 'modify_multisig_voting_settings':
-      return <ModifyMultisigSettingsCard action={action} />;
+    // case 'modify_metadata':
+    //   return <ModifyMetadataCard action={action} />;
+    // case 'modify_token_voting_settings':
+    //   return <ModifyMvSettingsCard action={action} />;
+    // case 'modify_multisig_voting_settings':
+    //   return <ModifyMultisigSettingsCard action={action} />;
     // case 'external_contract_action':
     //   return <SCCExecutionCard action={action} />;
     // case 'wallet_connect_action':

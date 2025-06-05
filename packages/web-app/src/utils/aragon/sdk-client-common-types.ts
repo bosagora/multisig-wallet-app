@@ -32,7 +32,7 @@ export type MetadataAbiInput = {
 };
 
 export type PrepareInstallationParams = {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   pluginRepo: string;
   version?: {
     build: number;
@@ -69,7 +69,7 @@ export type DecodedApplyInstallationParams = ApplyInstallationParamsBase & {
 
 /* Uninstallation */
 export type PrepareUninstallationParams = {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   pluginAddress: string;
   pluginInstallationIndex?: number;
   uninstallationParams?: any[];
@@ -217,7 +217,7 @@ export type ProposalListItemBase = {
 
 export type PrepareUpdateParams = {
   pluginAddress: string;
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   pluginInstallationIndex?: number;
   newVersion: VersionTag;
   updateParams?: any[];

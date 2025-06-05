@@ -28,13 +28,13 @@ const DEFAULT_QUERY_PARAMS = {
  * @param options query parameters for fetching the DAOs
  * @returns list of DAOs based on given params
  */
-async function fetchDaos(
+async function fetchMSWallets(
   client: Client | undefined,
   address: string | null,
   options: QueryOption
 ) {
   if (address) {
-    //console.log('fetchDaos > options:', options);
+    //console.log('fetchMSWallets > options:', options);
     return client
       ? await client.multiSigWalletFactory.getWallets(address, options)
       : Promise.reject(new Error('Client not defined'));
@@ -51,7 +51,7 @@ async function fetchDaos(
  * @param options.direction sort direction
  * @returns A list of daos and their respective infos (metadata, plugins, etc.)
  */
-export const useDaosInfiniteQuery = (
+export const useMSWalletsInfiniteQuery = (
   address: string,
   enabled = true,
   {
@@ -66,7 +66,7 @@ export const useDaosInfiniteQuery = (
     queryKey: ['infiniteDaos'],
     queryFn: async ({pageParam = 0}) => {
       const skip = limit * pageParam;
-      return fetchDaos(client, address, {skip, limit, direction});
+      return fetchMSWallets(client, address, {skip, limit, direction});
     },
     getNextPageParam: (
       lastPage: WalletDetails[],

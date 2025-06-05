@@ -17,9 +17,9 @@ import NetworkErrorMenu from 'containers/networkErrorMenu';
 import TransferMenu from 'containers/transferMenu';
 import {WalletMenu} from 'containers/walletMenu';
 import {useTransactionDetailContext} from 'context/transactionDetail';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useWallet} from 'hooks/useWallet';
-import CreateDAO from 'pages/createDAO';
+import CreateMSWallet from './pages/createMSWallet';
 import {FormProvider, useForm} from 'react-hook-form';
 import {identifyUser, trackPage} from 'services/analytics';
 import {NotFound} from 'utils/paths';
@@ -72,7 +72,7 @@ function App() {
             <Route path="/" element={<ExplorePage />} />
           </Route>
           <Route element={<DaoWrapper />}>
-            <Route path="/create" element={<CreateDAO />} />
+            <Route path="/create" element={<CreateMSWallet />} />
           </Route>
           <Route path="/multisig-wallets/:network/:dao">
             <Route element={<DaoWrapper />}>
@@ -149,7 +149,7 @@ const ExploreWrapper: React.FC = () => (
 );
 
 const DaoWrapper: React.FC = () => {
-  // const {data: walletDetails} = useDaoDetailsQuery();
+  // const {data: walletDetails} = useMSWalletDetailsQuery();
 
   // using isOpen to conditionally render TransactionDetail so that
   // api call is not made on mount regardless of whether the user

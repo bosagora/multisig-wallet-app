@@ -12,26 +12,18 @@ import styled from 'styled-components';
 import {MembersList} from 'components/membersList';
 import {Loading} from 'components/temporary';
 import {useNetwork} from 'context/network';
-import {useDaoMembers} from 'hooks/useDaoMembers';
-// import {PluginTypes} from 'hooks/usePluginClient';
+import {useMSWalletMembers} from '../../hooks/useMSWalletMembers';
 import useScreen from 'hooks/useScreen';
-import {
-  Community,
-  ManageMembersProposal,
-  MintTokensProposal,
-} from 'utils/paths';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-// import {useExistingToken} from 'hooks/useExistingToken';
-// import {useGovTokensWrapping} from 'context/govTokensWrapping';
+import {Community, ManageMembersProposal} from 'utils/paths';
 
 type Props = {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   pluginType?: string;
   horizontal?: boolean;
 };
 
 export const MembershipSnapshot: React.FC<Props> = ({
-  daoAddressOrEns,
+  multisigWalletAddress,
   pluginType = 'multisig.plugin.dao.eth',
   horizontal = false,
 }) => {
@@ -45,20 +37,20 @@ export const MembershipSnapshot: React.FC<Props> = ({
   const {
     data: {members},
     isLoading,
-  } = useDaoMembers(daoAddressOrEns, pluginType);
+  } = useMSWalletMembers(multisigWalletAddress, pluginType);
   const totalMemberCount = members.length;
 
-  // const {data: daoDetails} = useDaoDetailsQuery();
+  // const {data: walletDetails} = useMSWalletDetailsQuery();
 
   // const {isDAOTokenWrapped, isTokenMintable} = useExistingToken({
   //   daoToken,
-  //   daoDetails,
+  //   walletDetails,
   // });
   //
   const walletBased = pluginType === 'multisig.plugin.dao.eth';
 
   const headerButtonHandler = () => {
-    generatePath(ManageMembersProposal, {network, dao: daoAddressOrEns});
+    generatePath(ManageMembersProposal, {network, dao: multisigWalletAddress});
   };
 
   if (isLoading) return <Loading />;
@@ -97,7 +89,9 @@ export const MembershipSnapshot: React.FC<Props> = ({
             iconRight={<IconChevronRight />}
             label={t('labels.seeAll')}
             onClick={() =>
-              navigate(generatePath(Community, {network, dao: daoAddressOrEns}))
+              navigate(
+                generatePath(Community, {network, dao: multisigWalletAddress})
+              )
             }
           />
         </div>
@@ -130,7 +124,9 @@ export const MembershipSnapshot: React.FC<Props> = ({
         iconRight={<IconChevronRight />}
         label={t('labels.seeAll')}
         onClick={() =>
-          navigate(generatePath(Community, {network, dao: daoAddressOrEns}))
+          navigate(
+            generatePath(Community, {network, dao: multisigWalletAddress})
+          )
         }
       />
     </VerticalContainer>

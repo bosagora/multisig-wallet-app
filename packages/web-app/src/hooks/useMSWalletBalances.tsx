@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {CHAIN_METADATA} from 'utils/constants';
 
 import {HookData} from 'utils/types';
@@ -9,8 +9,22 @@ import {TokenType} from '../utils/aragon/sdk-client-common-types';
 import {AssetBalance} from '../utils/aragon/sdk-client-types';
 import loadedTokensMeta from '../../data/tokens.json';
 
-export const useLoadTokenLogoURL = (): {getImgUrl: any; tokenList: any} => {
-  const [tokenList, setTokenList] = useState({});
+interface Token {
+  symbol: string;
+  chainId: number;
+  address: string;
+  logoURI: string;
+}
+
+interface TokenList {
+  tokens: Token[];
+}
+
+export const useLoadTokenLogoURL = (): {
+  getImgUrl: any;
+  tokenList: TokenList;
+} => {
+  const [tokenList, setTokenList] = useState<TokenList>({tokens: []});
   useEffect(() => {
     // async function loadTokens() {
     //   // const loadedTokensMeta = await fetch('/data/tokens.json') // 파일 경로를 지정합니다.
@@ -47,7 +61,7 @@ export const useLoadTokenLogoURL = (): {getImgUrl: any; tokenList: any} => {
   return {getImgUrl, tokenList};
 };
 
-export const useDaoBalances = (
+export const useMSWalletBalances = (
   daoAddress: string
 ): HookData<Array<AssetBalance> | undefined> => {
   const {network} = useNetwork();
@@ -78,7 +92,7 @@ export const useDaoBalances = (
             : [];
         const nonZeroBalances = [
           ...new Set(nonZeroBalancesBefore.concat(loadedTokens)),
-        ];
+        ] as string[];
 
         const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
         let nativeTokenBalances = [] as Array<AssetBalance>;
@@ -102,11 +116,12 @@ export const useDaoBalances = (
                 false
               );
               return {
+                id: contractAddress,
                 address: contractAddress,
                 name,
                 symbol,
                 updateDate: new Date(),
-                type: TokenType.ERC20,
+                type: TokenType.ERC20 as const,
                 balance: BigInt(tokenBalance),
                 decimals,
               };

@@ -6,9 +6,8 @@ import {useEffect, useState} from 'react';
 // } from '@aragon/sdk-client';
 
 import {HookData, ProposalId} from 'utils/types';
-// import {PluginTypes, usePluginClient} from './usePluginClient';
 import {stripPlgnAdrFromProposalId} from '../utils/proposals';
-import {MultisigMember} from './useDaoMembers';
+import {MultisigMember} from './useMSWalletMembers';
 
 /**
  * Check whether wallet is eligible to vote on proposal
@@ -30,7 +29,6 @@ export const useWalletCanVote = (
   // const isMultisigClient = pluginType === 'multisig.plugin.dao.eth';
   // const isTokenVotingClient = pluginType === 'token-voting.plugin.dao.eth';
   //
-  // const client = usePluginClient(pluginType);
 
   useEffect(() => {
     async function fetchCanVote() {

@@ -1,4 +1,4 @@
-export default class CreateDAO {
+export default class CreateMSWallet {
   goToCreateDAOPage() {
     cy.visit('/#/create');
 

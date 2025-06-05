@@ -8,8 +8,6 @@ import {
 } from '../utils/aragon/types';
 import {useClient} from './useClient';
 
-// import {PluginTypes, usePluginClient} from './usePluginClient';
-
 export function isTokenVotingSettings(
   settings: SupportedVotingSettings | undefined
 ): settings is VotingSettings {

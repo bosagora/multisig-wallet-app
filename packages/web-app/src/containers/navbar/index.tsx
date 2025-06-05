@@ -7,12 +7,12 @@ import {selectedDaoVar} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
 import {usePrivacyContext} from 'context/privacyContext';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import useScreen from 'hooks/useScreen';
 import {CHAIN_METADATA, FEEDBACK_FORM, SupportedChainID} from 'utils/constants';
 import {
   Community,
-  CreateDAO,
+  CreateMSWallet,
   EditSettings,
   Finance,
   Governance,
@@ -23,7 +23,7 @@ import {
   NewProposal,
   NewWithDraw,
   ProposeNewSettings,
-  Dashboard
+  Dashboard,
 } from 'utils/paths';
 import {i18n} from '../../../i18n.config';
 import DesktopNav from './desktop';
@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
   const {network} = useNetwork();
   const {handleWithFunctionalPreferenceMenu} = usePrivacyContext();
 
-  const {data: walletDetails} = useDaoDetailsQuery();
+  const {data: walletDetails} = useMSWalletDetailsQuery();
 
   const processInfo = useMemo(() => {
     const matches = matchRoutes(processPaths, pathname);
@@ -112,7 +112,7 @@ type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 export const processPaths = [
   {path: NewDeposit},
   {path: NewWithDraw},
-  {path: CreateDAO},
+  {path: CreateMSWallet},
   {path: NewProposal},
   {path: ProposeNewSettings},
   {path: MintTokensProposal},
@@ -120,7 +120,10 @@ export const processPaths = [
 ];
 
 export const processes: StringIndexed = {
-  [CreateDAO]: {processLabel: i18n.t('createDAO.title'), returnURL: Landing},
+  [CreateMSWallet]: {
+    processLabel: i18n.t('createDAO.title'),
+    returnURL: Landing,
+  },
   [NewDeposit]: {
     processLabel: i18n.t('allTransfer.newTransfer'),
     returnURL: Finance,
@@ -170,7 +173,7 @@ function getProcessInfo(
 
 function getExitProcessType(processPath: string): ProcessType | undefined {
   switch (processPath) {
-    case CreateDAO:
+    case CreateMSWallet:
       return 'DaoCreation';
 
     case ManageMembersProposal:

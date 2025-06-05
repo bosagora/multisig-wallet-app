@@ -23,10 +23,9 @@ import {useAlertContext} from 'context/alert';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
 import {useProviders} from 'context/providers';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useWallet} from 'hooks/useWallet';
 import {WithdrawAction} from 'pages/newWithdraw';
-// import {fetchTokenData} from 'services/prices';
 import {CHAIN_METADATA} from 'utils/constants';
 import {Web3Address, handleClipboardActions, toDisplayEns} from 'utils/library';
 import {fetchBalance, getTokenInfo, isNativeToken} from 'utils/tokens';
@@ -53,7 +52,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   const {setSelectedActionIndex} = useActionsContext();
   const {alert} = useAlertContext();
 
-  const {data: daoDetails} = useDaoDetailsQuery();
+  const {data: walletDetails} = useMSWalletDetailsQuery();
 
   const {control, getValues, trigger, resetField, setFocus, setValue} =
     useFormContext();
@@ -78,12 +77,12 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   useEffect(() => {
     if (isCustomToken) setFocus(`actions.${actionIndex}.tokenAddress`);
 
-    if (from === '' && daoDetails?.address) {
-      setValue(`actions.${actionIndex}.from`, daoDetails?.address);
+    if (from === '' && walletDetails?.address) {
+      setValue(`actions.${actionIndex}.from`, walletDetails?.address);
     }
   }, [
     address,
-    daoDetails?.address,
+    walletDetails?.address,
     from,
     actionIndex,
     isCustomToken,
@@ -116,10 +115,10 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
         // fetch token balance and token metadata
         const allTokenInfoPromise = Promise.all([
           isNativeToken(tokenAddress)
-            ? provider.getBalance(daoDetails?.address as string)
+            ? provider.getBalance(walletDetails?.address as string)
             : fetchBalance(
                 tokenAddress,
-                daoDetails?.address as string,
+                walletDetails?.address as string,
                 provider,
                 nativeCurrency
               ),
@@ -161,7 +160,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
         ]);
     };
 
-    if (daoDetails?.address) {
+    if (walletDetails?.address) {
       fetchTokenInfo();
     }
   }, [
@@ -176,7 +175,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     trigger,
     // client,
     network,
-    daoDetails?.address,
+    walletDetails?.address,
     nativeCurrency,
     tokenSymbol,
   ]);
@@ -294,14 +293,14 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
 
       // withdrawing to DAO
       if (
-        recipient.address === daoDetails?.address ||
-        recipient.ensName === toDisplayEns(daoDetails?.ensDomain)
+        recipient.address === walletDetails?.address ||
+        recipient.ensName === toDisplayEns(walletDetails?.ensDomain)
       )
         return 'Cant withdraw to your own address';
 
       return validateWeb3Address(recipient, t('errors.required.recipient'), t);
     },
-    [daoDetails?.address, daoDetails?.ensDomain, provider, t]
+    [walletDetails?.address, walletDetails?.ensDomain, provider, t]
   );
 
   /*************************************************

@@ -22,7 +22,7 @@ import {generatePath, useNavigate} from 'react-router-dom';
 import {Loading} from 'components/temporary';
 import PublishModal from 'containers/transactionModals/publishModal';
 import {useClient} from 'hooks/useClient';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 // import {useDaoToken} from 'hooks/useDaoToken';
 // import {
 //   isMultisigVotingSettings,
@@ -112,7 +112,8 @@ const CreateProposalProvider: React.FC<Props> = ({
   const {network} = useNetwork();
   const {isOnWrongNetwork, provider, address} = useWallet();
 
-  const {data: daoDetails, isLoading: daoDetailsLoading} = useDaoDetailsQuery();
+  const {data: walletDetails, isLoading: walletDetailsLoading} =
+    useMSWalletDetailsQuery();
   const {
     days: minDays,
     hours: minHours,
@@ -176,7 +177,7 @@ const CreateProposalProvider: React.FC<Props> = ({
         navigate(
           generatePath(Dashboard, {
             network,
-            dao: daoDetails?.address,
+            dao: walletDetails?.address,
             id: proposalId,
           })
         );
@@ -189,8 +190,8 @@ const CreateProposalProvider: React.FC<Props> = ({
     }
   }, [
     creationProcessState,
-    daoDetails?.address,
-    // daoDetails?.ensDomain,
+    walletDetails?.address,
+    // walletDetails?.ensDomain,
     navigate,
     network,
     proposalId,
@@ -225,7 +226,7 @@ const CreateProposalProvider: React.FC<Props> = ({
             BigNumber.from(0),
           ]);
       return {
-        walletAddress: daoDetails?.address || '',
+        walletAddress: walletDetails?.address || '',
         title,
         description,
         destination: action.to.address,
@@ -250,7 +251,7 @@ const CreateProposalProvider: React.FC<Props> = ({
     }
 
     // trackEvent('newProposal_createNowBtn_clicked', {
-    //   dao_address: daoDetails?.address,
+    //   dao_address: walletDetails?.address,
     //   estimated_gwei_fee: averageFee,
     //   total_usd_cost: averageFee ? tokenPrice * Number(averageFee) : 0,
     // });
@@ -294,7 +295,7 @@ const CreateProposalProvider: React.FC<Props> = ({
           case NormalSteps.SENT:
             //console.log(step.txHash);
             // trackEvent('newProposal_transaction_signed', {
-            //   dao_address: daoDetails?.address,
+            //   dao_address: walletDetails?.address,
             //   network: network,
             //   wallet_provider: provider?.connection.url,
             // });
@@ -309,7 +310,7 @@ const CreateProposalProvider: React.FC<Props> = ({
             setProposalId(prefixedId);
             setCreationProcessState(TransactionState.SUCCESS);
             // trackEvent('newProposal_transaction_success', {
-            //   dao_address: daoDetails?.address,
+            //   dao_address: walletDetails?.address,
             //   network: network,
             //   wallet_provider: provider?.connection.url,
             //   proposalId: prefixedId,
@@ -325,7 +326,7 @@ const CreateProposalProvider: React.FC<Props> = ({
       console.error(error);
       setCreationProcessState(TransactionState.ERROR);
       // trackEvent('newProposal_transaction_failed', {
-      //   dao_address: daoDetails?.address,
+      //   dao_address: walletDetails?.address,
       //   network: network,
       //   wallet_provider: provider?.connection.url,
       //   error,
@@ -334,7 +335,7 @@ const CreateProposalProvider: React.FC<Props> = ({
   }, [
     // averageFee,
     creationProcessState,
-    daoDetails?.address,
+    walletDetails?.address,
     // handleCacheProposal,
     handleCloseModal,
     isOnWrongNetwork,

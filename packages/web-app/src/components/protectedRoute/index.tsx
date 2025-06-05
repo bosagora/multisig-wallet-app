@@ -8,10 +8,8 @@ import {LoginRequired} from 'containers/walletMenu/LoginRequired';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
 import {useSpecificProvider} from 'context/providers';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {useDaoMembers} from 'hooks/useDaoMembers';
-// import {PluginTypes} from 'hooks/usePluginClient';
-// import {usePluginSettings} from 'hooks/usePluginSettings';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
+import {useMSWalletMembers} from '../../hooks/useMSWalletMembers';
 import {useWallet} from 'hooks/useWallet';
 import {CHAIN_METADATA} from 'utils/constants';
 // import {formatUnits} from 'utils/library';
@@ -27,27 +25,26 @@ const ProtectedRoute: React.FC = () => {
     isOnWrongNetwork,
     isModalOpen: web3ModalIsShown,
   } = useWallet();
-  const {data: daoDetails, isLoading: detailsAreLoading} = useDaoDetailsQuery();
+  const {data: walletDetails, isLoading: detailsAreLoading} =
+    useMSWalletDetailsQuery();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // const [pluginType, pluginAddress] = useMemo(
   //   () => [
-  //     daoDetails?.plugins[0].id as PluginTypes,
-  //     daoDetails?.plugins[0].instanceAddress as string,
+  //     walletDetails?.plugins[0].id as PluginTypes,
+  //     walletDetails?.plugins[0].instanceAddress as string,
   //   ],
-  //   [daoDetails?.plugins]
+  //   [walletDetails?.plugins]
   // );
 
-  // const {data: daoSettings, isLoading: settingsAreLoading} = usePluginSettings(
-  //   pluginAddress,
-  //   pluginType
-  // );
-  //
   const {
     data: {members, filteredMembers},
     isLoading: membersAreLoading,
-  } = useDaoMembers(daoDetails ? daoDetails.address : '', address || '');
+  } = useMSWalletMembers(
+    walletDetails ? walletDetails.address : '',
+    address || ''
+  );
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
 
@@ -185,9 +182,9 @@ const ProtectedRoute: React.FC = () => {
   return (
     <>
       {!isGatingOpen && userWentThroughLoginFlowRef.current && <Outlet />}
-      {daoDetails && (
+      {walletDetails && (
         <GatingMenu
-          daoDetails={daoDetails}
+          walletDetails={walletDetails}
           pluginType="multisig.plugin.dao.eth"
           // daoToken={daoToken}
         />

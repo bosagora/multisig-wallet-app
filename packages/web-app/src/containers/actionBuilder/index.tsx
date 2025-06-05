@@ -4,9 +4,8 @@ import {useFormContext} from 'react-hook-form';
 import TokenMenu from 'containers/tokenMenu';
 import {useActionsContext} from 'context/actions';
 import {useNetwork} from 'context/network';
-import {useDaoBalances} from 'hooks/useDaoBalances';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {usePluginSettings} from 'hooks/usePluginSettings';
+import {useMSWalletBalances} from '../../hooks/useMSWalletBalances';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {fetchTokenPrice} from 'services/prices';
 import {formatUnits} from 'utils/library';
 import {
@@ -48,10 +47,10 @@ interface ActionBuilderProps {
 }
 
 const ActionBuilder: React.FC<ActionBuilderProps> = ({allowEmpty = true}) => {
-  const {data: daoDetails} = useDaoDetailsQuery();
+  const {data: walletDetails} = useMSWalletDetailsQuery();
   const {network} = useNetwork();
   const {selectedActionIndex: index, actions} = useActionsContext();
-  const {data: tokens} = useDaoBalances(daoDetails?.address || '');
+  const {data: tokens} = useMSWalletBalances(walletDetails?.address || '');
   const {setValue, resetField, clearErrors} = useFormContext();
 
   /*************************************************

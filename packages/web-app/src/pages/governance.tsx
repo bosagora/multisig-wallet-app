@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import ProposalList from 'components/proposalList';
 import {Loading} from 'components/temporary';
 import {PageWrapper} from 'components/wrappers';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useProposals} from 'hooks/useProposals';
 import {ProposalListItem} from 'utils/types';
 import PageEmptyState from 'containers/pageEmptyState';
@@ -28,7 +28,8 @@ import {PluginTypes} from '../utils/aragon/types';
 import {BigNumber} from 'ethers';
 
 const Governance: React.FC = () => {
-  const {data: daoDetails, isLoading: isDaoLoading} = useDaoDetailsQuery();
+  const {data: walletDetails, isLoading: isDaoLoading} =
+    useMSWalletDetailsQuery();
   const {isMobile} = useScreen();
 
   // The number of proposals displayed on each page
@@ -44,7 +45,7 @@ const Governance: React.FC = () => {
     isLoadingMore,
     totalCount,
   } = useProposals(
-    daoDetails?.address as string,
+    walletDetails?.address as string,
     'multisig.plugin.dao.eth' as PluginTypes,
     PROPOSALS_PER_PAGE,
     skip,
@@ -159,13 +160,8 @@ const Governance: React.FC = () => {
         {/*</ButtonGroupContainer>*/}
         <ListWrapper>
           <ProposalList
-            daoAddressOrEns={
-              toDisplayEns(daoDetails?.ensDomain) ||
-              (daoDetails?.address as string)
-            }
+            multisigWalletAddress={walletDetails?.address as string}
             proposals={displayedProposals}
-            pluginAddress={daoDetails?.address as string}
-            pluginType={'multisig.plugin.dao.eth' as PluginTypes}
             isLoading={isLoading}
           />
         </ListWrapper>

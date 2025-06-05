@@ -15,9 +15,11 @@ import {useFormStep} from 'components/fullScreenStepper';
 // import ResourceList from 'components/resourceList';
 import {Loading} from 'components/temporary';
 import {VotingTerminal} from 'containers/votingTerminal';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {MultisigMember, useDaoMembers} from 'hooks/useDaoMembers';
-// import {PluginTypes} from 'hooks/usePluginClient';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
+import {
+  MultisigMember,
+  useMSWalletMembers,
+} from '../../hooks/useMSWalletMembers';
 import {
   isMultisigVotingSettings,
   usePluginSettings,
@@ -47,18 +49,18 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
   const {t, i18n} = useTranslation();
   const {setStep} = useFormStep();
 
-  const {data: daoDetails} = useDaoDetailsQuery();
+  const {data: walletDetails} = useMSWalletDetailsQuery();
   // const {id: pluginType, instanceAddress: pluginAddress} =
-  //   daoDetails?.plugins[0] || ({} as InstalledPluginListItem);
+  //   walletDetails?.plugins[0] || ({} as InstalledPluginListItem);
   //
   const {data: daoSettings} = usePluginSettings(
-    daoDetails?.address as string,
+    walletDetails?.address as string,
     'multisig.plugin.dao.eth' as PluginTypes
   );
 
   const {
     data: {members},
-  } = useDaoMembers(daoDetails?.address || '', '');
+  } = useMSWalletMembers(walletDetails?.address || '', '');
 
   // const {data: totalSupply} = useTokenSupply(daoToken?.address as string);
 

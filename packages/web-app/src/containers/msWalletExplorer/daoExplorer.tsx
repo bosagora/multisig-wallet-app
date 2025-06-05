@@ -17,8 +17,8 @@ import {
   AugmentedDaoListItem,
   ExploreFilter,
   EXPLORE_FILTER,
-  useDaosInfiniteQuery,
-} from 'hooks/useDaos';
+  useMSWalletsInfiniteQuery,
+} from 'hooks/useMSWallets';
 import {useWallet} from 'hooks/useWallet';
 import {getSupportedNetworkByChainId, SupportedChainID} from 'utils/constants';
 import {Dashboard} from 'utils/paths';
@@ -39,7 +39,7 @@ export const DaoExplorer = () => {
   // conditional api queries
   const fetchFavorited = filterValue === 'favorite';
   const favoritedApi = useFavoritedDaosInfiniteQuery(fetchFavorited);
-  const daosApi = useDaosInfiniteQuery(
+  const daosApi = useMSWalletsInfiniteQuery(
     address || '',
     fetchFavorited === false,
     {limit: 4}

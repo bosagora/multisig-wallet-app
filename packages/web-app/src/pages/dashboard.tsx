@@ -11,18 +11,18 @@ import TreasurySnapshot from 'containers/treasurySnapshot';
 import {useAlertContext} from 'context/alert';
 import {NavigationDao} from 'context/apolloClient';
 import {useNetwork} from 'context/network';
-import {useDaoQuery} from 'hooks/useDaoDetails';
+import {useMSWalletQuery} from 'hooks/useMSWalletDetails';
 import {
-  useAddFavoriteDaoMutation,
+  useaddFavoriteMSWalletMutation,
   useFavoritedDaosQuery,
-  useRemoveFavoriteDaoMutation,
+  useremoveFavoriteMSWalletMutation,
 } from 'hooks/useFavoritedDaos';
 import useScreen from 'hooks/useScreen';
 import {CHAIN_METADATA, SupportedChainID} from 'utils/constants';
 import {formatDate} from 'utils/date';
 import {NotFound} from 'utils/paths';
 import {useGlobalModalContext} from 'context/globalModals';
-import {useDaoVault} from '../hooks/useDaoVault';
+import {useMSWalletVault} from '../hooks/useMSWalletVault';
 import ProposalSnapshot from 'containers/proposalSnapshot';
 import {useProposals} from '../hooks/useProposals';
 const Dashboard: React.FC = () => {
@@ -32,16 +32,16 @@ const Dashboard: React.FC = () => {
 
   const navigate = useNavigate();
   const {network} = useNetwork();
-  const {dao: daoAddressOrEns} = useParams();
+  const {dao: multisigWalletAddress} = useParams();
   const {open} = useGlobalModalContext();
 
   const [pollInterval, setPollInterval] = useState(0);
   // favoring DAOS
-  const addFavoriteDaoMutation = useAddFavoriteDaoMutation(() =>
+  const addFavoriteMSWalletMutation = useaddFavoriteMSWalletMutation(() =>
     alert(t('alert.chip.favorited'))
   );
 
-  const removeFavoriteDaoMutation = useRemoveFavoriteDaoMutation(() =>
+  const removeFavoriteMSWalletMutation = useremoveFavoriteMSWalletMutation(() =>
     alert(t('alert.chip.unfavorite'))
   );
 
@@ -50,27 +50,27 @@ const Dashboard: React.FC = () => {
 
   // live DAO
   const {
-    data: daoDetail,
-    isLoading: daoDetailLoading,
+    data: walletDetail,
+    isLoading: walletDetailLoading,
     isSuccess,
-  } = useDaoQuery(daoAddressOrEns, pollInterval);
+  } = useMSWalletQuery(multisigWalletAddress, pollInterval);
 
-  const favoriteDaoMatchPredicate = useCallback(
+  const favoriteMSWalletMatchPredicate = useCallback(
     (favoriteDao: NavigationDao) => {
       return (
         favoriteDao.address.toLowerCase() ===
-          daoDetail?.address.toLowerCase() &&
+          walletDetail?.address.toLowerCase() &&
         favoriteDao.chain === CHAIN_METADATA[network].id
       );
     },
-    [daoDetail?.address, network]
+    [walletDetail?.address, network]
   );
 
-  const isFavoritedDao = useMemo(() => {
-    if (daoDetail?.address && favoritedDaos)
-      return Boolean(favoritedDaos.some(favoriteDaoMatchPredicate));
+  const isFavoritedMSWallet = useMemo(() => {
+    if (walletDetail?.address && favoritedDaos)
+      return Boolean(favoritedDaos.some(favoriteMSWalletMatchPredicate));
     else return false;
-  }, [favoriteDaoMatchPredicate, favoritedDaos, daoDetail?.address]);
+  }, [favoriteMSWalletMatchPredicate, favoritedDaos, walletDetail?.address]);
 
   /*************************************************
    *                    Hooks                      *
@@ -81,59 +81,63 @@ const Dashboard: React.FC = () => {
 
   const handleClipboardActions = useCallback(async () => {
     await navigator.clipboard.writeText(
-      `${window.location.origin}/#/multisig-wallets/${network}/${daoAddressOrEns}`
+      `${window.location.origin}/#/multisig-wallets/${network}/${multisigWalletAddress}`
     );
     alert(t('alert.chip.inputCopied'));
-  }, [alert, daoAddressOrEns, network, t]);
+  }, [alert, multisigWalletAddress, network, t]);
 
   const handleFavoriteClick = useCallback(
     async (dao: NavigationDao) => {
       try {
-        if (isFavoritedDao) {
-          await removeFavoriteDaoMutation.mutateAsync({dao});
+        if (isFavoritedMSWallet) {
+          await removeFavoriteMSWalletMutation.mutateAsync({dao});
         } else {
-          await addFavoriteDaoMutation.mutateAsync({dao});
+          await addFavoriteMSWalletMutation.mutateAsync({dao});
         }
       } catch (error) {
-        const action = isFavoritedDao
+        const action = isFavoritedMSWallet
           ? 'removing DAO from favorites'
           : 'adding DAO to favorites';
 
         console.error(`Error ${action}`, error);
       }
     },
-    [isFavoritedDao, removeFavoriteDaoMutation, addFavoriteDaoMutation]
+    [
+      isFavoritedMSWallet,
+      removeFavoriteMSWalletMutation,
+      addFavoriteMSWalletMutation,
+    ]
   );
 
   /*************************************************
    *                    Render                     *
    *************************************************/
-  if (daoDetailLoading || favoritedDaosLoading) {
+  if (walletDetailLoading || favoritedDaosLoading) {
     return <Loading />;
   }
 
-  if (daoDetail && daoAddressOrEns) {
+  if (walletDetail && multisigWalletAddress) {
     return (
       <>
         <HeaderWrapper>
           <HeaderDao
-            daoName={daoDetail.metadata.name}
-            daoUrl={`${window.location.origin}/#/multisig-wallets/${network}/${daoAddressOrEns}`}
-            description={daoDetail.metadata.description}
+            daoName={walletDetail.metadata.name}
+            daoUrl={`${window.location.origin}/#/multisig-wallets/${network}/${multisigWalletAddress}`}
+            description={walletDetail.metadata.description}
             created_at={formatDate(
-              daoDetail.creationDate.getTime() / 1000,
+              walletDetail.creationDate.getTime() / 1000,
               'MMMM yyyy'
             ).toString()}
             daoChain={network}
-            favorited={isFavoritedDao}
+            favorited={isFavoritedMSWallet}
             copiedOnClick={handleClipboardActions}
             onFavoriteClick={() =>
               handleFavoriteClick({
-                address: daoDetail.address.toLowerCase(),
-                chain: daoDetail.chain as SupportedChainID,
+                address: walletDetail.address.toLowerCase(),
+                chain: walletDetail.chain as SupportedChainID,
                 metadata: {
-                  name: daoDetail.metadata.name,
-                  description: daoDetail.metadata.description,
+                  name: walletDetail.metadata.name,
+                  description: walletDetail.metadata.description,
                 },
               })
             }
@@ -141,18 +145,20 @@ const Dashboard: React.FC = () => {
         </HeaderWrapper>
 
         {isDesktop ? (
-          <DashboardContent daoAddressOrEns={daoAddressOrEns} />
+          <DashboardContent multisigWalletAddress={multisigWalletAddress} />
         ) : (
-          <MobileDashboardContent daoAddressOrEns={daoAddressOrEns} />
+          <MobileDashboardContent
+            multisigWalletAddress={multisigWalletAddress}
+          />
         )}
       </>
     );
-  } else if (!daoDetail) {
+  } else if (!walletDetail) {
     // if DAO isn't loading and there is no pending or live DAO, then
     // navigate to notFound
     navigate(NotFound, {
       replace: true,
-      state: {incorrectDao: daoAddressOrEns},
+      state: {incorrectDao: multisigWalletAddress},
     });
   }
 
@@ -167,15 +173,15 @@ const HeaderWrapper = styled.div.attrs({
 /* DESKTOP DASHBOARD ======================================================== */
 
 type DashboardContentProps = {
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
 };
 
 const DashboardContent: React.FC<DashboardContentProps> = ({
-  daoAddressOrEns,
+  multisigWalletAddress,
 }) => {
-  const {transfers, totalAssetValue} = useDaoVault();
+  const {transfers, totalAssetValue} = useMSWalletVault();
   const {data: tempProposals, totalCount} = useProposals(
-    daoAddressOrEns,
+    multisigWalletAddress,
     'multisig.plugin.dao.eth',
     4
   );
@@ -188,7 +194,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
     <>
       <LeftWideContent>
         <ProposalSnapshot
-          daoAddressOrEns={daoAddressOrEns}
+          multisigWalletAddress={multisigWalletAddress}
           proposals={proposals}
           proposalLength={totalCount || 0}
         />
@@ -196,13 +202,13 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
       <RightNarrowContent>
         <TreasurySnapshot
-          multiSignatureWalletAddress={daoAddressOrEns}
+          multiSignatureWalletAddress={multisigWalletAddress}
           transfers={transfers}
           totalAssetValue={totalAssetValue}
         />
 
         <MembersWrapper>
-          <MembershipSnapshot daoAddressOrEns={daoAddressOrEns} />
+          <MembershipSnapshot multisigWalletAddress={multisigWalletAddress} />
         </MembersWrapper>
       </RightNarrowContent>
     </>
@@ -232,11 +238,11 @@ const MembersWrapper = styled.div.attrs({
 /* MOBILE DASHBOARD CONTENT ================================================= */
 
 const MobileDashboardContent: React.FC<DashboardContentProps> = ({
-  daoAddressOrEns,
+  multisigWalletAddress,
 }) => {
-  const {transfers, totalAssetValue} = useDaoVault();
+  const {transfers, totalAssetValue} = useMSWalletVault();
   const {data: tempProposals, totalCount} = useProposals(
-    daoAddressOrEns,
+    multisigWalletAddress,
     'multisig.plugin.dao.eth',
     4
   );
@@ -248,16 +254,16 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
   return (
     <MobileLayout>
       <ProposalSnapshot
-        daoAddressOrEns={daoAddressOrEns}
+        multisigWalletAddress={multisigWalletAddress}
         proposals={proposals}
         proposalLength={totalCount || 0}
       />
       <TreasurySnapshot
-        multiSignatureWalletAddress={daoAddressOrEns}
+        multiSignatureWalletAddress={multisigWalletAddress}
         transfers={transfers}
         totalAssetValue={totalAssetValue}
       />
-      <MembershipSnapshot daoAddressOrEns={daoAddressOrEns} />
+      <MembershipSnapshot multisigWalletAddress={multisigWalletAddress} />
     </MobileLayout>
   );
 };

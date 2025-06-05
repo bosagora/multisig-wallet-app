@@ -15,7 +15,7 @@ import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
 
 import PublishModal from 'containers/transactionModals/publishModal';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {usePollGasFee} from 'hooks/usePollGasfee';
 import {useWallet} from 'hooks/useWallet';
 import {PENDING_MULTISIG_VOTES_KEY, TransactionState} from 'utils/constants';
@@ -79,14 +79,14 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
     useState<TransactionState>();
   const [transactionHash, setTransactionHash] = useState<string>('');
 
-  const {data: daoDetails, isLoading} = useDaoDetailsQuery();
+  const {data: walletDetails, isLoading} = useMSWalletDetailsQuery();
 
   const {pluginAddress, pluginType} = useMemo(() => {
     return {
-      pluginAddress: daoDetails?.address || '',
+      pluginAddress: walletDetails?.address || '',
       pluginType: 'multisig.plugin.dao.eth',
     };
-  }, [daoDetails]);
+  }, [walletDetails]);
   const {client} = useClient();
   const {preferences} = usePrivacyContext();
 
@@ -169,7 +169,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
   // set proper state and cache vote when transaction is successful
   const onVoteSubmitted = useCallback(
     async (proposalId: ProposalId, vote: VoteValues) => {
-      if (!daoDetails?.address) return;
+      if (!walletDetails?.address) return;
 
       setVoteParams(undefined);
       setVoteSubmitted(true);
@@ -198,14 +198,14 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
       navigate(
         generatePath(Proposal, {
           network,
-          dao: daoDetails.address,
+          dao: walletDetails.address,
           id: proposalId.export(),
         })
       );
     },
     [
       address,
-      daoDetails?.address,
+      walletDetails?.address,
       network,
       pluginType,
       preferences?.functional,

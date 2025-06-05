@@ -19,7 +19,7 @@ import {AllTransfers} from 'utils/paths';
 import {abbreviateTokenAmount} from 'utils/tokens';
 import {TokenWithMetadata, Transfer} from 'utils/types';
 import {htmlIn} from 'utils/htmlIn';
-import {useDaoBalances} from '../../hooks/useDaoBalances';
+import {useMSWalletBalances} from '../../hooks/useMSWalletBalances';
 import {useTokenMetadata} from '../../hooks/useTokenMetadata';
 import TokenBox from '../tokenMenu/tokenBox';
 import {formatUnits} from '../../utils/library';
@@ -42,7 +42,9 @@ const TreasurySnapshot: React.FC<Props> = ({
   const navigate = useNavigate();
   const {network} = useNetwork();
   const {handleTransferClicked} = useTransactionDetailContext();
-  const {data: tokensB} = useDaoBalances(multiSignatureWalletAddress || '');
+  const {data: tokensB} = useMSWalletBalances(
+    multiSignatureWalletAddress || ''
+  );
   const {data: tokens} = useTokenMetadata(tokensB || []);
   const [searchValue, setSearchValue] = useState('');
 

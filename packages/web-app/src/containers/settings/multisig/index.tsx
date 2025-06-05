@@ -6,25 +6,27 @@ import {Link} from '@aragon/ui-components';
 
 import {Dd, DescriptionListContainer, Dl, Dt} from 'components/descriptionList';
 import {useNetwork} from 'context/network';
-import {useDaoMembers} from 'hooks/useDaoMembers';
+import {useMSWalletMembers} from '../../../hooks/useMSWalletMembers';
 import {Community} from 'utils/paths';
 import {usePluginSettings} from 'hooks/usePluginSettings';
-// import {PluginTypes} from 'hooks/usePluginClient';
 import {IPluginSettings} from 'pages/settings';
 import {MultisigVotingSettings} from '../../../utils/aragon/sdk-client-multisig-types';
 import {PluginTypes} from '../../../utils/aragon/types';
 
-const MultisigSettings: React.FC<IPluginSettings> = ({daoDetails}) => {
+const MultisigSettings: React.FC<IPluginSettings> = ({walletDetails}) => {
   const {t} = useTranslation();
-  const {network} = useNetwork(); // TODO get the network from daoDetails
+  const {network} = useNetwork(); // TODO get the network from walletDetails
   const navigate = useNavigate();
 
   const {data: votingSettings} = usePluginSettings(
-    daoDetails?.address || '',
+    walletDetails?.address || '',
     'multisig.plugin.dao.eth' as PluginTypes
   );
 
-  const {data: daoMembers} = useDaoMembers(daoDetails?.address || '', '');
+  const {data: daoMembers} = useMSWalletMembers(
+    walletDetails?.address || '',
+    ''
+  );
 
   const daoSettings = votingSettings as MultisigVotingSettings;
 
@@ -46,7 +48,10 @@ const MultisigSettings: React.FC<IPluginSettings> = ({daoDetails}) => {
               })}
               onClick={() =>
                 navigate(
-                  generatePath(Community, {network, dao: daoDetails?.address})
+                  generatePath(Community, {
+                    network,
+                    dao: walletDetails?.address,
+                  })
                 )
               }
             />

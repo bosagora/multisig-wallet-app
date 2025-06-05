@@ -9,7 +9,7 @@ import ActionBuilder from 'containers/actionBuilder';
 import AddActionMenu from 'containers/addActionMenu';
 import {useActionsContext} from 'context/actions';
 import {useGlobalModalContext} from 'context/globalModals';
-import {useDaoActions} from 'hooks/useDaoActions';
+import {useMSWalletActions} from '../../hooks/useMSWalletActions';
 import {i18n} from '../../../i18n.config';
 import {ActionsTypes} from 'utils/types';
 import {trackEvent} from 'services/analytics';
@@ -37,11 +37,13 @@ const ConfigureActions: React.FC<ConfigureActionsProps> = ({
   onAddExtraActionClick,
   allowEmpty = true,
 }) => {
-  const {dao: daoAddressOrEns} = useParams();
+  const {dao: multisigWalletAddress} = useParams();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {actions, addAction} = useActionsContext();
-  const {data: possibleActions} = useDaoActions(daoAddressOrEns ?? '');
+  const {data: possibleActions} = useMSWalletActions(
+    multisigWalletAddress ?? ''
+  );
 
   const allowedActions = useMemo(() => {
     if (!whitelistedActions) return possibleActions;
@@ -74,9 +76,9 @@ const ConfigureActions: React.FC<ConfigureActionsProps> = ({
   };
 
   const handleExtraActionClick = () => {
-    // trackEvent('newProposal_addAction_clicked', {
-    //   dao_address: daoAddressOrEns,
-    // });
+    trackEvent('newProposal_addAction_clicked', {
+      dao_address: multisigWalletAddress,
+    });
     if (onAddExtraActionClick) onAddExtraActionClick();
     else open('addAction');
   };

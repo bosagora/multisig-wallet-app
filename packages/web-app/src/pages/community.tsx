@@ -17,55 +17,32 @@ import {StateEmpty} from 'components/stateEmpty';
 import {Loading} from 'components/temporary';
 import {PageWrapper} from 'components/wrappers';
 import {useNetwork} from 'context/network';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
-import {useDaoMembers} from 'hooks/useDaoMembers';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
+import {useMSWalletMembers} from '../hooks/useMSWalletMembers';
 import {useDebouncedState} from 'hooks/useDebouncedState';
-import {PluginTypes} from 'hooks/usePluginClient';
-import {CHAIN_METADATA} from 'utils/constants';
-import PageEmptyState from 'containers/pageEmptyState';
-import {htmlIn} from 'utils/htmlIn';
 import useScreen from 'hooks/useScreen';
-// import {useGovTokensWrapping} from 'context/govTokensWrapping';
-// import {useExistingToken} from 'hooks/useExistingToken';
-// import {Erc20WrapperTokenDetails} from '@aragon/sdk-client';
-
 const MEMBERS_PER_PAGE = 20;
 
 const Community: React.FC = () => {
   const {t} = useTranslation();
-  const {network} = useNetwork();
-  const navigate = useNavigate();
-  const {isMobile} = useScreen();
-  // const {handleOpenModal} = useGovTokensWrapping();
 
   const [page, setPage] = useState(1);
   const [debouncedTerm, searchTerm, setSearchTerm] = useDebouncedState('');
 
-  const {data: daoDetails, isLoading: detailsAreLoading} = useDaoDetailsQuery();
-  // const {
-  //   data: {members, filteredMembers, daoToken},
-  //   isLoading: membersLoading,
-  // } = useDaoMembers(
-  //   pluginAddress: daoDetails?.address || '',
-  //   pluginType: 'multisig.plugin.dao.eth',
-  // );
+  const {data: walletDetails, isLoading: detailsAreLoading} =
+    useMSWalletDetailsQuery();
+
   const {
     data: {members, filteredMembers},
     isLoading: membersLoading,
-  } = useDaoMembers(daoDetails ? daoDetails.address : '', debouncedTerm);
+  } = useMSWalletMembers(
+    walletDetails ? walletDetails.address : '',
+    debouncedTerm
+  );
 
-  // const {isDAOTokenWrapped, isTokenMintable} = useExistingToken({
-  //   daoToken,
-  //   daoDetails,
-  // });
-  //
-  //console.log('community > filteredMembers :', filteredMembers);
   const totalMemberCount = members.length;
   const filteredMemberCount = filteredMembers.length;
   const displayedMembers = filteredMemberCount > 0 ? filteredMembers : members;
-
-  const walletBased = true;
-  // (daoDetails?.plugins[0].id as PluginTypes) === 'multisig.plugin.dao.eth';
 
   /*************************************************
    *                    Handlers                   *
@@ -74,71 +51,16 @@ const Community: React.FC = () => {
     setSearchTerm(event.target.value.trim());
   };
 
-  const handleSecondaryButtonClick = () => {
-    // window.open(
-    //   CHAIN_METADATA[network].explorer +
-    //     '/token/tokenholderchart/' +
-    //     daoToken?.address,
-    //   '_blank'
-    // );
-  };
-
-  const handlePrimaryClick = () => {
-    navigate('manage-members');
-    // if (walletBased) {
-    //   navigate('manage-members');
-    // } else if (isDAOTokenWrapped) {
-    //   handleOpenModal();
-    // } else if (isTokenMintable) {
-    //   navigate('mint-tokens');
-    // }
-  };
-
   /*************************************************
    *                     Render                    *
    *************************************************/
   if (detailsAreLoading || membersLoading) return <Loading />;
-
-  // if (!totalMemberCount && isDAOTokenWrapped) {
-  //   return (
-  //     <PageEmptyState
-  //       title={t('community.emptyState.title')}
-  //       subtitle={htmlIn(t)('community.emptyState.desc', {
-  //         tokenSymbol:
-  //           (daoToken as Erc20WrapperTokenDetails)?.underlyingToken?.symbol ||
-  //           daoToken?.symbol,
-  //       })}
-  //       Illustration={
-  //         <div className="flex">
-  //           <IllustrationHuman
-  //             {...{
-  //               body: 'elevating',
-  //               expression: 'smile_wink',
-  //               hair: 'middle',
-  //               sunglass: 'big_rounded',
-  //               accessory: 'buddha',
-  //             }}
-  //             {...(isMobile
-  //               ? {height: 165, width: 295}
-  //               : {height: 225, width: 400})}
-  //           />
-  //         </div>
-  //       }
-  //       buttonLabel={t('community.emptyState.ctaLabel')}
-  //       onClick={handleOpenModal}
-  //     />
-  //   );
-  // }
 
   return (
     <PageWrapper
       title={`${totalMemberCount} ${t('labels.members')}`}
       {...{
         description: t('explore.explorer.walletBased'),
-        // primaryBtnProps: {
-        //   label: t('labels.manageMember'),
-        //   onClick: handlePrimaryClick,
-        // },
       }}
     >
       <BodyContainer>
@@ -150,9 +72,6 @@ const Community: React.FC = () => {
               value={searchTerm}
               onChange={handleQueryChange}
             />
-            {/*{!walletBased && (*/}
-            {/*  <AlertInline label={t('alert.tokenBasedMembers') as string} />*/}
-            {/*)}*/}
           </InputWrapper>
 
           {/* Members List */}

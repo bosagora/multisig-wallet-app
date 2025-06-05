@@ -6,16 +6,12 @@ import {generatePath, useNavigate} from 'react-router-dom';
 
 import PublishModal from 'containers/transactionModals/publishModal';
 import {useClient} from 'hooks/useClient';
-import {useAddFavoriteDaoMutation} from 'hooks/useFavoritedDaos';
+import {useaddFavoriteMSWalletMutation} from 'hooks/useFavoritedDaos';
 import {usePollGasFee} from 'hooks/usePollGasfee';
 import {useWallet} from 'hooks/useWallet';
-import {CreateDaoFormData} from 'pages/createDAO';
+import {CreateDaoFormData} from '../pages/createMSWallet';
 import {trackEvent} from 'services/analytics';
-import {
-  CHAIN_METADATA,
-  SupportedNetworks,
-  TransactionState,
-} from 'utils/constants';
+import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import {Dashboard} from 'utils/paths';
 import {useGlobalModalContext} from './globalModals';
 import {useNetwork} from './network';
@@ -43,7 +39,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
   const {getValues} = useFormContext<CreateDaoFormData>();
   const {client} = useClient();
 
-  const addFavoriteDaoMutation = useAddFavoriteDaoMutation();
+  const addFavoriteMSWalletMutation = useaddFavoriteMSWalletMutation();
 
   const [creationProcessState, setCreationProcessState] =
     useState<TransactionState>();
@@ -195,17 +191,17 @@ const CreateDaoProvider: React.FC = ({children}) => {
               'Newly created DAO address',
               step.address.toLowerCase()
             );
-            // trackEvent('daoCreation_transaction_success', {
-            //   network: getValues('blockchain')?.network,
-            //   wallet_provider: provider?.connection.url,
-            // });
+            trackEvent('daoCreation_transaction_success', {
+              network: getValues('blockchain')?.network,
+              wallet_provider: provider?.connection.url,
+            });
             setDaoCreationData(undefined);
             setCreationProcessState(TransactionState.SUCCESS);
             setDaoAddress(step.address.toLowerCase());
 
             try {
               await Promise.all([
-                addFavoriteDaoMutation.mutateAsync({
+                addFavoriteMSWalletMutation.mutateAsync({
                   dao: {
                     address: step.address.toLocaleLowerCase(),
                     chain: CHAIN_METADATA[network].id,

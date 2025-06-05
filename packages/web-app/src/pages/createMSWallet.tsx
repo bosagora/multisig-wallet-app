@@ -6,7 +6,10 @@ import {useTranslation} from 'react-i18next';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {MultisigWalletField} from 'components/multisigWallets/row';
 import ConfigureCommunity from 'containers/configureCommunity';
-import {OverviewDAOHeader, OverviewDAOStep} from 'containers/daoOverview';
+import {
+  OverviewMSWalletHeader,
+  OverviewMSWalletStep,
+} from '../containers/msWalletOverview';
 import DefineMetadata from 'containers/defineMetadata';
 import GoLive, {GoLiveFooter, GoLiveHeader} from 'containers/goLive';
 import SelectChain from 'containers/selectChainForm';
@@ -33,7 +36,7 @@ export type CreateDaoFormData = {
 
 const defaultValues = {};
 
-const CreateDAO: React.FC = () => {
+const CreateMSWallet: React.FC = () => {
   const {t} = useTranslation();
   const {chainId} = useWallet();
   const {network, setNetwork} = useNetwork();
@@ -93,10 +96,10 @@ const CreateDAO: React.FC = () => {
     stepName: string,
     properties: Record<string, unknown>
   ) => {
-    // trackEvent('daoCreation_continueBtn', {
-    //   step: stepName,
-    //   settings: properties,
-    // });
+    trackEvent('daoCreation_continueBtn', {
+      step: stepName,
+      settings: properties,
+    });
     next();
   };
 
@@ -116,14 +119,14 @@ const CreateDAO: React.FC = () => {
             fullWidth
             hideWizard
             customHeader={
-              <OverviewDAOHeader
+              <OverviewMSWalletHeader
                 navLabel={t('createDAO.title')}
                 returnPath={Landing}
               />
             }
             customFooter={<></>}
           >
-            <OverviewDAOStep />
+            <OverviewMSWalletStep />
           </Step>
           <Step
             wizardTitle={t('createDAO.step1.title')}
@@ -191,4 +194,4 @@ const CreateDAO: React.FC = () => {
   );
 };
 
-export default withTransaction('CreateDAO', 'component')(CreateDAO);
+export default withTransaction('CreateMSWallet', 'component')(CreateMSWallet);

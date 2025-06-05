@@ -1,4 +1,4 @@
-import CreateDAO from '../pages/CreateDAO';
+import CreateMSWallet from '../pages/CreateMSWallet';
 import LoginComponent from '../pages/LoginComponent';
 
 describe('Test User Login', () => {
@@ -9,7 +9,7 @@ describe('Test User Login', () => {
     loginComponent.connectMetamask();
     loginComponent.shouldBeConnected();
 
-    const createDAO = new CreateDAO();
+    const createDAO = new CreateMSWallet();
     createDAO.goToCreateDAOPage();
     cy.wrap({...this.testData, x: 1}).as('testData');
   });

@@ -8,10 +8,9 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {WrappedWalletInput} from 'components/wrappedWalletInput';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
-import {useDaoDetailsQuery} from 'hooks/useDaoDetails';
+import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useWallet} from 'hooks/useWallet';
 import {CHAIN_METADATA, ENS_SUPPORTED_NETWORKS} from 'utils/constants';
-import {toDisplayEns} from 'utils/library';
 import {AllTransfers} from 'utils/paths';
 
 const DepositModal: React.FC = () => {
@@ -21,9 +20,7 @@ const DepositModal: React.FC = () => {
   const {isDepositOpen, open, close} = useGlobalModalContext();
   const {status, isConnected, isOnWrongNetwork} = useWallet();
 
-  const {data: daoDetails} = useDaoDetailsQuery();
-
-  const networkSupportsENS = ENS_SUPPORTED_NETWORKS.includes(network);
+  const {data: walletDetails} = useMSWalletDetailsQuery();
 
   // NOTE: This login => network flow can and should be extracted
   // if later on we have a component that requires the same process
@@ -69,10 +66,10 @@ const DepositModal: React.FC = () => {
     navigate(
       generatePath(AllTransfers, {
         network,
-        dao: toDisplayEns(daoDetails?.ensDomain) || daoDetails?.address,
+        dao: walletDetails?.address,
       })
     );
-  }, [close, daoDetails?.address, daoDetails?.ensDomain, navigate, network]);
+  }, [close, walletDetails?.address, navigate, network]);
 
   // close modal and initiate the login/wrong network flow
   const handleConnectClick = useCallback(() => {
@@ -83,7 +80,7 @@ const DepositModal: React.FC = () => {
   /*************************************************
    *                     Render                    *
    *************************************************/
-  if (!daoDetails) return null;
+  if (!walletDetails) return null;
 
   return (
     <ModalBottomSheetSwitcher
@@ -119,10 +116,8 @@ const DepositModal: React.FC = () => {
           <Subtitle>{t('modal.deposit.inputHelptextEns')}</Subtitle>
           <WrappedWalletInput
             value={{
-              ensName: networkSupportsENS
-                ? toDisplayEns(daoDetails.ensDomain)
-                : '',
-              address: daoDetails.address,
+              ensName: '',
+              address: walletDetails.address,
             }}
             onChange={() => {}}
             disabled

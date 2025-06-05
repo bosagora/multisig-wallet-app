@@ -135,7 +135,7 @@ export type SubgraphProposalBase = {
 export type ProposalQueryParams = Pagination & {
   sortBy?: ProposalSortBy;
   status?: ProposalStatus;
-  daoAddressOrEns?: string;
+  multisigWalletAddress?: string;
 };
 
 export enum ProposalSortBy {
@@ -208,7 +208,7 @@ export type MultisigPluginInstallParams = MultisigPluginSettings;
 
 export type MultisigPluginPrepareInstallationParams = {
   settings: MultisigPluginSettings;
-  daoAddressOrEns: string;
+  multisigWalletAddress: string;
   versionTag?: VersionTag;
 };
 

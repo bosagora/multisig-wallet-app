@@ -17,7 +17,7 @@ import {ActionIndex} from 'utils/types';
 import AccordionSummary from './accordionSummary';
 import {AddressRow} from './addressRow';
 import {useAlertContext} from 'context/alert';
-import {BalanceMember, MultisigMember} from 'hooks/useDaoMembers';
+import {BalanceMember, MultisigMember} from '../../../hooks/useMSWalletMembers';
 
 export type CustomHeaderProps = {
   useCustomHeader?: boolean;

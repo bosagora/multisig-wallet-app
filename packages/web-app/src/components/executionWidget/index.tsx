@@ -11,7 +11,6 @@ import styled from 'styled-components';
 
 import {StateEmpty} from 'components/stateEmpty';
 import {useNetwork} from 'context/network';
-// import {PluginTypes} from 'hooks/usePluginClient';
 import {CHAIN_METADATA} from 'utils/constants';
 import {Action} from 'utils/types';
 import {ActionsFilter} from './actionsFilter';

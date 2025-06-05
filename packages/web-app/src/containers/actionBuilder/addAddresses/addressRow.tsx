@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import {WrappedWalletInput} from 'components/wrappedWalletInput';
 import {useAlertContext} from 'context/alert';
 import {useProviders} from 'context/providers';
-import {BalanceMember, MultisigMember} from 'hooks/useDaoMembers';
+import {BalanceMember, MultisigMember} from '../../../hooks/useMSWalletMembers';
 import {Web3Address} from 'utils/library';
 import {ActionAddAddress} from 'utils/types';
 import {validateWeb3Address} from 'utils/validators';
