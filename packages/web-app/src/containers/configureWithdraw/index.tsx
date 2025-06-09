@@ -126,23 +126,12 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           getTokenInfo(tokenAddress, provider, nativeCurrency),
         ]);
 
-        const [balance, apiData, chainData] = await allTokenInfoPromise;
-        if (apiData) {
-          setValue(`actions.${actionIndex}.tokenName`, apiData.name);
-          setValue(`actions.${actionIndex}.tokenSymbol`, apiData.symbol);
-          setValue(`actions.${actionIndex}.tokenImgUrl`, apiData.imgUrl);
-          setValue(`actions.${actionIndex}.tokenPrice`, apiData.price);
+        const [balance, tokenInfo] = await allTokenInfoPromise;
+        if (tokenInfo) {
+          setValue(`actions.${actionIndex}.tokenName`, tokenInfo.name);
+          setValue(`actions.${actionIndex}.tokenSymbol`, tokenInfo.symbol);
+          setValue(`actions.${actionIndex}.tokenDecimals`, Number(tokenInfo.decimals));
         }
-
-        if (!apiData && chainData) {
-          setValue(`actions.${actionIndex}.tokenName`, chainData.name);
-          setValue(`actions.${actionIndex}.tokenSymbol`, chainData.symbol);
-        }
-
-        setValue(
-          `actions.${actionIndex}.tokenDecimals`,
-          Number(chainData.decimals)
-        );
         setValue(`actions.${actionIndex}.tokenBalance`, balance);
       } catch (error) {
         /**
@@ -293,14 +282,13 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
 
       // withdrawing to DAO
       if (
-        recipient.address === walletDetails?.address ||
-        recipient.ensName === toDisplayEns(walletDetails?.ensDomain)
+        recipient.address === walletDetails?.address
       )
         return 'Cant withdraw to your own address';
 
       return validateWeb3Address(recipient, t('errors.required.recipient'), t);
     },
-    [walletDetails?.address, walletDetails?.ensDomain, provider, t]
+    [walletDetails?.address, provider, t]
   );
 
   /*************************************************

@@ -164,7 +164,7 @@ export enum ProposalStatus {
 // Long version
 // export type ProposalBase = {
 //   id: string;
-//   dao: {
+//   msWallet: {
 //     address: string;
 //     name: string;
 //   };
@@ -183,7 +183,7 @@ export enum ProposalStatus {
 // };
 export type ProposalBase = {
   id: BigNumber;
-  dao: {
+  msWallet: {
     address: string;
     name: string;
   };
@@ -202,7 +202,7 @@ export type ProposalBase = {
 // Short version
 export type ProposalListItemBase = {
   id: string;
-  dao: {
+  msWallet: {
     address: string;
     name: string;
   };

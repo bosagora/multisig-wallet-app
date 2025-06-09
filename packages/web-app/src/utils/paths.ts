@@ -5,26 +5,29 @@ export const NotFound = '/not-found';
 
 /* DAO-SPECIFIC PAGES ======================================================= */
 
-export const Dashboard = '/multisig-wallets/:network/:dao/dashboard';
-export const Finance = '/multisig-wallets/:network/:dao/finance';
-export const Governance = '/multisig-wallets/:network/:dao/governance';
-export const Community = '/multisig-wallets/:network/:dao/community';
-export const Settings = '/multisig-wallets/:network/:dao/settings';
-export const EditSettings = '/multisig-wallets/:network/:dao/settings/edit';
+export const Dashboard = '/multisig-wallets/:network/:msWallet/dashboard';
+export const Finance = '/multisig-wallets/:network/:msWallet/finance';
+export const Governance = '/multisig-wallets/:network/:msWallet/governance';
+export const Community = '/multisig-wallets/:network/:msWallet/community';
+export const Settings = '/multisig-wallets/:network/:msWallet/settings';
+export const EditSettings =
+  '/multisig-wallets/:network/:msWallet/settings/edit';
 export const ProposeNewSettings =
-  '/multisig-wallets/:network/:dao/settings/new-proposal';
+  '/multisig-wallets/:network/:msWallet/settings/new-proposal';
 
-export const AllTokens = '/multisig-wallets/:network/:dao/finance/tokens';
-export const AllTransfers = '/multisig-wallets/:network/:dao/finance/transfers';
-export const NewDeposit = '/multisig-wallets/:network/:dao/finance/new-deposit';
+export const AllTokens = '/multisig-wallets/:network/:msWallet/finance/tokens';
+export const AllTransfers =
+  '/multisig-wallets/:network/:msWallet/finance/transfers';
+export const NewDeposit =
+  '/multisig-wallets/:network/:msWallet/finance/new-deposit';
 export const NewWithDraw =
-  '/multisig-wallets/:network/:dao/finance/new-withdrawal';
+  '/multisig-wallets/:network/:msWallet/finance/new-withdrawal';
 
 export const Proposal =
-  '/multisig-wallets/:network/:dao/governance/proposals/:id';
+  '/multisig-wallets/:network/:msWallet/governance/proposals/:id';
 export const NewProposal =
-  '/multisig-wallets/:network/:dao/governance/new-proposal';
+  '/multisig-wallets/:network/:msWallet/governance/new-proposal';
 export const MintTokensProposal =
-  '/multisig-wallets/:network/:dao/community/mint-tokens';
+  '/multisig-wallets/:network/:msWallet/community/mint-tokens';
 export const ManageMembersProposal =
-  '/multisig-wallets/:network/:dao/community/manage-members';
+  '/multisig-wallets/:network/:msWallet/community/manage-members';

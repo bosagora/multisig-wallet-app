@@ -356,7 +356,7 @@ export function getProposalStatusSteps(
     //     {...getActiveProposalStep(t, startDate, 'done')},
     //     {
     //       label:
-    //         pluginType === 'token-voting.plugin.dao.eth'
+    //         pluginType === 'token-voting.plugin.msWallet.eth'
     //           ? t('governance.statusWidget.defeated')
     //           : t('governance.statusWidget.expired'),
     //       mode: 'failed',
@@ -633,8 +633,8 @@ function getActiveProposalStep(t: TFunction, startDate: Date, mode: ModeType) {
 //
 export type CacheProposalParams = {
   creatorAddress: string;
-  daoAddress: string;
-  daoName: string;
+  msWalletAddress: string;
+  walletName: string;
   metadata: ProposalMetadata;
   proposalParams: CreateMajorityVotingProposalParams;
   proposalGuid: string;
@@ -660,7 +660,7 @@ export function mapToCacheProposal(params: CacheProposalParams) {
     actions: params.proposalParams.actions || [],
     creationDate: new Date(),
     creatorAddress: params.creatorAddress,
-    dao: {address: params.daoAddress, name: params.daoName},
+    msWallet: {address: params.msWalletAddress, name: params.walletName},
     endDate: params.proposalParams.endDate!,
     startDate: params.proposalParams.startDate!,
     id: params.proposalGuid,
@@ -957,18 +957,18 @@ export function getNonEmptyActions(
 // /**
 //  * add cached vote to proposal
 //  * @param proposal Proposal
-//  * @param daoAddress dao address
+//  * @param msWalletAddress msWallet address
 //  * @param cachedVotes votes cached
 //  * @param functionalCookiesEnabled whether functional cookies are enabled
 //  * @returns a proposal augmented with cached vote
 //  */
 // export const augmentProposalWithCachedVote = (
 //   proposal: DetailedProposal,
-//   daoAddress: string,
+//   msWalletAddress: string,
 //   cachedVotes: PendingTokenBasedVotes | PendingMultisigApprovals,
 //   functionalCookiesEnabled: boolean | undefined
 // ) => {
-//   const id = new ProposalId(proposal.id).makeGloballyUnique(daoAddress);
+//   const id = new ProposalId(proposal.id).makeGloballyUnique(msWalletAddress);
 //
 //   if (isErc20VotingProposal(proposal)) {
 //     const cachedVote = (cachedVotes as PendingTokenBasedVotes)[id];
@@ -1038,20 +1038,20 @@ export function getNonEmptyActions(
 // /**
 //  * Add cached execution to proposal
 //  * @param proposal Proposal
-//  * @param daoAddress dao address
+//  * @param msWalletAddress msWallet address
 //  * @param cachedExecutions executions cached
 //  * @param functionalCookiesEnabled whether functional cookies are enabled
 //  * @returns a proposal augmented with cached execution
 //  */
 // export function augmentProposalWithCachedExecution(
 //   proposal: DetailedProposal,
-//   daoAddress: string,
+//   msWalletAddress: string,
 //   cachedExecutions: PendingTokenBasedExecution | PendingMultisigExecution,
 //   functionalCookiesEnabled: boolean | undefined,
 //   cache: ReactiveVar<PendingMultisigExecution | PendingTokenBasedExecution>,
 //   cacheKey: typeof PENDING_EXECUTION_KEY | typeof PENDING_MULTISIG_EXECUTION_KEY
 // ) {
-//   const id = new ProposalId(proposal.id).makeGloballyUnique(daoAddress);
+//   const id = new ProposalId(proposal.id).makeGloballyUnique(msWalletAddress);
 //
 //   const cachedExecution = cachedExecutions[id];
 //

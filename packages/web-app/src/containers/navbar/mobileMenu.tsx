@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 
 import BottomSheet from 'components/bottomSheet';
-import {DaoSelector} from 'components/daoSelector';
+import {WalletSelector} from '../../components/walletSelector';
 import NavLinks from 'components/navLinks';
 import {selectedDaoVar} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -21,9 +21,9 @@ const MobileNavMenu = () => {
     <BottomSheet isOpen={isMobileMenuOpen} onClose={() => close('mobileMenu')}>
       <div className="tablet:w-50">
         <CardWrapper className="rounded-xl">
-          <DaoSelector
-            daoAddress={currentDao.address}
-            daoName={currentDao.metadata.name}
+          <WalletSelector
+            msWalletAddress={currentDao.address}
+            walletName={currentDao.metadata.name}
             src={currentDao.address}
             onClick={() => {
               close('mobileMenu');

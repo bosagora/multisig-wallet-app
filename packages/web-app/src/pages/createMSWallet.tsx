@@ -28,7 +28,7 @@ export type CreateDaoFormData = {
     label: string;
     network: string;
   };
-  daoName: string;
+  walletName: string;
   daoSummary: string;
   multisigWallets: MultisigWalletField[];
   multisigMinimumApprovals: number;
@@ -45,9 +45,9 @@ const CreateMSWallet: React.FC = () => {
     defaultValues,
   });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
-  const [multisigWallets, daoName] = useWatch({
+  const [multisigWallets, walletName] = useWatch({
     control: formMethods.control,
-    name: ['multisigWallets', 'daoName'],
+    name: ['multisigWallets', 'walletName'],
   });
 
   // Note: The wallet network determines the expected network when entering
@@ -77,10 +77,15 @@ const CreateMSWallet: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const daoMetadataIsValid = useMemo(() => {
     // required fields not dirty
-    if (!daoName) return false;
+    if (!walletName) return false;
 
-    return !(errors.daoName || errors.daoSummary);
-  }, [daoName, dirtyFields.daoSummary, errors.daoName, errors.daoSummary]);
+    return !(errors.walletName || errors.daoSummary);
+  }, [
+    walletName,
+    dirtyFields.daoSummary,
+    errors.walletName,
+    errors.daoSummary,
+  ]);
 
   const daoSetupCommunityIsValid = useMemo(() => {
     return multisigWallets?.length > 0 && !errors.multisigWallets;
@@ -145,7 +150,7 @@ const CreateMSWallet: React.FC = () => {
             isNextButtonDisabled={!daoMetadataIsValid}
             onNextButtonClicked={next =>
               handleNextButtonTracking(next, '2_define_metadata', {
-                dao_name: formMethods.getValues('daoName'),
+                dao_name: formMethods.getValues('walletName'),
                 dao_summary: formMethods.getValues('daoSummary'),
               })
             }

@@ -89,7 +89,7 @@ export const toHex = (num: number | string) => {
  * @param client SDK client, Fetched using useClient
  * @param apolloClient Apollo client, Fetched using useApolloClient
  * @param provider Eth provider
- * @param network network of the dao
+ * @param network network of the msWallet
  * @returns Return Decoded Withdraw action
  */
 
@@ -155,7 +155,6 @@ export async function decodeWithdrawToAction(
     console.error('Error decoding withdraw action', error);
   }
 }
-
 
 const FLAG_TYPED_ARRAY = 'FLAG_TYPED_ARRAY';
 /**
@@ -310,12 +309,12 @@ export function translateToNetworkishName(
 /**
  * display ens names properly
  * @param ensName ens name
- * @returns ens name or empty string if ens name is null.dao.eth
+ * @returns ens name or empty string if ens name is null.msWallet.eth
  */
 export function toDisplayEns(ensName?: string) {
-  if (!ensName || ensName === 'null.dao.eth') return '';
+  if (!ensName || ensName === 'null.msWallet.eth') return '';
 
-  if (!ensName.includes('.dao.eth')) return `${ensName}.dao.eth`;
+  if (!ensName.includes('.msWallet.eth')) return `${ensName}.msWallet.eth`;
   return ensName;
 }
 

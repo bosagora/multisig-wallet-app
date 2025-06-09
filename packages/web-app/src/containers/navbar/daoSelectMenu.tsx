@@ -31,12 +31,12 @@ const DaoSelectMenu: React.FC = () => {
   const {isSelectDaoOpen, close, open} = useGlobalModalContext();
 
   const handleDaoSelect = useCallback(
-    (dao: NavigationDao) => {
-      selectedDaoVar(dao);
+    (msWallet: NavigationDao) => {
+      selectedDaoVar(msWallet);
       navigate(
         generatePath(Dashboard, {
-          network: getSupportedNetworkByChainId(dao.chain),
-          dao: dao.address,
+          network: getSupportedNetworkByChainId(msWallet.chain),
+          msWallet: msWallet.address,
         })
       );
       close('selectDao');
@@ -63,6 +63,7 @@ const DaoSelectMenu: React.FC = () => {
             bgWhite
             icon={<IconChevronLeft />}
             onClick={handleBackButtonClick}
+            css={{}}
           />
           <Title>{t('daoSwitcher.title')}</Title>
           <div role="presentation" className="w-4 h-4" />
@@ -71,8 +72,8 @@ const DaoSelectMenu: React.FC = () => {
           <ListGroup>
             <ListItemDao
               selected
-              daoAddress={currentWallet?.address}
-              daoName={currentWallet?.metadata.name}
+              msWalletAddress={currentWallet?.address}
+              walletName={currentWallet?.metadata.name}
               onClick={() => close('selectDao')}
             />
             {favoriteDaoCache.flatMap(msw => {
@@ -86,8 +87,8 @@ const DaoSelectMenu: React.FC = () => {
                 return (
                   <ListItemDao
                     key={msw.address}
-                    daoAddress={msw.address}
-                    daoName={msw.metadata.name}
+                    msWalletAddress={msw.address}
+                    walletName={msw.metadata.name}
                     onClick={() => handleDaoSelect(msw)}
                   />
                 );
@@ -106,6 +107,7 @@ const DaoSelectMenu: React.FC = () => {
               navigate('/');
               close('selectDao');
             }}
+            css={{}}
           />
         </div>
       </div>

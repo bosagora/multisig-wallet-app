@@ -20,7 +20,7 @@ const AccordionSummary: React.FC<AccordionSummaryPropsType> = ({
   IsRemove = false,
 }) => {
   const {t} = useTranslation();
-  const {dao} = useParams();
+  const {msWallet} = useParams();
   const {network} = useNetwork();
 
   // get protocol and domain, add generated path
@@ -28,8 +28,8 @@ const AccordionSummary: React.FC<AccordionSummaryPropsType> = ({
     () =>
       window.location.href
         .split('#')[0]
-        .concat(`#${generatePath(Community, {dao, network})}`),
-    [dao, network]
+        .concat(`#${generatePath(Community, {msWallet, network})}`),
+    [msWallet, network]
   );
 
   return (

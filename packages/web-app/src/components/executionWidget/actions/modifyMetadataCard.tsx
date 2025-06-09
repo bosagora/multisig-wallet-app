@@ -41,7 +41,7 @@ export const ModifyMetadataCard: React.FC<{action: ActionUpdateMetadata}> = ({
         <Dl>
           <Dt>{t('labels.logo')}</Dt>
           <Dd>
-            <AvatarDao daoName={inputs.name} src={avatar} size="small" />
+            <AvatarDao walletName={inputs.name} src={avatar} size="small" />
           </Dd>
         </Dl>
         <Dl>

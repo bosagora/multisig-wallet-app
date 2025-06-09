@@ -58,7 +58,7 @@ const ProposalStepper: React.FC<ProposalStepperType> = ({
       navLabel={t('newProposal.title')}
       returnPath={generatePath(Governance, {
         network,
-        dao: walletDetails.address,
+        msWallet: walletDetails.address,
       })}
     >
       <Step

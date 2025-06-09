@@ -20,7 +20,7 @@ const DEFAULT_LINES_SHOWN = 2;
 const DEFAULT_LINKS_SHOWN = 3;
 
 export type HeaderDaoProps = {
-  daoName: string;
+  walletName: string;
   daoAvatar?: string;
   daoUrl: string;
   description: string;
@@ -44,7 +44,7 @@ type DescriptionProps = {
 };
 
 export const HeaderDao: React.FC<HeaderDaoProps> = ({
-  daoName,
+  walletName,
   daoAvatar,
   daoUrl,
   description,
@@ -93,10 +93,10 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
     !(links?.length <= DEFAULT_LINKS_SHOWN && isDesktop) && links?.length !== 0;
 
   return (
-    <Card data-testid="header-dao">
+    <Card data-testid="header-msWallet">
       <ContentWrapper>
         <Content>
-          <Title>{daoName}</Title>
+          <Title>{walletName}</Title>
           <p className="mt-0.25 desktop:mt-0.5 font-semibold text-ui-500"></p>
           <Link
             label={daoUrl}
@@ -123,7 +123,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
         </Content>
         <AvatarContainer>
           <AvatarDao
-            daoName={daoName || ''}
+            walletName={walletName || ''}
             size="unset"
             className="w-10 desktop:w-14 h-10 desktop:h-14 text-lg desktop:text-xl"
             {...(daoAvatar && {src: daoAvatar})}

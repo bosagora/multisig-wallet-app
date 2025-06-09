@@ -78,19 +78,19 @@ export const GatingMenu: React.FC<Props> = ({
   const {close, isGatingOpen} = useGlobalModalContext();
   const {t} = useTranslation();
   const navigate = useNavigate();
-  const {network} = useNetwork(); // TODO ensure this network is the dao network
+  const {network} = useNetwork(); // TODO ensure this network is the msWallet network
   // const {handleOpenModal} = useGovTokensWrapping();
   const handleOpenModal = () => {};
 
   // const {isDAOTokenWrapped} = useExistingToken({walletDetails, daoToken});
 
-  const isTokenAbsenceAlert = pluginType === 'token-voting.plugin.dao.eth';
+  const isTokenAbsenceAlert = pluginType === 'token-voting.plugin.msWallet.eth';
 
   return (
     <ModalBottomSheetSwitcher isOpen={isGatingOpen}>
       <ModalBody>
         <StyledImage src={WalletIcon} />
-        {/*{pluginType === 'token-voting.plugin.dao.eth' ? (*/}
+        {/*{pluginType === 'token-voting.plugin.msWallet.eth' ? (*/}
         {/*  <>*/}
         {/*    {isDAOTokenWrapped ? (*/}
         {/*      <WrappingRequiredContainer*/}
@@ -117,7 +117,7 @@ export const GatingMenu: React.FC<Props> = ({
         {/*        navigate(*/}
         {/*          generatePath(Community, {*/}
         {/*            network,*/}
-        {/*            dao:*/}
+        {/*            msWallet:*/}
         {/*              toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
         {/*          })*/}
         {/*        );*/}
@@ -131,7 +131,7 @@ export const GatingMenu: React.FC<Props> = ({
         {/*        navigate(*/}
         {/*          generatePath(Governance, {*/}
         {/*            network,*/}
-        {/*            dao:*/}
+        {/*            msWallet:*/}
         {/*              toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
         {/*          })*/}
         {/*        );*/}
@@ -147,7 +147,7 @@ export const GatingMenu: React.FC<Props> = ({
         {/*      navigate(*/}
         {/*        generatePath(Governance, {*/}
         {/*          network,*/}
-        {/*          dao: toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
+        {/*          msWallet: toDisplayEns(walletDetails.ensDomain) || walletDetails.address,*/}
         {/*        })*/}
         {/*      );*/}
         {/*      close('gating');*/}
@@ -163,7 +163,7 @@ export const GatingMenu: React.FC<Props> = ({
             navigate(
               generatePath(Dashboard, {
                 network,
-                dao: walletDetails.address,
+                msWallet: walletDetails.address,
               })
             );
             close('gating');

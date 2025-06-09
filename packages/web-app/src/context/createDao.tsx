@@ -45,7 +45,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
     useState<TransactionState>();
   const [daoCreationData, setDaoCreationData] = useState<CreateWalletParams>();
   const [showModal, setShowModal] = useState(false);
-  const [daoAddress, setDaoAddress] = useState('');
+  const [msWalletAddress, setDaoAddress] = useState('');
 
   const shouldPoll =
     daoCreationData !== undefined &&
@@ -103,7 +103,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
         navigate(
           generatePath(Dashboard, {
             network: network,
-            dao: daoAddress,
+            msWallet: msWalletAddress,
           })
         );
         break;
@@ -113,18 +113,18 @@ const CreateDaoProvider: React.FC = ({children}) => {
     }
   };
 
-  // Get dao setting configuration for creation process
+  // Get msWallet setting configuration for creation process
   const getDaoSettings = useCallback(async (): Promise<CreateWalletParams> => {
     const {
       blockchain,
-      daoName,
+      walletName,
       daoSummary,
       multisigWallets,
       multisigMinimumApprovals,
     } = getValues();
 
     return {
-      name: daoName,
+      name: walletName,
       description: daoSummary,
       members: multisigWallets.map(wallet => wallet.address),
       required: multisigMinimumApprovals,
@@ -156,7 +156,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
     error: gasEstimationError,
   } = usePollGasFee(estimateCreationFees, shouldPoll);
 
-  // run dao creation transaction
+  // run msWallet creation transaction
   const createDao = async () => {
     setCreationProcessState(TransactionState.LOADING);
 
@@ -202,7 +202,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
             try {
               await Promise.all([
                 addFavoriteMSWalletMutation.mutateAsync({
-                  dao: {
+                  msWallet: {
                     address: step.address.toLocaleLowerCase(),
                     chain: CHAIN_METADATA[network].id,
                     metadata: {

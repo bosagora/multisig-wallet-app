@@ -16,21 +16,23 @@ const TransferMenu: React.FC = () => {
   const {isTransferOpen, close, open} = useGlobalModalContext();
   const {t} = useTranslation();
   const {network} = useNetwork();
-  const {dao} = useParams();
-  //console.log('dao >>>> ', dao);
+  const {msWallet} = useParams();
+  //console.log('msWallet >>>> ', msWallet);
   const navigate = useNavigate();
 
   const handleClick = (action: Action) => {
-    // trackEvent('newTransfer_modalBtn_clicked', {
-    //   dao_address: dao,
-    //   action,
-    // });
+    trackEvent('newTransfer_modalBtn_clicked', {
+      dao_address: msWallet,
+      action,
+    });
 
     if (action === 'deposit_assets') {
       open('deposit');
     } else {
-      navigate(generatePath(NewWithDraw, {network: network, dao: dao}));
-      // navigate(generatePath(NewProposal, {network, dao: dao}));
+      navigate(
+        generatePath(NewWithDraw, {network: network, msWallet: msWallet})
+      );
+      // navigate(generatePath(NewProposal, {network, msWallet: msWallet}));
     }
     close('default');
   };

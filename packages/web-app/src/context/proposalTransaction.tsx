@@ -84,7 +84,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
   const {pluginAddress, pluginType} = useMemo(() => {
     return {
       pluginAddress: walletDetails?.address || '',
-      pluginType: 'multisig.plugin.dao.eth',
+      pluginType: 'multisig.plugin.msWallet.eth',
     };
   }, [walletDetails]);
   const {client} = useClient();
@@ -180,7 +180,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
       let newCache;
       let cacheKey = '';
       // // cache multisig vote
-      if (pluginType === 'multisig.plugin.dao.eth') {
+      if (pluginType === 'multisig.plugin.msWallet.eth') {
         newCache = {
           date: new Date().toDateString(),
         };
@@ -198,7 +198,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
       navigate(
         generatePath(Proposal, {
           network,
-          dao: walletDetails.address,
+          msWallet: walletDetails.address,
           id: proposalId.export(),
         })
       );

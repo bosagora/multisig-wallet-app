@@ -10,7 +10,7 @@ import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import styled from 'styled-components';
 
-import {DaoSelector} from 'components/daoSelector';
+import {WalletSelector} from '../../components/walletSelector';
 import {Container} from 'components/layout';
 import NavLinks from 'components/navLinks';
 import ExitProcessMenu, {ProcessType} from 'containers/exitProcessMenu';
@@ -36,7 +36,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {network} = useNetwork();
-  const {dao} = useParams();
+  const {msWallet} = useParams();
   const {breadcrumbs, icon, tag} = useMappedBreadcrumbs();
   const {address, isConnected} = useWallet();
 
@@ -51,14 +51,14 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
     if (props.processType) {
       setShowExitProcessMenu(true);
     } else {
-      navigate(generatePath(props.returnURL!, {network, dao}));
+      navigate(generatePath(props.returnURL!, {network, msWallet}));
     }
   };
 
   const exitProcess = useCallback(() => {
     setShowExitProcessMenu(false);
-    navigate(generatePath(props.returnURL!, {network, dao}));
-  }, [dao, navigate, network, props.returnURL]);
+    navigate(generatePath(props.returnURL!, {network, msWallet}));
+  }, [msWallet, navigate, network, props.returnURL]);
 
   if (props.isProcess) {
     return (
@@ -96,9 +96,9 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
       <NetworkIndicator />
       <Menu>
         <Content>
-          <DaoSelector
-            daoAddress={currentDao.address}
-            daoName={currentDao?.metadata.name}
+          <WalletSelector
+            msWalletAddress={currentDao.address}
+            walletName={currentDao?.metadata.name}
             src={currentDao.address}
             onClick={props.onDaoSelect}
           />
@@ -112,7 +112,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
                   icon={icon}
                   crumbs={breadcrumbs}
                   onClick={(path: string) =>
-                    navigate(generatePath(path, {network, dao}))
+                    navigate(generatePath(path, {network, msWallet}))
                   }
                   tag={tag}
                 />

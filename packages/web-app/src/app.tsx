@@ -74,10 +74,10 @@ function App() {
           <Route element={<DaoWrapper />}>
             <Route path="/create" element={<CreateMSWallet />} />
           </Route>
-          <Route path="/multisig-wallets/:network/:dao">
+          <Route path="/multisig-wallets/:network/:msWallet">
             <Route element={<DaoWrapper />}>
               <Route path="dashboard" element={<DashboardPage />} />
-              {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
+              {/* Redirects the user to the dashboard page by default if no msWallet-specific page is specified. */}
               <Route index element={<Navigate to={'dashboard'} replace />} />
               <Route element={<ProtectedRoute />}>
                 <Route

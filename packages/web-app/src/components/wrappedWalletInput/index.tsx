@@ -64,6 +64,7 @@ export const WrappedWalletInput = forwardRef(
     return (
       <>
         <WalletInput
+          css={{}}
           blockExplorerURL={CHAIN_METADATA[network].explorer + 'address/'}
           onAddressValidated={handleAddressValidated}
           onEnsResolved={handleEnsResolved}

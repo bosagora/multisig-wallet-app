@@ -9,7 +9,7 @@ const DaoMetadata: React.FC = () => {
   const {control, getValues} = useFormContext();
   const {setStep} = useFormStep();
   const {t} = useTranslation();
-  const {daoName, daoSummary, reviewCheckError} = getValues();
+  const {walletName, daoSummary, reviewCheckError} = getValues();
 
   return (
     <Controller
@@ -31,8 +31,8 @@ const DaoMetadata: React.FC = () => {
           onChecked={() => onChange(!value)}
         >
           <Dl>
-            <Dt>{t('labels.daoName')}</Dt>
-            <Dd>{daoName}</Dd>
+            <Dt>{t('labels.walletName')}</Dt>
+            <Dd>{walletName}</Dd>
           </Dl>
           <Dl>
             <Dt>{t('labels.summary')}</Dt>

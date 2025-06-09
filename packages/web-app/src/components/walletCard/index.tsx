@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import useScreen from 'hooks/useScreen';
 import {getSupportedNetworkByChainId} from 'utils/constants';
 
-export interface IDaoCardProps {
+export interface IWalletCardProps {
   name: string;
   description: string;
   address: string;
@@ -18,14 +18,14 @@ type DescriptionProps = {
   isDesktop?: boolean;
 };
 
-export const DaoCard = (props: IDaoCardProps) => {
+export const WalletCard = (props: IWalletCardProps) => {
   const {isDesktop} = useScreen();
 
   return (
     <Container data-testid="daoCard" onClick={props.onClick}>
       <DaoDataWrapper>
         <HeaderContainer>
-          <AvatarDao daoName={props.name} src={props.address} />
+          <AvatarDao walletName={props.name} src={props.address} />
           <div className="space-y-0.25 desktop:space-y-0.5 text-left">
             <Title>{props.name}</Title>
           </div>

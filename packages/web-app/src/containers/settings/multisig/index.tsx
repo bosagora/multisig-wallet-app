@@ -20,7 +20,7 @@ const MultisigSettings: React.FC<IPluginSettings> = ({walletDetails}) => {
 
   const {data: votingSettings} = usePluginSettings(
     walletDetails?.address || '',
-    'multisig.plugin.dao.eth' as PluginTypes
+    'multisig.plugin.msWallet.eth' as PluginTypes
   );
 
   const {data: daoMembers} = useMSWalletMembers(
@@ -50,7 +50,7 @@ const MultisigSettings: React.FC<IPluginSettings> = ({walletDetails}) => {
                 navigate(
                   generatePath(Community, {
                     network,
-                    dao: walletDetails?.address,
+                    msWallet: walletDetails?.address,
                   })
                 )
               }

@@ -66,7 +66,7 @@ const DepositModal: React.FC = () => {
     navigate(
       generatePath(AllTransfers, {
         network,
-        dao: walletDetails?.address,
+        msWallet: walletDetails?.address,
       })
     );
   }, [close, walletDetails?.address, navigate, network]);

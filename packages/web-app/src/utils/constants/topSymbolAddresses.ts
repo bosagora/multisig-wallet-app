@@ -76,7 +76,7 @@ export const TOP_ETH_SYMBOL_ADDRESSES: Record<string, string> = {
   crv: '0xd533a949740bb3306d119cc777fa900ba034cd52',
   core: '0x62359ed7505efc61ff1d56fef82158ccaffa23d7',
   dai: '0x6b175474e89094c44da98b954eedeac495271d0f',
-  dao: '0x0f51bb10119727a7e5ea3538074fb341f56b09ad',
+  msWallet: '0x0f51bb10119727a7e5ea3538074fb341f56b09ad',
   dawn: '0x580c8520deda0a441522aeae0f9f7a5f29629afa',
   mana: '0x2d77f5b3efa51821ad6483adaf38ea4cb1824cc5',
   tsuka: '0xc5fb36dd2fb59d3b98deff88425a3f425ee469ed',

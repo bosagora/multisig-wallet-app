@@ -82,20 +82,20 @@ export const useFavoritedDaosInfiniteQuery = (
 
 /**
  * Fetch a favorite DAO from the cache
- * @param daoAddress address of the favorited DAO
+ * @param msWalletAddress address of the favorited DAO
  * @param network network of the favorited DAO
  * @returns favorited DAO with given address and network if available
  */
 export const useFavoritedDaoQuery = (
-  daoAddress: string | undefined,
+  msWalletAddress: string | undefined,
   network: SupportedNetworks
 ) => {
   const chain = CHAIN_METADATA[network].id;
 
   return useQuery({
-    queryKey: ['favoritedDao', daoAddress, network],
-    queryFn: () => getFavoritedDaoFromCache(daoAddress, chain),
-    enabled: !!daoAddress && !!network,
+    queryKey: ['favoritedDao', msWalletAddress, network],
+    queryFn: () => getFavoritedDaoFromCache(msWalletAddress, chain),
+    enabled: !!msWalletAddress && !!network,
   });
 };
 
@@ -106,17 +106,17 @@ export const useUpdateFavoritedDaoMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: {dao: NavigationDao}) =>
-      updateFavoritedDaoInCache(variables.dao),
+    mutationFn: (variables: {msWallet: NavigationDao}) =>
+      updateFavoritedDaoInCache(variables.msWallet),
 
     onSuccess: (_, variables) => {
-      const network = getSupportedNetworkByChainId(variables.dao.chain);
+      const network = getSupportedNetworkByChainId(variables.msWallet.chain);
 
       queryClient.invalidateQueries(['favoriteDaos']);
       queryClient.invalidateQueries(['infiniteFavoriteDaos']);
       queryClient.invalidateQueries([
         'favoritedDao',
-        variables.dao.address,
+        variables.msWallet.address,
         network,
       ]);
     },
@@ -131,8 +131,8 @@ export const useaddFavoriteMSWalletMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: {dao: NavigationDao}) =>
-      addFavoriteDaoToCache(variables.dao),
+    mutationFn: (variables: {msWallet: NavigationDao}) =>
+      addFavoriteDaoToCache(variables.msWallet),
 
     onSuccess: () => {
       onSuccess?.();
@@ -150,8 +150,8 @@ export const useremoveFavoriteMSWalletMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: {dao: NavigationDao}) =>
-      removeFavoriteDaoFromCache(variables.dao),
+    mutationFn: (variables: {msWallet: NavigationDao}) =>
+      removeFavoriteDaoFromCache(variables.msWallet),
 
     onSuccess: () => {
       onSuccess?.();
@@ -179,10 +179,10 @@ function augmentCachedDaos(data: InfiniteData<NavigationDao[]>) {
  * @returns array of augmented NavigationDao objects with resolved avatar IPFS CIDs.
  */
 function addAvatarToWallet<T extends NavigationDao>(daos: T[]): T[] {
-  return daos.map(dao => {
-    const {metadata} = dao;
+  return daos.map(msWallet => {
+    const {metadata} = msWallet;
     return {
-      ...dao,
+      ...msWallet,
       metadata: {
         ...metadata,
         avatar: undefined,

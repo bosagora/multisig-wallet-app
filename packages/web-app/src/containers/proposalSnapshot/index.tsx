@@ -34,7 +34,7 @@ const ProposalSnapshot: React.FC<Props> = ({
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {address} = useWallet();
-  const {network} = useNetwork(); // TODO ensure this is the dao network
+  const {network} = useNetwork(); // TODO ensure this is the msWallet network
 
   const {data: members, isLoading: areMembersLoading} = useMSWalletMembers(
     multisigWalletAddress,
@@ -81,7 +81,10 @@ const ProposalSnapshot: React.FC<Props> = ({
           label: t('TransactionModal.createProposal'),
           onClick: () =>
             navigate(
-              generatePath(NewProposal, {network, dao: multisigWalletAddress})
+              generatePath(NewProposal, {
+                network,
+                msWallet: multisigWalletAddress,
+              })
             ),
         }}
         renderHtml
@@ -99,7 +102,10 @@ const ProposalSnapshot: React.FC<Props> = ({
         orientation="horizontal"
         onClick={() =>
           navigate(
-            generatePath(NewProposal, {network, dao: multisigWalletAddress})
+            generatePath(NewProposal, {
+              network,
+              msWallet: multisigWalletAddress,
+            })
           )
         }
       />
@@ -116,7 +122,7 @@ const ProposalSnapshot: React.FC<Props> = ({
         label={t('labels.seeAll')}
         onClick={() =>
           navigate(
-            generatePath(Governance, {network, dao: multisigWalletAddress})
+            generatePath(Governance, {network, msWallet: multisigWalletAddress})
           )
         }
       />

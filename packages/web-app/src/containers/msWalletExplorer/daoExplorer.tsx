@@ -11,7 +11,7 @@ import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
-import {DaoCard} from 'components/daoCard';
+import {WalletCard} from '../../components/walletCard';
 import {useFavoritedDaosInfiniteQuery} from 'hooks/useFavoritedDaos';
 import {
   AugmentedDaoListItem,
@@ -70,11 +70,11 @@ export const DaoExplorer = () => {
     } else throw Error(`${filterValue} is not an acceptable filter value`);
   };
 
-  const handleDaoClicked = (dao: string, chain: SupportedChainID) => {
+  const handleDaoClicked = (msWallet: string, chain: SupportedChainID) => {
     navigate(
       generatePath(Dashboard, {
         network: getSupportedNetworkByChainId(chain),
-        dao,
+        msWallet,
       })
     );
   };
@@ -118,15 +118,18 @@ export const DaoExplorer = () => {
           {exploreDaosApi.isLoading ? (
             <Spinner size="default" />
           ) : (
-            exploreDaosApi.data?.pages?.map(dao => (
-              <DaoCard
-                key={dao.address}
-                address={dao.address}
-                name={dao.metadata.name}
-                description={dao.metadata.description}
-                chainId={dao.chain}
+            exploreDaosApi.data?.pages?.map(msWallet => (
+              <WalletCard
+                key={msWallet.address}
+                address={msWallet.address}
+                name={msWallet.metadata.name}
+                description={msWallet.metadata.description}
+                chainId={msWallet.chain}
                 onClick={() =>
-                  handleDaoClicked(dao.address, dao.chain as SupportedChainID)
+                  handleDaoClicked(
+                    msWallet.address,
+                    msWallet.chain as SupportedChainID
+                  )
                 }
               />
             ))

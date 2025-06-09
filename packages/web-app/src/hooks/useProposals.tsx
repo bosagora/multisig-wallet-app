@@ -10,12 +10,12 @@ import {useClient} from './useClient';
 /**
  * Retrieves list of proposals from SDK
  * NOTE: rename to useDaoProposals once the other hook has been deprecated
- * @param daoAddress
+ * @param msWalletAddress
  * @param type plugin type
  * @returns list of proposals on plugin
  */
 export function useProposals(
-  daoAddress: string,
+  msWalletAddress: string,
   type: PluginTypes,
   limit = 3,
   skip = 0,
@@ -31,14 +31,14 @@ export function useProposals(
   const {data: walletDetails} = useMSWalletDetailsQuery();
 
   const {client} = useClient();
-  client?.multiSigWallet.attach(daoAddress);
+  client?.multiSigWallet.attach(msWalletAddress);
 
-  const isMultisigPlugin = type === 'multisig.plugin.dao.eth';
-  const isTokenBasedPlugin = type === 'token-voting.plugin.dao.eth';
+  const isMultisigPlugin = type === 'multisig.plugin.msWallet.eth';
+  const isTokenBasedPlugin = type === 'token-voting.plugin.msWallet.eth';
 
   useEffect(() => {
     async function getDaoProposals() {
-      //console.log('getDaoProposals > daoAddress:', daoAddress);
+      //console.log('getDaoProposals > msWalletAddress:', msWalletAddress);
       try {
         if (skip === 0) {
           setIsLoading(true);
@@ -83,7 +83,7 @@ export function useProposals(
           const proposals = sortedResponse?.map(proposal => {
             proposal = {
               ...proposal,
-              dao: {
+              msWallet: {
                 address: walletDetails?.address,
                 name: walletDetails?.metadata.name,
               },
@@ -108,12 +108,12 @@ export function useProposals(
       }
     }
 
-    if (daoAddress && client) {
+    if (msWalletAddress && client) {
       getDaoProposals();
     }
   }, [
     client,
-    daoAddress,
+    msWalletAddress,
     isMultisigPlugin,
     isTokenBasedPlugin,
     limit,

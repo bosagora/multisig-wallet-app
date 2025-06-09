@@ -15,7 +15,7 @@ type AddActionMenuProps = {
 };
 
 const AddActionMenu: React.FC<AddActionMenuProps> = ({actions}) => {
-  const {dao: multisigWalletAddress} = useParams();
+  const {msWallet: multisigWalletAddress} = useParams();
   const {isAddActionOpen, close} = useGlobalModalContext();
   const {actions: usedActions, addAction} = useActionsContext();
   const {t} = useTranslation();

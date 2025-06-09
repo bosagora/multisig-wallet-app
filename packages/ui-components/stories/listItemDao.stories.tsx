@@ -10,17 +10,17 @@ export default {
 } as Meta;
 
 const Template: Story<{daos: ListItemDaoProps[]}> = args => {
-  const [selected, setSelected] = useState(args.daos[1].daoName);
+  const [selected, setSelected] = useState(args.daos[1].walletName);
 
   return (
     <div className="space-y-2">
       <p>Selected item: {selected}</p>
-      {args.daos.map((dao, index) => (
+      {args.daos.map((msWallet, index) => (
         <ListItemDao
           key={index}
-          {...dao}
-          selected={selected === dao.daoName}
-          onClick={() => setSelected(dao.daoName)}
+          {...msWallet}
+          selected={selected === msWallet.walletName}
+          onClick={() => setSelected(msWallet.walletName)}
         />
       ))}
     </div>
@@ -31,12 +31,12 @@ export const Dao = Template.bind({});
 Dao.args = {
   daos: [
     {
-      daoName: 'Bushido DAO',
-      daoAddress: 'bushido.dao.eth',
+      walletName: 'Bushido DAO',
+      msWalletAddress: 'bushido.msWallet.eth',
     },
     {
-      daoName: 'Patito DAO',
-      daoAddress: 'patito.dao.eth',
+      walletName: 'Patito DAO',
+      msWalletAddress: 'patito.msWallet.eth',
     },
   ],
 };

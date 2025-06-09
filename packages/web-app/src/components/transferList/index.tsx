@@ -17,7 +17,7 @@ const TransferList: React.FC<TransferListProps> = ({
   onTransferClick,
 }) => {
   const {t} = useTranslation();
-  const {dao} = useParams();
+  const {msWallet} = useParams();
 
   if (transfers.length === 0)
     return <p data-testid="transferList">{t('allTransfer.noTransfers')}</p>;
@@ -34,7 +34,7 @@ const TransferList: React.FC<TransferListProps> = ({
           onClick={() => {
             // trackEvent('finance_transactionDetails_clicked', {
             //   transaction_hash: rest.id,
-            //   dao_address: dao,
+            //   dao_address: msWallet,
             // });
             onTransferClick({tokenAmount, ...rest});
           }}

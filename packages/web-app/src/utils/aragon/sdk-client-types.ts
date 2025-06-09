@@ -514,7 +514,7 @@ export type PluginPreparationListItem = {
   id: string;
   type: PluginPreparationType;
   creator: string;
-  dao: string;
+  msWallet: string;
   pluginRepo: {
     id: string;
     subdomain: string;

@@ -181,7 +181,7 @@ const TreasurySnapshot: React.FC<Props> = ({
       {/*    navigate(*/}
       {/*      generatePath(AllTransfers, {*/}
       {/*        network,*/}
-      {/*        dao: multiSignatureWalletAddress,*/}
+      {/*        msWallet: multiSignatureWalletAddress,*/}
       {/*      })*/}
       {/*    )*/}
       {/*  }*/}

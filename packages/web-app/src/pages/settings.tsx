@@ -54,7 +54,7 @@ const Settings: React.FC = () => {
             <Dt>{t('labels.logo')}</Dt>
           </Dl>
           <Dl>
-            <Dt>{t('labels.daoName')}</Dt>
+            <Dt>{t('labels.walletName')}</Dt>
             <Dd>{walletDetails?.metadata.name}</Dd>
           </Dl>
           <Dl>

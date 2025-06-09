@@ -17,7 +17,7 @@ type NavLinkProps = {
    * component's styling. */
   caller: 'dropdown' | 'navlinks';
   /**
-   * Contains dao-page's path, label and icon.
+   * Contains msWallet-page's path, label and icon.
    */
   data: NavLinkData;
   /**
@@ -28,7 +28,7 @@ type NavLinkProps = {
 };
 
 /**
- * Takes information about the basic navigation links for a dao (gov, fin, etc.)
+ * Takes information about the basic navigation links for a msWallet (gov, fin, etc.)
  * and renders them into a navigation link. The navigation link is
  * automotatically set to active if the current route matches the path. The
  * navigation link's styling is dependent on the screen size.
@@ -38,7 +38,7 @@ const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
   const {network} = useNetwork();
-  const daoMatch = useMatch('multisig-wallets/:network/:dao/*');
+  const daoMatch = useMatch('multisig-wallets/:network/:msWallet/*');
 
   // This logic is used to determine whether this NavLink is active or not.
   // I.e., whether the Navlink is the current page (or a subpage of it). It
@@ -48,9 +48,9 @@ const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
   const matches = matchRoutes([{path: data.path}], basePath) !== null;
 
   const handleOnClick = () => {
-    const dao = daoMatch?.params?.dao;
+    const msWallet = daoMatch?.params?.msWallet;
     onItemClick?.();
-    navigate(generatePath(data.path, {network, dao}));
+    navigate(generatePath(data.path, {network, msWallet}));
   };
 
   if (caller === 'dropdown') {

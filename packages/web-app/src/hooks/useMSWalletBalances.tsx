@@ -62,7 +62,7 @@ export const useLoadTokenLogoURL = (): {
 };
 
 export const useMSWalletBalances = (
-  daoAddress: string
+  msWalletAddress: string
 ): HookData<Array<AssetBalance> | undefined> => {
   const {network} = useNetwork();
   const [data, setData] = useState<Array<AssetBalance>>([]);
@@ -97,7 +97,7 @@ export const useMSWalletBalances = (
         const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
         let nativeTokenBalances = [] as Array<AssetBalance>;
 
-        const fetchNativeCurrencyBalance = provider.getBalance(daoAddress);
+        const fetchNativeCurrencyBalance = provider.getBalance(msWalletAddress);
 
         // Define a list of promises to fetch ERC20 token balances
         const tokenListPromises = !nonZeroBalances
@@ -110,7 +110,7 @@ export const useMSWalletBalances = (
               );
               const tokenBalance = await fetchBalance(
                 contractAddress,
-                daoAddress,
+                msWalletAddress,
                 provider,
                 nativeCurrency,
                 false
@@ -157,8 +157,8 @@ export const useMSWalletBalances = (
       }
     }
 
-    if (daoAddress) getBalances();
-  }, [daoAddress, network, provider, tokenList]);
+    if (msWalletAddress) getBalances();
+  }, [msWalletAddress, network, provider, tokenList]);
 
   return {data, error, isLoading};
 };

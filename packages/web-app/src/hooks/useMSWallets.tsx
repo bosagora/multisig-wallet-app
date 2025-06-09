@@ -42,8 +42,8 @@ async function fetchMSWallets(
 }
 
 /**
- * This hook returns a list of daos. The data returned for each dao contains
- * information about the dao such as metadata, plugins installed on the dao,
+ * This hook returns a list of daos. The data returned for each msWallet contains
+ * information about the msWallet such as metadata, plugins installed on the msWallet,
  * address, etc.
  *
  * The DAO criteria can be either popular or newest DAOs, or DAOs that a user has favorited.

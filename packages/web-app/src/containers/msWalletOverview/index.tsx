@@ -65,6 +65,7 @@ export const OverviewMSWalletHeader: React.FC<OverviewDAOHeaderProps> = ({
             iconRight={<IconChevronRight />}
             label={t('createDAO.overview.button')}
             onClick={handleSetupClick}
+            css={{}}
           />
         </div>
       </div>

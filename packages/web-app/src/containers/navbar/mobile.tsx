@@ -48,6 +48,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
                 size="large"
                 icon={<IconMenu />}
                 onClick={() => open('mobileMenu')}
+                css={{}}
               />
             ) : (
               <ButtonText
@@ -56,13 +57,14 @@ const MobileNav: React.FC<MobileNavProps> = props => {
                 label={t('menu')}
                 iconLeft={<IconMenu />}
                 onClick={() => open('mobileMenu')}
+                css={{}}
               />
             )}
           </FlexOne>
           <FlexOne className="justify-center">
             <DaoContainer>
               <AvatarDao
-                daoName={currentDao.metadata.name}
+                walletName={currentDao.metadata.name}
                 onClick={props.onDaoSelect}
               />
               <DaoName>{currentDao.metadata.name}</DaoName>

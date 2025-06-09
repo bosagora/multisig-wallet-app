@@ -17,13 +17,16 @@ type ActionsFilterProps = {
 };
 
 export const ActionsFilter: React.FC<ActionsFilterProps> = ({action}) => {
-  const {data: dao} = useMSWalletDetailsQuery();
+  const {data: msWallet} = useMSWalletDetailsQuery();
 
   // all actions have names
   switch (action.name) {
     case 'withdraw_assets':
       return (
-        <WithdrawCard action={action} daoName={dao?.metadata?.name || ''} />
+        <WithdrawCard
+          action={action}
+          walletName={msWallet?.metadata?.name || ''}
+        />
       );
     // case 'add_address':
     //   return <AddAddressCard action={action} />;

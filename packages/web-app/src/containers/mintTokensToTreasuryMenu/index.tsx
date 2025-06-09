@@ -20,7 +20,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onCloseReset: () => void;
-  daoAddress: {
+  msWalletAddress: {
     address?: string;
     ensName?: string;
   };
@@ -30,7 +30,7 @@ const MintTokensToTreasuryMenu: React.FC<Props> = ({
   isOpen,
   onClose,
   onCloseReset,
-  daoAddress,
+  msWalletAddress,
 }) => {
   const {t} = useTranslation();
   const [step, setStep] = useState(0);
@@ -44,12 +44,13 @@ const MintTokensToTreasuryMenu: React.FC<Props> = ({
   const isActionEnabled = useMemo(() => {
     if (treasuryAddress)
       if (
-        treasuryAddress.toLowerCase() === daoAddress.address?.toLowerCase() ||
-        treasuryAddress.toLowerCase() === daoAddress.ensName?.toLowerCase()
+        treasuryAddress.toLowerCase() ===
+          msWalletAddress.address?.toLowerCase() ||
+        treasuryAddress.toLowerCase() === msWalletAddress.ensName?.toLowerCase()
       )
         return true;
     return false;
-  }, [daoAddress.address, daoAddress.ensName, treasuryAddress]);
+  }, [msWalletAddress.address, msWalletAddress.ensName, treasuryAddress]);
 
   return (
     <ModalBottomSheetSwitcher isOpen={isOpen} {...{onCloseReset}}>
@@ -98,6 +99,7 @@ const MintTokensToTreasuryMenu: React.FC<Props> = ({
                 setStep(0);
               }}
               bgWhite
+              css={{}}
             />
             <Title>{t('modal.mintTokensToTreasury.title')}</Title>
             <div role="presentation" className="w-4 h-4" />
@@ -153,6 +155,7 @@ const MintTokensToTreasuryMenu: React.FC<Props> = ({
                         setStep(0);
                       }}
                       disabled={!isActionEnabled}
+                      css={{}}
                     />
                     <ButtonText
                       label={t('modal.mintTokensToTreasury.step2CancelLabel')}
@@ -163,6 +166,7 @@ const MintTokensToTreasuryMenu: React.FC<Props> = ({
                         onCloseReset();
                         setStep(0);
                       }}
+                      css={{}}
                     />
                   </ActionContainer>
                 </>

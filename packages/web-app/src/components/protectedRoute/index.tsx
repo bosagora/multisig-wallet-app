@@ -156,7 +156,7 @@ const ProtectedRoute: React.FC = () => {
   // wallet connected and on right network, authenticate
   useEffect(() => {
     if (status === 'connected' && !isOnWrongNetwork) {
-      // if (pluginType === 'token-voting.plugin.dao.eth') {
+      // if (pluginType === 'token-voting.plugin.msWallet.eth') {
       //   gateTokenBasedProposal();
       // } else {
       //   gateMultisigProposal();
@@ -185,7 +185,7 @@ const ProtectedRoute: React.FC = () => {
       {walletDetails && (
         <GatingMenu
           walletDetails={walletDetails}
-          pluginType="multisig.plugin.dao.eth"
+          pluginType="multisig.plugin.msWallet.eth"
           // daoToken={daoToken}
         />
       )}

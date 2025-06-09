@@ -151,13 +151,13 @@ export function proposal2CardProps(
     onClick: () => {
       // trackEvent('governance_viewProposal_clicked', {
       //   proposal_id: proposal.id.toString(),
-      //   dao_address: proposal.dao.address,
+      //   dao_address: proposal.msWallet.address,
       // });
       //console.log('clicked');
       navigate(
         generatePath(Proposal, {
           network,
-          dao: multisigWalletAddress,
+          msWallet: multisigWalletAddress,
           id: proposal.id.toString(),
         })
       );

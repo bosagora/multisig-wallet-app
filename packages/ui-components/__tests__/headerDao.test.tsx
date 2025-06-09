@@ -7,7 +7,7 @@ describe('HeaderDao', () => {
   // eslint-disable-next-line
   function setup(args: any) {
     render(<HeaderDao {...args} />);
-    return screen.getByTestId('header-dao');
+    return screen.getByTestId('header-msWallet');
   }
 
   test('should render without crashing', () => {

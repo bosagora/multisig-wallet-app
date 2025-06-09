@@ -32,12 +32,12 @@ const DefineMetadata: React.FC<DefineMetadataProps> = () => {
       {/* Name */}
       <FormItem>
         <Label
-          label={t('labels.daoName')}
+          label={t('labels.walletName')}
           helpText={t('createDAO.step2.nameSubtitle')}
         />
 
         <Controller
-          name="daoName"
+          name="walletName"
           control={control}
           defaultValue=""
           rules={{
@@ -50,7 +50,7 @@ const DefineMetadata: React.FC<DefineMetadataProps> = () => {
             <>
               <TextInput
                 {...{name, value, onBlur, onChange}}
-                placeholder={t('placeHolders.daoName')}
+                placeholder={t('placeHolders.walletName')}
               />
               <InputCount>{`${value.length}/128`}</InputCount>
               {error?.message && (

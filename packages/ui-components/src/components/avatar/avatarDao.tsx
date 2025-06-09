@@ -2,14 +2,14 @@ import React, {HTMLAttributes, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components';
 
 export interface AvatarDaoProps extends HTMLAttributes<HTMLElement> {
-  daoName: string;
+  walletName: string;
   src?: string;
   size?: 'small' | 'medium' | 'big' | 'hero' | 'unset';
   onClick?: () => void;
 }
 
 export const AvatarDao: React.FC<AvatarDaoProps> = ({
-  daoName,
+  walletName,
   src,
   size = 'medium',
   onClick,
@@ -23,12 +23,12 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
 
   const daoInitials = useMemo(() => {
     // To allow for no name daos - should not be a thing
-    if (!daoName) return '';
+    if (!walletName) return '';
 
-    const arr = daoName.trim().split(' ');
+    const arr = walletName.trim().split(' ');
     if (arr.length === 1) return arr[0][0];
     else return arr[0][0] + arr[1][0];
-  }, [daoName]);
+  }, [walletName]);
 
   return error || !src ? (
     <FallBackAvatar onClick={onClick} size={size} {...props}>
@@ -38,7 +38,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
     <Avatar
       src={src}
       size={size}
-      alt="dao avatar"
+      alt="msWallet avatar"
       onClick={onClick}
       onError={() => setError(true)}
       {...props}

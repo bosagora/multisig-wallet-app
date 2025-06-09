@@ -169,6 +169,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
             addWalletCallback(Array.from(selectedWallets));
             handleClose();
           }}
+          css={{}}
         />
         <ButtonText
           label={t('labels.cancel')}
@@ -176,6 +177,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
           size="large"
           bgWhite
           onClick={handleClose}
+          css={{}}
         />
       </ButtonContainer>
     </ModalBottomSheetSwitcher>

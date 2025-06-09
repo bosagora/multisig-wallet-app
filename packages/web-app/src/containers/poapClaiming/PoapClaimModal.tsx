@@ -20,7 +20,7 @@ const PoapClaimModal: React.FC = () => {
         <BodyWrapper>
           <PoapImgContainer>
             <PoapImg
-              src="https://assets.poap.xyz/aragon-dao-builder-2023-logo-1678314360270.png"
+              src="https://assets.poap.xyz/aragon-msWallet-builder-2023-logo-1678314360270.png"
               alt=""
             />
           </PoapImgContainer>

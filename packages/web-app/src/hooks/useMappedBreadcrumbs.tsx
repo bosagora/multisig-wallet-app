@@ -50,8 +50,8 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
     excludePaths: [
       Paths.Dashboard,
       Paths.NotFound,
-      '/multisig-wallets/:network/:dao/governance/proposals',
-      '/multisig-wallets/:network/:dao/',
+      '/multisig-wallets/:network/:msWallet/governance/proposals',
+      '/multisig-wallets/:network/:msWallet/',
       '/multisig-wallets/:network/',
       '/multisig-wallets/',
       '/',

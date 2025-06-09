@@ -115,7 +115,7 @@ export type SubgraphAction = {
 
 export type SubgraphProposalBase = {
   id: string;
-  dao: {
+  msWallet: {
     id: string;
     subdomain: string;
   };

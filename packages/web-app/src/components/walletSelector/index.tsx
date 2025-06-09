@@ -10,31 +10,31 @@ import styled from 'styled-components';
 
 import useScreen from 'hooks/useScreen';
 
-type DaoSelectorProps = {
-  daoName: string;
+type WalletSelectorProps = {
+  walletName: string;
   /** Dao's ethereum address **or** ENS name */
-  daoAddress: string;
+  msWalletAddress: string;
   /** Handler for the switch button. Will be called when the button is clicked. */
   onClick: () => void;
 } & Pick<AvatarDaoProps, 'src'>;
 
-export const DaoSelector: React.FC<DaoSelectorProps> = ({
-  daoName,
-  daoAddress,
+export const WalletSelector: React.FC<WalletSelectorProps> = ({
+  walletName,
+  msWalletAddress,
   onClick,
   src,
-}: DaoSelectorProps) => {
+}: WalletSelectorProps) => {
   const {isDesktop} = useScreen();
 
   return (
     <Card data-testid="cardDao" onClick={onClick}>
       <LeftContent>
         <AvatarWrapper>
-          <AvatarDao daoName={daoName} src={src} />
+          <AvatarDao walletName={walletName} src={src} />
         </AvatarWrapper>
         <TextContainer>
-          <DaoName>{daoName}</DaoName>
-          <DaoAddress>{shortenAddress(daoAddress)}</DaoAddress>
+          <DaoName>{walletName}</DaoName>
+          <DaoAddress>{shortenAddress(msWalletAddress)}</DaoAddress>
         </TextContainer>
       </LeftContent>
 
@@ -43,6 +43,7 @@ export const DaoSelector: React.FC<DaoSelectorProps> = ({
         mode="secondary"
         size="small"
         bgWhite={!isDesktop}
+        css={{}}
       />
     </Card>
   );

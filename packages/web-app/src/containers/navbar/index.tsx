@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
     if (matches) return getProcessInfo(matches[0].route.path) as ProcessInfo;
   }, [pathname]);
 
-  // set current dao as selected dao
+  // set current msWallet as selected msWallet
   useEffect(() => {
     if (walletDetails) {
       selectedDaoVar({

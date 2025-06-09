@@ -8,8 +8,8 @@ import {ActionWithdraw} from 'utils/types';
 
 export const WithdrawCard: React.FC<{
   action: ActionWithdraw;
-  daoName: string;
-}> = ({action, daoName}) => {
+  walletName: string;
+}> = ({action, walletName}) => {
   const {t} = useTranslation();
 
   //console.log('WithdrawCard > action:', action);
@@ -24,7 +24,7 @@ export const WithdrawCard: React.FC<{
       <Container>
         <CardTransfer
           to={String(action.to.ensName || action.to.address)}
-          from={daoName}
+          from={walletName}
           toLabel={t('labels.to')}
           fromLabel={t('labels.from')}
         />

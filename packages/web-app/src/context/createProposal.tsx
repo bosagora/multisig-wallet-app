@@ -177,7 +177,7 @@ const CreateProposalProvider: React.FC<Props> = ({
         navigate(
           generatePath(Dashboard, {
             network,
-            dao: walletDetails?.address,
+            msWallet: walletDetails?.address,
             id: proposalId,
           })
         );

@@ -33,13 +33,13 @@ const SectionHeader = ({title}: SectionHeader) => (
 export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
-  const {dao} = useParams();
+  const {msWallet} = useParams();
 
   return (
     <>
       <SectionHeader title={title} />
       {children}
-      <Link to={generatePath(AllTokens, {network, dao})}>
+      <Link to={generatePath(AllTokens, {network, msWallet})}>
         <ButtonText
           mode="secondary"
           label={t('labels.seeAllTokens')}
@@ -65,7 +65,7 @@ export const TransferSectionWrapper = ({
 }: SectionWrapperProps) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
-  const {dao} = useParams();
+  const {msWallet} = useParams();
 
   return (
     <>
@@ -73,7 +73,7 @@ export const TransferSectionWrapper = ({
       {children}
       {showButton && (
         <div>
-          <Link to={generatePath(AllTransfers, {network, dao})}>
+          <Link to={generatePath(AllTransfers, {network, msWallet})}>
             <ButtonText
               mode="secondary"
               label={t('labels.seeAllTransfers')}

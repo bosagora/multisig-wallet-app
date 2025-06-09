@@ -3,8 +3,10 @@ import {useTranslation} from 'react-i18next';
 import {ActionParameter, HookData} from 'utils/types';
 import {useMSWalletQuery} from './useMSWalletDetails';
 
-export function useMSWalletActions(dao: string): HookData<ActionParameter[]> {
-  const {error, isLoading} = useMSWalletQuery(dao);
+export function useMSWalletActions(
+  msWallet: string
+): HookData<ActionParameter[]> {
+  const {error, isLoading} = useMSWalletQuery(msWallet);
   const multisig = true;
 
   const {t} = useTranslation();

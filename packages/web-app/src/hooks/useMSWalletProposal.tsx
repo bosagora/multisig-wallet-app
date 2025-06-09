@@ -20,50 +20,26 @@ import {pendingMultisigApprovalsVar} from '../context/apolloClient';
 
 /**
  * Retrieve a single detailed proposal
- * @param daoAddress address used to create unique proposal id
+ * @param msWalletAddress address used to create unique proposal id
  * @param proposalId id of proposal to retrieve
- * @param pluginType plugin type
- * @param pluginAddress plugin address
  * @returns a detailed proposal
  */
 export const useMSWalletProposal = (
-  daoAddress: string,
+  msWalletAddress: string,
   proposalId: ProposalId | undefined,
-  pluginType: PluginTypes,
-  pluginAddress: string,
   intervalInMills?: number
 ): HookData<DetailedProposal | undefined> => {
-  // TODO: please remove daoAddress when refactoring to react-query based query
+  // TODO: please remove msWalletAddress when refactoring to react-query based query
   const [data, setData] = useState<DetailedProposal>();
   const [error, setError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(false);
   const [numberOfRuns, setNumberOfRuns] = useState(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
 
-  const {preferences} = usePrivacyContext();
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
   const {client} = useClient();
   const {data: walletDetails} = useMSWalletDetailsQuery();
-
-  const cachedMultisigVotes = useReactiveVar(pendingMultisigApprovalsVar);
-
-  const proposalGuid = proposalId?.makeGloballyUnique(pluginAddress);
-  const isMultisigPlugin = pluginType === 'multisig.plugin.dao.eth';
-  const isTokenBasedPlugin = pluginType === 'token-voting.plugin.dao.eth';
-
-  // return cache keys and variables based on the type of plugin;
-  const getCachedProposalData = useCallback(
-    (proposalGuid: string) => {
-      if (pluginType === 'multisig.plugin.dao.eth') {
-        return {
-          proposalCacheKey: PENDING_MULTISIG_PROPOSALS_KEY,
-          votes: cachedMultisigVotes,
-        };
-      }
-    },
-    [cachedMultisigVotes, daoAddress, pluginType]
-  );
 
   function displayFunctionData2(data: ISmartContractFunctionData): {
     to?: string;
@@ -102,9 +78,7 @@ export const useMSWalletProposal = (
   }, [intervalInMills]);
 
   useEffect(() => {
-    const getDaoProposal = async (proposalGuid: string) => {
-      const cacheData = getCachedProposalData(proposalGuid);
-
+    const getMSWalletProposal = async () => {
       try {
         // Do not show loader if page is already loaded
         if (numberOfRuns === 0) {
@@ -145,7 +119,7 @@ export const useMSWalletProposal = (
           const requiredCount = await client?.multiSigWallet.getRequired();
           setData({
             ...proposal,
-            dao: {
+            mwWallet: {
               address: walletDetails?.address,
               name: walletDetails?.metadata.name,
             },
@@ -167,17 +141,10 @@ export const useMSWalletProposal = (
       }
     };
 
-    if (daoAddress && proposalGuid && (isMultisigPlugin || isTokenBasedPlugin))
-      getDaoProposal(proposalGuid);
+    if (msWalletAddress) getMSWalletProposal();
   }, [
-    daoAddress,
-    getCachedProposalData,
-    pluginType,
-    proposalGuid,
-    pluginAddress,
+    msWalletAddress,
     numberOfRuns,
-    isMultisigPlugin,
-    isTokenBasedPlugin,
     client?.multiSigWallet,
     proposalId,
     network,

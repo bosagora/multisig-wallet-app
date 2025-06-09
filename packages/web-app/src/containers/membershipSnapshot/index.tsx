@@ -24,12 +24,12 @@ type Props = {
 
 export const MembershipSnapshot: React.FC<Props> = ({
   multisigWalletAddress,
-  pluginType = 'multisig.plugin.dao.eth',
+  pluginType = 'multisig.plugin.msWallet.eth',
   horizontal = false,
 }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
-  const {network} = useNetwork(); // TODO ensure this is the dao network
+  const {network} = useNetwork(); // TODO ensure this is the msWallet network
   const {isDesktop} = useScreen();
   //console.log('isDesktop :', isDesktop);
   // const {handleOpenModal} = useGovTokensWrapping();
@@ -47,10 +47,13 @@ export const MembershipSnapshot: React.FC<Props> = ({
   //   walletDetails,
   // });
   //
-  const walletBased = pluginType === 'multisig.plugin.dao.eth';
+  const walletBased = pluginType === 'multisig.plugin.msWallet.eth';
 
   const headerButtonHandler = () => {
-    generatePath(ManageMembersProposal, {network, dao: multisigWalletAddress});
+    generatePath(ManageMembersProposal, {
+      network,
+      msWallet: multisigWalletAddress,
+    });
   };
 
   if (isLoading) return <Loading />;
@@ -90,7 +93,10 @@ export const MembershipSnapshot: React.FC<Props> = ({
             label={t('labels.seeAll')}
             onClick={() =>
               navigate(
-                generatePath(Community, {network, dao: multisigWalletAddress})
+                generatePath(Community, {
+                  network,
+                  msWallet: multisigWalletAddress,
+                })
               )
             }
           />
@@ -125,7 +131,7 @@ export const MembershipSnapshot: React.FC<Props> = ({
         label={t('labels.seeAll')}
         onClick={() =>
           navigate(
-            generatePath(Community, {network, dao: multisigWalletAddress})
+            generatePath(Community, {network, msWallet: multisigWalletAddress})
           )
         }
       />

@@ -91,7 +91,7 @@ export function validateTokenAmount(
 
   if (balance !== '') {
     if (BigNumber.from(parseUnits(amount, decimals)).gt(parseUnits(balance)))
-      // Amount is greater than wallet/dao balance
+      // Amount is greater than wallet/msWallet balance
       return i18n.t('errors.insufficientBalance') as string;
   }
 
@@ -214,7 +214,7 @@ export function isDaoEnsNameValid(
   // We might need to combine the method with setTimeout (Similar to useDebouncedState)
   // for better performance
   try {
-    provider?.resolveName(`${value}.dao.eth`).then(result => {
+    provider?.resolveName(`${value}.msWallet.eth`).then(result => {
       const inputValue = getValues('daoEnsName');
       // Check to see if the response belongs to current value
       if (value === inputValue) {

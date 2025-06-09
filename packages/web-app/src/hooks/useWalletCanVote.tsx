@@ -26,8 +26,8 @@ export const useWalletCanVote = (
   const [error, setError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(false);
 
-  // const isMultisigClient = pluginType === 'multisig.plugin.dao.eth';
-  // const isTokenVotingClient = pluginType === 'token-voting.plugin.dao.eth';
+  // const isMultisigClient = pluginType === 'multisig.plugin.msWallet.eth';
+  // const isTokenVotingClient = pluginType === 'token-voting.plugin.msWallet.eth';
   //
 
   useEffect(() => {

@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
 
   const navigate = useNavigate();
   const {network} = useNetwork();
-  const {dao: multisigWalletAddress} = useParams();
+  const {msWallet: multisigWalletAddress} = useParams();
   const {open} = useGlobalModalContext();
 
   const [pollInterval, setPollInterval] = useState(0);
@@ -87,12 +87,12 @@ const Dashboard: React.FC = () => {
   }, [alert, multisigWalletAddress, network, t]);
 
   const handleFavoriteClick = useCallback(
-    async (dao: NavigationDao) => {
+    async (msWallet: NavigationDao) => {
       try {
         if (isFavoritedMSWallet) {
-          await removeFavoriteMSWalletMutation.mutateAsync({dao});
+          await removeFavoriteMSWalletMutation.mutateAsync({msWallet});
         } else {
-          await addFavoriteMSWalletMutation.mutateAsync({dao});
+          await addFavoriteMSWalletMutation.mutateAsync({msWallet});
         }
       } catch (error) {
         const action = isFavoritedMSWallet
@@ -121,7 +121,7 @@ const Dashboard: React.FC = () => {
       <>
         <HeaderWrapper>
           <HeaderDao
-            daoName={walletDetail.metadata.name}
+            walletName={walletDetail.metadata.name}
             daoUrl={`${window.location.origin}/#/multisig-wallets/${network}/${multisigWalletAddress}`}
             description={walletDetail.metadata.description}
             created_at={formatDate(
@@ -182,7 +182,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   const {transfers, totalAssetValue} = useMSWalletVault();
   const {data: tempProposals, totalCount} = useProposals(
     multisigWalletAddress,
-    'multisig.plugin.dao.eth',
+    'multisig.plugin.msWallet.eth',
     4
   );
 
@@ -243,7 +243,7 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
   const {transfers, totalAssetValue} = useMSWalletVault();
   const {data: tempProposals, totalCount} = useProposals(
     multisigWalletAddress,
-    'multisig.plugin.dao.eth',
+    'multisig.plugin.msWallet.eth',
     4
   );
 

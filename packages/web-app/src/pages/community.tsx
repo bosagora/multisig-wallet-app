@@ -1,26 +1,16 @@
-import {
-  AlertInline,
-  IconAdd,
-  IconLinkExternal,
-  Pagination,
-  SearchInput,
-  IllustrationHuman,
-} from '@aragon/ui-components';
+import {Pagination, SearchInput} from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 import {MembersList} from 'components/membersList';
 import {StateEmpty} from 'components/stateEmpty';
 import {Loading} from 'components/temporary';
 import {PageWrapper} from 'components/wrappers';
-import {useNetwork} from 'context/network';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useMSWalletMembers} from '../hooks/useMSWalletMembers';
 import {useDebouncedState} from 'hooks/useDebouncedState';
-import useScreen from 'hooks/useScreen';
 const MEMBERS_PER_PAGE = 20;
 
 const Community: React.FC = () => {

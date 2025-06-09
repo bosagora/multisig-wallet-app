@@ -63,10 +63,10 @@ export const useMSWalletQuery = (
 };
 
 export const useMSWalletDetailsQuery = () => {
-  const {dao} = useParams();
+  const {msWallet} = useParams();
   const navigate = useNavigate();
 
-  const multisigWalletAddress = dao?.toLowerCase();
+  const multisigWalletAddress = msWallet?.toLowerCase();
   const apiResponse = useMSWalletQuery(multisigWalletAddress);
   useEffect(() => {
     if (apiResponse.isFetched) {

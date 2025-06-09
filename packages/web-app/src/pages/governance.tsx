@@ -1,10 +1,8 @@
 import {
-  ButtonGroup,
   ButtonText,
   IconAdd,
   IconChevronDown,
   IllustrationHuman,
-  Option,
   Spinner,
 } from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -20,7 +18,6 @@ import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useProposals} from 'hooks/useProposals';
 import {ProposalListItem} from 'utils/types';
 import PageEmptyState from 'containers/pageEmptyState';
-import {toDisplayEns} from 'utils/library';
 import useScreen from 'hooks/useScreen';
 import {htmlIn} from 'utils/htmlIn';
 import {ProposalStatus} from '../utils/aragon/sdk-client-common-types';
@@ -46,7 +43,7 @@ const Governance: React.FC = () => {
     totalCount,
   } = useProposals(
     walletDetails?.address as string,
-    'multisig.plugin.dao.eth' as PluginTypes,
+    'multisig.plugin.msWallet.eth' as PluginTypes,
     PROPOSALS_PER_PAGE,
     skip,
     filterValue !== 'All' ? filterValue : undefined

@@ -47,7 +47,7 @@ if (value && JSON.parse(value).functional) {
             if (Array.isArray(rootQuery[key])) {
               const entities = rootQuery[key].map(
                 (item: Record<string, unknown>) => item.__ref
-              );
+              ) as string[];
               persistEntities.push(...entities);
             } else {
               const entity = rootQuery[key].__ref;
@@ -159,7 +159,7 @@ export const pendingMultisigExecutionVar = makeVar<PendingMultisigExecution>(
 );
 //================ Multisig
 type PendingMultisigProposals = {
-  // key is dao address
+  // key is msWallet address
   [key: string]: {
     // key is proposal id
     [key: string]: CachedProposal;

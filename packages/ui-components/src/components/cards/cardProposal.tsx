@@ -39,7 +39,7 @@ export type CardProposalProps = {
     | 'defeated';
   /** Indicates whether the proposal is in being used in list or in its special form (see explore page) */
   type?: ProposalUseCase;
-  /** Url for the dao avatar */
+  /** Url for the msWallet avatar */
   daoLogo?: 'string';
   /** The title that appears at the top of the progress bar */
   voteTitle: string;
@@ -61,7 +61,7 @@ export type CardProposalProps = {
    * explore */
   publisherAddress?: string;
   /** DAO name to display when type is explore */
-  daoName?: string;
+  walletName?: string;
   /** Blockchain explorer URL */
   explorer?: string;
 
@@ -92,7 +92,7 @@ export const CardProposal: React.FC<
   stateLabel,
   type = 'list',
   daoLogo,
-  daoName,
+  walletName,
   onClick,
   addressLabel,
 }: CardProposalProps & {addressLabel: string}) => {
@@ -112,7 +112,7 @@ export const CardProposal: React.FC<
         <Description>{description}</Description>
         <Publisher>
           {isExploreProposal(type) ? (
-            <AvatarDao daoName={daoName!} size="small" src={daoLogo} />
+            <AvatarDao walletName={walletName!} size="small" src={daoLogo} />
           ) : (
             <PublisherLabel>{publishLabel}</PublisherLabel>
           )}

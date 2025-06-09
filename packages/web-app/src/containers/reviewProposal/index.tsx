@@ -55,7 +55,7 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
   //
   const {data: daoSettings} = usePluginSettings(
     walletDetails?.address as string,
-    'multisig.plugin.dao.eth' as PluginTypes
+    'multisig.plugin.msWallet.eth' as PluginTypes
   );
 
   const {
@@ -356,7 +356,9 @@ function getReviewProposalTerminalProps(
   // totalSupply: bigint | undefined
 ) {
   return {
-    minApproval: daoSettings?.minApprovals,
+    minApproval: isMultisigVotingSettings(daoSettings)
+      ? daoSettings.minApprovals
+      : undefined,
     strategy: t('votingTerminal.multisig'),
     voteOptions: t('votingTerminal.approve'),
     approvals: [],

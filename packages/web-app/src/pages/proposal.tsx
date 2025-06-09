@@ -7,33 +7,24 @@
 //   // VoteValues,
 //   // VotingMode,
 // } from '@aragon/sdk-client';
-import {MultisigProposal} from '../utils/aragon/sdk-client-multisig-types';
 import {VoteValues} from '../utils/aragon/sdk-client-multisig-types';
-import {VotingMode} from '../utils/aragon/sdk-client-multisig-types';
-import {DaoAction, ProposalStatus} from 'utils/aragon/sdk-client-common-types';
+import {ProposalStatus} from 'utils/aragon/sdk-client-common-types';
 import {
   Breadcrumb,
   ButtonText,
-  IconChevronDown,
   IconChevronUp,
   IconGovernance,
   Link,
   WidgetStatus,
 } from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
-// import TipTapLink from '@tiptap/extension-link';
-// import {useEditor} from '@tiptap/react';
-// import StarterKit from '@tiptap/starter-kit';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
-// import sanitizeHtml from 'sanitize-html';
 import styled from 'styled-components';
 
 import {ExecutionWidget} from 'components/executionWidget';
-import ResourceList from 'components/resourceList';
 import {Loading} from 'components/temporary';
-import {StyledEditorContent} from 'containers/reviewProposal';
 import {TerminalTabs, VotingTerminal} from 'containers/votingTerminal';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
@@ -42,40 +33,20 @@ import {useSpecificProvider} from 'context/providers';
 import {useCache} from 'hooks/useCache';
 import {useClient} from 'hooks/useClient';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
-import {MultisigMember, useMSWalletMembers} from '../hooks/useMSWalletMembers';
+import {useMSWalletMembers} from '../hooks/useMSWalletMembers';
 import {useMSWalletProposal} from '../hooks/useMSWalletProposal';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
-import {
-  isTokenVotingSettings,
-  usePluginSettings,
-} from 'hooks/usePluginSettings';
+import {usePluginSettings} from 'hooks/usePluginSettings';
 import useScreen from 'hooks/useScreen';
 import {useWallet} from 'hooks/useWallet';
-// import {useWalletCanVote} from 'hooks/useWalletCanVote';
 import {CHAIN_METADATA} from 'utils/constants';
-import {
-  // decodeAddMembersToAction,
-  // decodeMetadataToAction,
-  // decodeMintTokensToAction,
-  // decodeMultisigSettingsToAction,
-  // decodePluginSettingsToAction,
-  // decodeRemoveMembersToAction,
-  // decodeToExternalAction,
-  decodeWithdrawToAction,
-  formatUnits,
-  shortenAddress,
-  toDisplayEns,
-} from 'utils/library';
+import {shortenAddress} from 'utils/library';
 import {NotFound} from 'utils/paths';
 import {
-  // getLiveProposalTerminalProps,
   getProposalExecutionStatus,
   getProposalStatusSteps,
   getVoteButtonLabel,
   getVoteStatus,
-  // isEarlyExecutable,
-  // isErc20VotingProposal,
-  isMultisigProposal,
   stripPlgnAdrFromProposalId,
 } from 'utils/proposals';
 import {
@@ -85,24 +56,10 @@ import {
   ProposalId,
 } from 'utils/types';
 import {PluginTypes} from '../utils/aragon/types';
-// import {wallet} from '@aragon/ui-components/dist/components/illustrations/object';
 import {format} from 'date-fns';
 import {getFormattedUtcOffset, KNOWN_FORMATS} from '../utils/date';
-// import {
-//   ABIStorage,
-//   ISmartContractFunctionData,
-// } from 'multisig-wallet-sdk-client';
-// import {fetchBalance, getTokenInfo, isNativeToken} from '../utils/tokens';
-// import {constants} from 'ethers';
 import {useWalletCanVote} from '../hooks/useWalletCanVote';
 import {useLoadTokenLogoURL} from '../hooks/useMSWalletBalances';
-
-// TODO: @Sepehr Please assign proper tags on action decoding
-// const PROPOSAL_TAGS = ['Finance', 'Withdraw'];
-
-const PENDING_PROPOSAL_STATUS_INTERVAL = 1000 * 10;
-const PROPOSAL_STATUS_INTERVAL = 1000 * 60;
-const NumberFormatter = new Intl.NumberFormat('en-US');
 
 const Proposal: React.FC = () => {
   const {t} = useTranslation();
@@ -111,7 +68,7 @@ const Proposal: React.FC = () => {
   const {breadcrumbs, tag} = useMappedBreadcrumbs();
   const navigate = useNavigate();
 
-  const {dao, id: urlId} = useParams();
+  const {msWallet, id: urlId} = useParams();
   const proposalId = useMemo(
     () => (urlId ? new ProposalId(urlId) : undefined),
     [urlId]
@@ -126,16 +83,16 @@ const Proposal: React.FC = () => {
     isLoading,
   } = useMSWalletMembers(
     walletDetails?.address || '',
-    'multisig.plugin.dao.eth'
+    'multisig.plugin.msWallet.eth'
   );
 
   const {data: daoSettings} = usePluginSettings(
     walletDetails?.address as string,
-    'multisig.plugin.dao.eth' as PluginTypes
+    'multisig.plugin.msWallet.eth' as PluginTypes
   );
   // const {
   //   data: {members},
-  // } = useDaoMembers(walletDetails?.address || '', 'multisig.plugin.dao.eth');
+  // } = useDaoMembers(walletDetails?.address || '', 'multisig.plugin.msWallet.eth');
   //
   const multisigDAO = true;
 
@@ -176,8 +133,6 @@ const Proposal: React.FC = () => {
   } = useMSWalletProposal(
     walletDetails?.address as string,
     proposalId!,
-    pluginType,
-    pluginAddress,
     intervalInMills
   );
   // const midday = useMemo(() => {
@@ -605,7 +560,7 @@ const Proposal: React.FC = () => {
               navigate(
                 generatePath(path, {
                   network,
-                  dao: walletDetails?.address,
+                  msWallet: walletDetails?.address,
                 })
               )
             }

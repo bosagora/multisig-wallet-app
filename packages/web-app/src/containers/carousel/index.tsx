@@ -84,7 +84,7 @@ const Carousel: React.FC = () => {
             if (isSelected) {
               return (
                 <ActiveIndicator
-                  className="hidden"
+                  style={{ display: 'none' }}
                   aria-label={`Selected: ${label} ${index + 1}`}
                   title={`Selected: ${label} ${index + 1}`}
                 />
@@ -122,7 +122,11 @@ const MobileCTA = styled.div.attrs({
 
 export const ActiveIndicator = styled.li.attrs({
   className: 'inline-block bg-primary-500 h-0.75 w-6 ml-1 rounded-xl',
-})``;
+})`
+  &.hidden {
+    display: none;
+  }
+`;
 
 export const Indicator = styled.li.attrs({
   className: 'inline-block bg-ui-200 h-0.75 w-2 ml-1 rounded-xl',

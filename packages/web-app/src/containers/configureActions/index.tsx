@@ -37,7 +37,7 @@ const ConfigureActions: React.FC<ConfigureActionsProps> = ({
   onAddExtraActionClick,
   allowEmpty = true,
 }) => {
-  const {dao: multisigWalletAddress} = useParams();
+  const {msWallet: multisigWalletAddress} = useParams();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {actions, addAction} = useActionsContext();
