@@ -155,6 +155,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                 align="start"
                 trigger={
                   <ButtonText
+                    css={{}}
                     iconRight={<IconChevronDown />}
                     label={'All Links'}
                     mode="secondary"

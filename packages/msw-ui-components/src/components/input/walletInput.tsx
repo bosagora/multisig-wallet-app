@@ -460,6 +460,7 @@ export const WalletInput = React.forwardRef<
           <div>
             {!displayedValue && (
               <ButtonText
+                css={{}}
                 label="Paste"
                 size="small"
                 mode="secondary"
@@ -470,6 +471,7 @@ export const WalletInput = React.forwardRef<
             )}
             {displayedValue && isEditing && (
               <ButtonText
+                css={{}}
                 label="Clear"
                 size="small"
                 mode="secondary"
@@ -483,6 +485,7 @@ export const WalletInput = React.forwardRef<
               <AdornmentWrapper>
                 {canToggle && (
                   <ButtonText
+                    css={{}}
                     label={togglerLabel}
                     size="small"
                     mode="secondary"

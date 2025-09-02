@@ -37,6 +37,7 @@ export const HeaderPage: React.FC<HeaderPageProps> = ({
         <ButtonGroup>
           {secondaryBtnProps && (
             <ButtonText
+              css={{}}
               {...secondaryBtnProps}
               size="large"
               mode="secondary"
@@ -44,7 +45,12 @@ export const HeaderPage: React.FC<HeaderPageProps> = ({
             />
           )}
           {primaryBtnProps && (
-            <ButtonText {...primaryBtnProps} mode="primary" size="large" />
+            <ButtonText
+              css={{}}
+              {...primaryBtnProps}
+              mode="primary"
+              size="large"
+            />
           )}
         </ButtonGroup>
       </ContentWrapper>

@@ -47,6 +47,7 @@ export const WalletInputLegacy = React.forwardRef<
       />
       {adornmentText && (
         <ButtonText
+          css={{}}
           label={adornmentText}
           size="small"
           mode="secondary"

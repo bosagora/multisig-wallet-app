@@ -48,6 +48,7 @@ export const CardWallet: React.FC<CardWalletProps> = ({
         </TextContainer>
       </Content>
       <ButtonText
+        css={{}}
         label="copy"
         iconRight={<IconCopy />}
         mode="ghost"

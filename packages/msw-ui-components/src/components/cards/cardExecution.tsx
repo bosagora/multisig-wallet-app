@@ -73,6 +73,7 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
       </Content>
       <Action>
         <ButtonText
+          css={{}}
           label={'Execute Now'}
           onClick={onClick}
           {...(disabledAction && {disabled: true})}

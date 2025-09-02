@@ -17,6 +17,7 @@ export const Option: React.FC<OptionProps> = ({
 
   return (
     <ButtonText
+      css={{}}
       label={label}
       isActive={selectedValue === value}
       bgWhite={!bgWhite}

@@ -33,6 +33,7 @@ export const Tagged = TagTemplate.bind({});
 const LinkTemplate: Story<TableCellProps> = args => (
   <TableCell {...args}>
     <ButtonText
+      css={{}}
       mode="ghost"
       label={args.text as string}
       bgWhite={args.bgWhite}

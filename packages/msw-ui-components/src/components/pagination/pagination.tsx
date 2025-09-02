@@ -47,6 +47,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       for (let i = 1; i <= totalPages; i++) {
         list.push(
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             isActive={page === i}
@@ -64,6 +65,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       for (let i = 1; i <= 5; i++) {
         list.push(
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             isActive={page === i}
@@ -79,6 +81,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           {list}
           <Separator>...</Separator>
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             onClick={() => setPage(totalPages)}
@@ -93,6 +96,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       for (let i = totalPages - 4; i <= totalPages; i++) {
         list.push(
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             isActive={page === i}
@@ -106,6 +110,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       return (
         <>
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             onClick={() => setPage(1)}
@@ -121,6 +126,7 @@ export const Pagination: React.FC<PaginationProps> = ({
     for (let i = page - 1; i <= page + 1; i++) {
       list.push(
         <ButtonText
+          css={{}}
           mode="secondary"
           size="large"
           isActive={page === i}
@@ -134,6 +140,7 @@ export const Pagination: React.FC<PaginationProps> = ({
     return (
       <>
         <ButtonText
+          css={{}}
           mode="secondary"
           size="large"
           onClick={() => setPage(1)}
@@ -144,6 +151,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         {list}
         <Separator>...</Separator>
         <ButtonText
+          css={{}}
           mode="secondary"
           size="large"
           onClick={() => setPage(totalPages)}

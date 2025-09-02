@@ -29,6 +29,7 @@ export const ValueInput = React.forwardRef<HTMLInputElement, ValueInputProps>(
       />
       {adornmentText && (
         <ButtonText
+          css={{}}
           label={adornmentText}
           size="small"
           mode="secondary"

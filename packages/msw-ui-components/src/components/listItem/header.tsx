@@ -35,6 +35,7 @@ export const ListItemHeader: React.FC<ListItemHeaderProps> = ({
       {props.buttonText !== '' ? (
         <ButtonWrapper horizontal={horizontal}>
           <ButtonText
+            css={{}}
             label={props.buttonText}
             onClick={props.onClick}
             disabled={disabled}
