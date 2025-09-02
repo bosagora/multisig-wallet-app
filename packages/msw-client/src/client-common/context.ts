@@ -123,25 +123,10 @@ export class Context {
                     name: network,
                     chainId: 2019
                 };
-            } else if (network === "bosagora_devnet") {
+            } else if (network === "msw_devnet") {
                 return {
                     name: network,
-                    chainId: 24600
-                };
-            } else if (network === "acc_sidechain_mainnet") {
-                return {
-                    name: network,
-                    chainId: 215100
-                };
-            } else if (network === "acc_sidechain_testnet") {
-                return {
-                    name: network,
-                    chainId: 215105
-                };
-            } else if (network === "acc_sidechain_devnet") {
-                return {
-                    name: network,
-                    chainId: 24680
+                    chainId: 24002
                 };
             } else {
                 return network;
@@ -157,25 +142,10 @@ export class Context {
                     name: "bosagora_testnet",
                     chainId: 2019
                 };
-            } else if (network === 24600) {
+            } else if (network === 24002) {
                 return {
-                    name: "bosagora_devnet",
-                    chainId: 24680
-                };
-            } else if (network === 215100) {
-                return {
-                    name: "acc_sidechain_mainnet",
-                    chainId: 215100
-                };
-            } else if (network === 215105) {
-                return {
-                    name: "acc_sidechain_testnet",
-                    chainId: 215105
-                };
-            } else if (network === 24680) {
-                return {
-                    name: "acc_sidechain_devnet",
-                    chainId: 24680
+                    name: "msw_devnet",
+                    chainId: 24002
                 };
             } else {
                 return network;

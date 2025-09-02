@@ -32,7 +32,7 @@ export class ContractDeployer {
             //console.log("Deploy MultiSigWalletFactory");
             const walletFactory: MultiSigWalletFactory = await ContractDeployer.deployMultiSigWalletFactory(deployer);
 
-            LIVE_CONTRACTS.bosagora_devnet.MultiSigWalletFactoryAddress = walletFactory.address;
+            LIVE_CONTRACTS.msw_devnet.MultiSigWalletFactoryAddress = walletFactory.address;
 
             contextParamsLocalChain.walletFactoryAddress = walletFactory.address;
 

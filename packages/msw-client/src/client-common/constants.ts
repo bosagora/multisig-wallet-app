@@ -6,9 +6,6 @@ export const LIVE_CONTRACTS: { [K in SupportedNetwork]: NetworkDeployment } = {
     [SupportedNetwork.ETHEREUM_MAINNET]: {
         MultiSigWalletFactoryAddress: activeContractsList.ethereum_mainnet.MultiSigWalletFactory,
     },
-    [SupportedNetwork.ETHEREUM_GOERLI]: {
-        MultiSigWalletFactoryAddress: activeContractsList.ethereum_testnet.MultiSigWalletFactory,
-    },
     [SupportedNetwork.ETHEREUM_SEPOLIA]: {
         MultiSigWalletFactoryAddress: activeContractsList.ethereum_testnet.MultiSigWalletFactory,
     },
@@ -18,17 +15,8 @@ export const LIVE_CONTRACTS: { [K in SupportedNetwork]: NetworkDeployment } = {
     [SupportedNetwork.BOSAGORA_TESTNET]: {
         MultiSigWalletFactoryAddress: activeContractsList.bosagora_testnet.MultiSigWalletFactory,
     },
-    [SupportedNetwork.BOSAGORA_DEVNET]: {
+    [SupportedNetwork.MSW_DEVNET]: {
         MultiSigWalletFactoryAddress: activeContractsList.bosagora_devnet.MultiSigWalletFactory,
-    },
-    [SupportedNetwork.ACC_SIDECHAIN_MAINNET]: {
-        MultiSigWalletFactoryAddress: activeContractsList.acc_sidechain_mainnet.MultiSigWalletFactory,
-    },
-    [SupportedNetwork.ACC_SIDECHAIN_TESTNET]: {
-        MultiSigWalletFactoryAddress: activeContractsList.acc_sidechain_testnet.MultiSigWalletFactory,
-    },
-    [SupportedNetwork.ACC_SIDECHAIN_DEVNET]: {
-        MultiSigWalletFactoryAddress: activeContractsList.acc_sidechain_devnet.MultiSigWalletFactory,
     },
 };
 
@@ -36,10 +24,6 @@ export const ADDITIONAL_NETWORKS: Network[] = [
     {
         name: SupportedNetwork.ETHEREUM_MAINNET,
         chainId: 1,
-    },
-    {
-        name: SupportedNetwork.ETHEREUM_GOERLI,
-        chainId: 5,
     },
     {
         name: SupportedNetwork.ETHEREUM_SEPOLIA,
@@ -54,19 +38,7 @@ export const ADDITIONAL_NETWORKS: Network[] = [
         chainId: 2019,
     },
     {
-        name: SupportedNetwork.BOSAGORA_DEVNET,
-        chainId: 24600,
-    },
-    {
-        name: SupportedNetwork.ACC_SIDECHAIN_MAINNET,
-        chainId: 215110,
-    },
-    {
-        name: SupportedNetwork.ACC_SIDECHAIN_TESTNET,
-        chainId: 215115,
-    },
-    {
-        name: SupportedNetwork.ACC_SIDECHAIN_DEVNET,
-        chainId: 24680,
+        name: SupportedNetwork.MSW_DEVNET,
+        chainId: 24002,
     },
 ];

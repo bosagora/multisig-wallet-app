@@ -25,13 +25,13 @@ export const contextParamsMainnet: ContextParams = {
 };
 
 export const contextParamsDevnet: ContextParams = {
-    network: 24680,
+    network: 24002,
     signer: new Wallet(TEST_WALLET),
     web3Providers: web3EndpointsDevnet.working
 };
 
 export const contextParamsLocalChain: ContextParams = {
-    network: 24680,
+    network: 24002,
     signer: new Wallet(TEST_WALLET),
     web3Providers: ["http://localhost:8545"]
 };

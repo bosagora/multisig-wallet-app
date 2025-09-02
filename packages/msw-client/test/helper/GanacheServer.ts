@@ -26,7 +26,7 @@ export enum AccountIndex {
 export class GanacheServer {
     public static instance: Server;
     public static initialAccounts: any[];
-    public static CHAIN_ID = 24680;
+    public static CHAIN_ID = 24002;
     public static PORT = 7545;
 
     public static async start() {
