@@ -4,7 +4,7 @@ import {
   ButtonText,
   IconReload,
   Spinner,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 

@@ -1,4 +1,4 @@
-import {Pagination, SearchInput} from '@aragon/ui-components';
+import {Pagination, SearchInput} from 'msw-ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';

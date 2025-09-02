@@ -1,4 +1,4 @@
-import {CardProposal, CardProposalProps, Spinner} from '@aragon/ui-components';
+import {CardProposal, CardProposalProps, Spinner} from 'msw-ui-components';
 // import {BigNumber} from 'ethers';
 import React, {useMemo} from 'react';
 import {TFunction, useTranslation} from 'react-i18next';

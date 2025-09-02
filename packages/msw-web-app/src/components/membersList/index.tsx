@@ -1,5 +1,5 @@
 // import {Erc20TokenDetails} from '@aragon/sdk-client';
-import {ListItemAddress} from '@aragon/ui-components';
+import {ListItemAddress} from 'msw-ui-components';
 import {formatUnits, isAddress} from 'ethers/lib/utils';
 import React, {useEffect, useState} from 'react';
 

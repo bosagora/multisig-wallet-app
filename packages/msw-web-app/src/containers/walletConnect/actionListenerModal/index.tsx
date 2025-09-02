@@ -1,4 +1,4 @@
-import {AvatarDao, ButtonText, Spinner, Tag} from '@aragon/ui-components';
+import {AvatarDao, ButtonText, Spinner, Tag} from 'msw-ui-components';
 import {SessionTypes} from '@walletconnect/types';
 import React, {useCallback, useState} from 'react';
 import {useFormContext} from 'react-hook-form';

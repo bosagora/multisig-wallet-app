@@ -5,7 +5,7 @@ import {
   IconMenuVertical,
   Label,
   ListItemAction,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React, {useCallback, useEffect} from 'react';
 import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';

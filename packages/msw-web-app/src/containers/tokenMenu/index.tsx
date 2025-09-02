@@ -3,7 +3,7 @@ import {
   IconAdd,
   IconStorage,
   SearchInput,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React, {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';

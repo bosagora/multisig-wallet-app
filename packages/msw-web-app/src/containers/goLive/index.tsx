@@ -9,7 +9,7 @@ import {
   Breadcrumb,
   ButtonText,
   IconChevronRight,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import {useNavigate} from 'react-router-dom';
 
 import Blockchain from './blockchain';

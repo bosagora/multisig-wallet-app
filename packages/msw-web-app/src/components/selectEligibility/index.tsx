@@ -2,7 +2,7 @@ import {
   AlertInline,
   CheckboxListItem,
   NumberInput,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React, {useEffect} from 'react';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';

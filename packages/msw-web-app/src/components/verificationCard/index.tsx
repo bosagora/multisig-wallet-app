@@ -6,7 +6,7 @@ import {
   IconSpinner,
   Spinner,
   shortenAddress,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 
 import {Dd, Dl} from 'components/descriptionList';
 import {useFormContext, useWatch} from 'react-hook-form';

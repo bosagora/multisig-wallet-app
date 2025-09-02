@@ -4,7 +4,7 @@ import {
   ButtonText,
   ButtonWallet,
   IconFeedback,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React, {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';

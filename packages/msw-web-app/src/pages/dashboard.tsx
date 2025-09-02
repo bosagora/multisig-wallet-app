@@ -1,4 +1,4 @@
-import {HeaderDao} from '@aragon/ui-components';
+import {HeaderDao} from 'msw-ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useCallback, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';

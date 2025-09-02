@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {ButtonText} from '@aragon/ui-components';
+import {ButtonText} from 'msw-ui-components';
 
 type PageEmptyStateProps = {
   title: string;

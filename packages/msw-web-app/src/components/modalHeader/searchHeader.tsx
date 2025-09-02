@@ -4,7 +4,7 @@ import {
   IconClose,
   IconHome,
   IconType,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';

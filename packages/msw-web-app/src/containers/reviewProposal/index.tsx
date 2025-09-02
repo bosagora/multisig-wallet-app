@@ -1,5 +1,5 @@
 // import {Erc20TokenDetails, InstalledPluginListItem} from '@aragon/sdk-client';
-import {Link, VoterType, WidgetStatus} from '@aragon/ui-components';
+import {Link, VoterType, WidgetStatus} from 'msw-ui-components';
 import TipTapLink from '@tiptap/extension-link';
 import {EditorContent, useEditor} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';

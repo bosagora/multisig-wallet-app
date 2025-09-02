@@ -9,7 +9,7 @@ import {
   IconWarning,
   Dropdown,
   ListItemProps,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import styled from 'styled-components';
 
 export type AccordionMethodType = {

@@ -1,4 +1,4 @@
-import {IconChevronRight, ListItemAction} from '@aragon/ui-components';
+import {IconChevronRight, ListItemAction} from 'msw-ui-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';

@@ -1,4 +1,4 @@
-import {IconInfo, Link} from '@aragon/ui-components';
+import {IconInfo, Link} from 'msw-ui-components';
 import React from 'react';
 import styled from 'styled-components';
 

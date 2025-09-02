@@ -1,4 +1,4 @@
-import {ButtonText, ListItemBlockchain} from '@aragon/ui-components';
+import {ButtonText, ListItemBlockchain} from 'msw-ui-components';
 import React, {useState} from 'react';
 import {Controller, useForm, useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';

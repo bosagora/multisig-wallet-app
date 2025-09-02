@@ -1,5 +1,5 @@
 import React from 'react';
-import {AlertBanner} from '@aragon/ui-components';
+import {AlertBanner} from 'msw-ui-components';
 import {useTranslation} from 'react-i18next';
 import {useWallet} from 'hooks/useWallet';
 

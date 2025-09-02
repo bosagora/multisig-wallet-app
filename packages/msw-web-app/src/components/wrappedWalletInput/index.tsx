@@ -2,7 +2,7 @@ import {
   AlertInline,
   WalletInput,
   WalletInputProps,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React, {Ref, forwardRef, useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 

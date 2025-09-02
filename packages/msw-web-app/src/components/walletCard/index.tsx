@@ -1,4 +1,4 @@
-import {AvatarDao, IconBlock, IconCommunity} from '@aragon/ui-components';
+import {AvatarDao, IconBlock, IconCommunity} from 'msw-ui-components';
 import React from 'react';
 import styled from 'styled-components';
 

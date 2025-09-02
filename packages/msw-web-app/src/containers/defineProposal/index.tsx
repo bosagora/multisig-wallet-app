@@ -5,7 +5,7 @@ import {
   TextareaSimple,
   TextareaWYSIWYG,
   TextInput,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';

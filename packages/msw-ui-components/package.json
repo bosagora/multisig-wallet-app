@@ -1,12 +1,12 @@
 {
-  "name": "@aragon/ui-components",
+  "name": "msw-ui-components",
   "version": "0.1.3",
   "description": "Ui components library for Aragon",
   "author": "Aragon Association",
   "repository": "https://github.com/aragon/Zaragoza",
   "license": "GNU",
   "main": "dist/index.js",
-  "module": "dist/ui-components.esm.js",
+  "module": "dist/msw-ui-components.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",

@@ -4,7 +4,7 @@ import {
   ButtonText,
   IconClose,
   IconCopy,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useAlertContext} from 'context/alert';
 import {useGlobalModalContext} from 'context/globalModals';

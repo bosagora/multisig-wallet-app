@@ -6,7 +6,7 @@ import {
   IconSearch,
   Link,
   ListItemAction,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import {SessionTypes} from '@walletconnect/types';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';

@@ -1,4 +1,4 @@
-import {Spinner} from '@aragon/ui-components';
+import {Spinner} from 'msw-ui-components';
 import React from 'react';
 
 export const Loading: React.FC = () => {

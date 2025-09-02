@@ -5,7 +5,7 @@ import {
   Label,
   ValueInput,
   InputValue as WalletInputValue,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import React, {useCallback, useEffect} from 'react';
 import {
   Controller,

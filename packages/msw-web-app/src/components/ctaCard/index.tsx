@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ButtonText} from '@aragon/ui-components';
+import {ButtonText} from 'msw-ui-components';
 import useScreen from 'hooks/useScreen';
 
 type Props = {

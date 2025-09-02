@@ -5,7 +5,7 @@ import {Loading} from 'components/temporary';
 import {ActionsProvider} from 'context/actions';
 import {CreateProposalProvider} from 'context/createProposal';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
-import {InputValue} from '@aragon/ui-components';
+import {InputValue} from 'msw-ui-components';
 
 export type TokenFormData = {
   tokenName: string;

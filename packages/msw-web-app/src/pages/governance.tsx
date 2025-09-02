@@ -4,7 +4,7 @@ import {
   IconChevronDown,
   IllustrationHuman,
   Spinner,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';

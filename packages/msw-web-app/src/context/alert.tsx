@@ -5,7 +5,7 @@ import React, {
   useMemo,
   ReactNode,
 } from 'react';
-import {AlertChip} from '@aragon/ui-components';
+import {AlertChip} from 'msw-ui-components';
 
 const AlertContext = createContext<AlertContextType | null>(null);
 

@@ -5,7 +5,7 @@ import {
   IconChevronRight,
   ListItemAction,
   SearchInput,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 
 import {useGlobalModalContext} from 'context/globalModals';
 import {timezones} from './utcData';

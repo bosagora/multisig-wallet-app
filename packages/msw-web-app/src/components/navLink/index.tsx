@@ -1,4 +1,4 @@
-import {ListItemAction} from '@aragon/ui-components';
+import {ListItemAction} from 'msw-ui-components';
 import {useNetwork} from 'context/network';
 import useScreen from 'hooks/useScreen';
 import React from 'react';

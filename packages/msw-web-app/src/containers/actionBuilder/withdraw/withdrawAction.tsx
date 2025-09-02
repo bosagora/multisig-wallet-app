@@ -1,4 +1,4 @@
-import {ListItemAction} from '@aragon/ui-components';
+import {ListItemAction} from 'msw-ui-components';
 import React from 'react';
 import {useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';

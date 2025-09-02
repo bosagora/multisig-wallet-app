@@ -6,7 +6,7 @@ import {
   IconCopy,
   IconSwitch,
   IconTurnOff,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import {useGlobalModalContext} from 'context/globalModals';
 import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';

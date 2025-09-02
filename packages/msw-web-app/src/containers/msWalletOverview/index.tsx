@@ -1,5 +1,5 @@
-import {Breadcrumb, ButtonText, IconChevronRight} from '@aragon/ui-components';
-import {IlluObject} from '@aragon/ui-components/src/components/illustrations';
+import {Breadcrumb, ButtonText, IconChevronRight} from 'msw-ui-components';
+import {IlluObject} from 'msw-ui-components/src/components/illustrations';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';

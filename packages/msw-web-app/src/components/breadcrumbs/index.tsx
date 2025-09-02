@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 import {BreadcrumbData} from 'use-react-router-breadcrumbs';
-import {IconChevronRight} from '@aragon/ui-components';
+import {IconChevronRight} from 'msw-ui-components';
 
 type Props = {
   breadcrumbs: BreadcrumbData[];

@@ -16,7 +16,7 @@ import {
   IconGovernance,
   Link,
   WidgetStatus,
-} from '@aragon/ui-components';
+} from 'msw-ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';

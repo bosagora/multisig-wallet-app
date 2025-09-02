@@ -1,4 +1,4 @@
-import {ButtonText, IconAdd} from '@aragon/ui-components';
+import {ButtonText, IconAdd} from 'msw-ui-components';
 import {useAlertContext} from 'context/alert';
 import React from 'react';
 import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
