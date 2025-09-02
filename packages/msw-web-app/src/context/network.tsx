@@ -10,6 +10,8 @@ import {useAccount, useNetwork as useWagmiNetwork} from 'wagmi';
 
 import {
   CHAIN_METADATA,
+  defaultChainID,
+  defaultChainName,
   isSupportedChainId,
   SupportedNetworks,
   toSupportedNetwork,
@@ -21,14 +23,12 @@ import {NotFound} from 'utils/paths';
 type NetworkContext = {
   network: SupportedNetworks;
   setNetwork: (network: SupportedNetworks) => void;
-  isL2Network: boolean;
   networkUrlSegment: string | undefined;
 };
 
 const NetworkContext = createContext<NetworkContext>({
-  network: 'ethereum',
+  network: 'bosagora_mainnet',
   setNetwork: () => {},
-  isL2Network: false,
   networkUrlSegment: undefined,
 });
 
@@ -58,13 +58,11 @@ const determineNetwork = (
         ([, v]) => v.id === chainId
       )?.[0] as SupportedNetworks;
     } else {
-      console.log('*NETWORK UNSUPPORTED');
       return 'unsupported';
     }
+  } else {
+    return defaultChainName;
   }
-
-  //NETWORK defaults to eth
-  return 'ethereum';
 };
 
 /**
@@ -86,19 +84,17 @@ export function NetworkProvider({children}: NetworkProviderProps) {
   const isCreatePage = Boolean(useMatch('create'));
   const networkUrlSegment = urlNetwork?.params?.network;
   const {chain} = useWagmiNetwork();
-  const chainId = chain?.id || 0;
+  const chainId = chain?.id || defaultChainID;
   const {status: wagmiStatus} = useAccount();
   const status = wagmiStatus === 'reconnecting' ? 'connecting' : wagmiStatus;
   const [networkState, setNetworkState] = useState<
     SupportedNetworks | 'unsupported'
-  >('unsupported');
+  >(determineNetwork(networkUrlSegment, chainId, status));
 
   useEffect(() => {
     if (!isCreatePage)
       setNetworkState(determineNetwork(networkUrlSegment, chainId, status));
   }, [chainId, isCreatePage, networkUrlSegment, status]);
-
-  const isL2Network = ['polygon', 'mumbai'].includes(networkState);
 
   const changeNetwork = useCallback(
     (network: SupportedNetworks) => {
@@ -115,7 +111,7 @@ export function NetworkProvider({children}: NetworkProviderProps) {
     // unsupported network based on the networkUrlSegment network
     if (networkState === 'unsupported' && networkUrlSegment) {
       console.warn('network unsupported : ', networkUrlSegment);
-      //navigate(NotFound, {replace: true});
+      navigate(NotFound, {replace: true});
     }
   }, [networkState, navigate, networkUrlSegment]);
 
@@ -124,7 +120,6 @@ export function NetworkProvider({children}: NetworkProviderProps) {
       value={{
         network: networkState,
         setNetwork: changeNetwork,
-        isL2Network,
         networkUrlSegment,
       }}
     >

@@ -67,6 +67,7 @@ export const StateEmpty: React.FC<StateEmptyProps> = props => {
           <ActionContainer actionsColumn={props.actionsColumn}>
             {props.primaryButton && (
               <ButtonText
+                css={{}}
                 {...props.primaryButton}
                 mode="primary"
                 size="large"
@@ -76,6 +77,7 @@ export const StateEmpty: React.FC<StateEmptyProps> = props => {
             )}
             {props.secondaryButton && (
               <ButtonText
+                css={{}}
                 {...props.secondaryButton}
                 mode="secondary"
                 size="large"

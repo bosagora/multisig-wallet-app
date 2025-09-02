@@ -25,6 +25,7 @@ const SelectChainForm: React.FC = () => {
       <Header>
         <NetworkTypeSwitcher>
           <ButtonText
+            css={{}}
             mode="ghost"
             bgWhite
             size={isMobile ? 'small' : 'medium'}
@@ -35,6 +36,7 @@ const SelectChainForm: React.FC = () => {
             }}
           />
           <ButtonText
+            css={{}}
             mode="ghost"
             bgWhite
             size={isMobile ? 'small' : 'medium'}
@@ -85,10 +87,6 @@ const NetworkTypeSwitcher = styled.div.attrs({
   className: 'flex p-0.5 space-x-0.25 bg-ui-0 rounded-xl',
 })``;
 
-// const SortFilter = styled.div.attrs({
-//   className: 'flex items-center space-x-1.5',
-// })``;
-
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
 })``;
@@ -110,8 +108,8 @@ const networks: SelectableNetworks = {
     security: ['bosagora_mainnet', 'ethereum'],
   },
   test: {
-    cost: ['bosagora_testnet', 'sepolia'],
-    popularity: ['bosagora_testnet', 'sepolia'],
-    security: ['bosagora_testnet', 'sepolia'],
+    cost: ['bosagora_testnet', 'msw_devnet', 'sepolia'],
+    popularity: ['bosagora_testnet', 'msw_devnet', 'sepolia'],
+    security: ['bosagora_testnet', 'msw_devnet', 'sepolia'],
   },
 };

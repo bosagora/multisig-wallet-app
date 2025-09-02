@@ -27,6 +27,7 @@ const CTACard: React.FC<Props> = props => {
       </Content>
 
       <ButtonText
+        css={{}}
         size="large"
         label={props.actionLabel}
         {...(props.actionAvailable

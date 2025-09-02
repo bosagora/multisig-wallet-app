@@ -22,6 +22,7 @@ import {handleClipboardActions, shortenAddress} from 'utils/library';
 const NetworkErrorMenu = () => {
   const {isNetworkOpen, close} = useGlobalModalContext();
   const {network} = useNetwork();
+  console.log(`network: ${JSON.stringify(network)}`);
   const {switchWalletNetwork} = useSwitchNetwork();
   const {address, connectorName} = useWallet();
   const {isDesktop} = useScreen();
@@ -42,6 +43,7 @@ const NetworkErrorMenu = () => {
           </AddressContainer>
         </AvatarAddressContainer>
         <ButtonIcon
+          css={{}}
           mode="secondary"
           icon={<IconCopy />}
           size="small"
@@ -51,6 +53,7 @@ const NetworkErrorMenu = () => {
         />
         {isDesktop && (
           <ButtonIcon
+            css={{}}
             mode="ghost"
             icon={<IconClose />}
             size="small"
@@ -76,6 +79,7 @@ const NetworkErrorMenu = () => {
         </WarningContainer>
         {connectorName === 'MetaMask' && (
           <ButtonText
+            css={{}}
             label={t('alert.wrongNetwork.buttonLabel', {
               network: CHAIN_METADATA[network].name,
             })}

@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
               walletDetail.creationDate.getTime() / 1000,
               'MMMM yyyy'
             ).toString()}
-            daoChain={network}
+            daoChain={CHAIN_METADATA[network].name}
             favorited={isFavoritedMSWallet}
             copiedOnClick={handleClipboardActions}
             onFavoriteClick={() =>

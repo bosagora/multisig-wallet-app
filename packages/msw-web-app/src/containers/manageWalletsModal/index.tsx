@@ -163,13 +163,13 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
 
       <ButtonContainer>
         <ButtonText
+          css={{}}
           label={labels.button as string}
           size="large"
           onClick={() => {
             addWalletCallback(Array.from(selectedWallets));
             handleClose();
           }}
-          css={{}}
         />
         <ButtonText
           label={t('labels.cancel')}

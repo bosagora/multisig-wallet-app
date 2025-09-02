@@ -34,41 +34,27 @@ export const DaoExplorer = () => {
   const navigate = useNavigate();
   const {isConnected, address} = useWallet();
 
-  const [filterValue, setFilterValue] = useState<ExploreFilter>('favorite');
-
   // conditional api queries
-  const fetchFavorited = filterValue === 'favorite';
-  const favoritedApi = useFavoritedDaosInfiniteQuery(fetchFavorited);
   const daosApi = useMSWalletsInfiniteQuery(
     address || '',
-    fetchFavorited === false,
+    true,
     {limit: 4}
   );
-  //console.log('fetchFavorited :', fetchFavorited);
-  //console.log('daosApi :', daosApi);
 
   // resulting api response
   const exploreDaosApi = useMemo(
     () =>
-      (fetchFavorited ? favoritedApi : daosApi) as UseInfiniteQueryResult<
+      (daosApi) as UseInfiniteQueryResult<
         AugmentedDaoListItem,
         unknown
       >,
-    [address, daosApi, favoritedApi, fetchFavorited]
+    [address, daosApi]
   );
 
-  // whether the connected wallet has favorited DAOS
-  const loggedInAndHasFavoritedDaos =
-    isConnected && (favoritedApi.data?.pages || []).length > 0;
 
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
-  const handleFilterChange = (filterValue: string) => {
-    if (isExploreFilter(filterValue)) {
-      setFilterValue(filterValue);
-    } else throw Error(`${filterValue} is not an acceptable filter value`);
-  };
 
   const handleDaoClicked = (msWallet: string, chain: SupportedChainID) => {
     navigate(
@@ -80,18 +66,6 @@ export const DaoExplorer = () => {
   };
 
   /*************************************************
-   *                      Effects                  *
-   *************************************************/
-  useEffect(() => {
-    if (
-      favoritedApi.status === 'success' &&
-      loggedInAndHasFavoritedDaos === false
-    ) {
-      setFilterValue('newest');
-    }
-  }, [favoritedApi.status, loggedInAndHasFavoritedDaos]);
-
-  /*************************************************
    *                     Render                    *
    *************************************************/
   return (
@@ -99,20 +73,6 @@ export const DaoExplorer = () => {
       <MainContainer>
         <HeaderWrapper>
           <Title>{t('explore.explorer.title')}</Title>
-          {loggedInAndHasFavoritedDaos && (
-            <ButtonGroupContainer>
-              <ButtonGroup
-                defaultValue={filterValue}
-                onChange={handleFilterChange}
-                bgWhite={false}
-              >
-                <Option label={t('explore.explorer.myDaos')} value="favorite" />
-
-                {/* <Option label={t('explore.explorer.popular')} value="popular" /> */}
-                <Option label={t('explore.explorer.newest')} value="newest" />
-              </ButtonGroup>
-            </ButtonGroupContainer>
-          )}
         </HeaderWrapper>
         <CardsWrapper>
           {exploreDaosApi.isLoading ? (

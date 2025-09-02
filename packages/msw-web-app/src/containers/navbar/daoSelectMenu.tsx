@@ -98,6 +98,7 @@ const DaoSelectMenu: React.FC = () => {
         </ModalContentContainer>
         <div className="p-3">
           <ButtonText
+            css={{}}
             mode="secondary"
             size="large"
             label={t('daoSwitcher.subtitle')}
@@ -107,7 +108,6 @@ const DaoSelectMenu: React.FC = () => {
               navigate('/');
               close('selectDao');
             }}
-            css={{}}
           />
         </div>
       </div>

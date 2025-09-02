@@ -24,6 +24,7 @@ const SearchHeader: React.FC<SearchHeader> = props => {
     <Container>
       <LeftContent>
         <ButtonIcon
+          css={{}}
           icon={props.buttonIcon || <IconHome />}
           mode="secondary"
           bgWhite
@@ -44,6 +45,7 @@ const SearchHeader: React.FC<SearchHeader> = props => {
         />
       </LeftContent>
       <ButtonIcon
+        css={{}}
         mode="secondary"
         icon={<IconClose />}
         onClick={props.onClose}

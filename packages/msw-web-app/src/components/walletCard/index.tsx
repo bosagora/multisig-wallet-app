@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import useScreen from 'hooks/useScreen';
-import {getSupportedNetworkByChainId} from 'utils/constants';
+import {CHAIN_METADATA, getSupportedNetworkByChainId} from 'utils/constants';
 
 export interface IWalletCardProps {
   name: string;
@@ -22,20 +22,20 @@ export const WalletCard = (props: IWalletCardProps) => {
   const {isDesktop} = useScreen();
 
   return (
-    <Container data-testid="daoCard" onClick={props.onClick}>
-      <DaoDataWrapper>
-        <HeaderContainer>
-          <AvatarDao walletName={props.name} src={props.address} />
-          <div className="space-y-0.25 desktop:space-y-0.5 text-left">
-            <Title>{props.name}</Title>
-          </div>
-        </HeaderContainer>
-        <Description isDesktop={isDesktop}>{props.description}</Description>
-      </DaoDataWrapper>
+      <Container data-testid="daoCard" onClick={props.onClick}>
+        <DaoDataWrapper>
+          <HeaderContainer>
+            <AvatarDao walletName={props.name} src={props.address} />
+            <div className="space-y-0.25 desktop:space-y-0.5 text-left">
+              <Title>{props.name}</Title>
+            </div>
+          </HeaderContainer>
+          <Description isDesktop={isDesktop}>{props.description}</Description>
+        </DaoDataWrapper>
       <DaoMetadataWrapper>
         <IconWrapper>
           <StyledIconBlock />
-          <IconLabel>{getSupportedNetworkByChainId(props.chainId)}</IconLabel>
+          <IconLabel>{CHAIN_METADATA[getSupportedNetworkByChainId(props.chainId) || "unsupported"].name}</IconLabel>
         </IconWrapper>
       </DaoMetadataWrapper>
     </Container>

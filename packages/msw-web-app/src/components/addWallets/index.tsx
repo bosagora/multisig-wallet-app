@@ -86,6 +86,7 @@ const AddWallets: React.FC = () => {
       </ListGroup>
       <ActionsWrapper>
         <ButtonText
+          css={{}}
           label={t('labels.addWallet')}
           mode="secondary"
           size="large"
@@ -95,6 +96,7 @@ const AddWallets: React.FC = () => {
           align="start"
           trigger={
             <ButtonIcon
+              css={{}}
               mode="ghost"
               size="large"
               bgWhite

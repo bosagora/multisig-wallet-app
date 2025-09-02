@@ -117,6 +117,7 @@ export const MultisigWallets = () => {
         <ActionsContainer>
           <TextButtonsContainer>
             <ButtonText
+              css={{}}
               label={t('labels.whitelistWallets.addAddress')}
               mode="secondary"
               size="large"
@@ -130,6 +131,7 @@ export const MultisigWallets = () => {
             sideOffset={4}
             trigger={
               <ButtonIcon
+                css={{}}
                 size="large"
                 mode="secondary"
                 bgWhite

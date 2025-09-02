@@ -54,10 +54,7 @@ export const useWallet = (): IUseWallet => {
   const signer = [
     'bosagora_mainnet',
     'bosagora_testnet',
-    'bosagora_devnet',
-    'acc_sidechain_mainnet',
-    'acc_sidechain_testnet',
-    'acc_sidechain_devnet',
+    'msw_devnet',
   ].includes(network)
     ? signer2
     : signer1;

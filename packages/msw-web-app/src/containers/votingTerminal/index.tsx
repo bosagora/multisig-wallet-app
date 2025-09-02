@@ -216,7 +216,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
 
       {votingInProcess ? (
         <VotingContainer>
-          <CheckboxContainer className="hidden">
+          <CheckboxContainer>
             <CheckboxListItem
               label={t('votingTerminal.yes')}
               helptext={t('votingTerminal.yesHelptext')}
@@ -269,8 +269,8 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                     : 'Member Only'
                 }
                 size="large"
-                onClick={() => {
-                  onVoteClicked && onVoteClicked();
+                onClick={(e) => {
+                  onVoteClicked && onVoteClicked(e);
                 }}
                 className="w-full tablet:w-max"
                 disabled={voteNowDisabled}
@@ -283,19 +283,6 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   );
 };
 
-type StatusProp = {
-  status?: ProposalStatus;
-};
-
-const StatusIcon: React.FC<StatusProp> = ({status}) => {
-  if (status === 'Pending' || status === 'Active') {
-    return <IconClock className="text-info-500" />;
-  } else if (status === 'Defeated') {
-    return <IconRadioCancel className="text-critical-500" />;
-  } else {
-    return <IconInfo className="text-info-500" />;
-  }
-};
 
 const Container = styled.div.attrs({
   className: 'tablet:p-3 py-2.5 px-2 rounded-xl bg-ui-0 border border-ui-100',

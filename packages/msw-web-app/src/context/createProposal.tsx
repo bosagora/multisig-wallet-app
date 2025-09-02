@@ -23,46 +23,13 @@ import {Loading} from 'components/temporary';
 import PublishModal from 'containers/transactionModals/publishModal';
 import {useClient} from 'hooks/useClient';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
-// import {useDaoToken} from 'hooks/useDaoToken';
-// import {
-//   isMultisigVotingSettings,
-//   isTokenVotingSettings,
-//   usePluginSettings,
-// } from 'hooks/usePluginSettings';
-// import {usePollGasFee} from 'hooks/usePollGasfee';
-// import {useTokenSupply} from 'hooks/useTokenSupply';
 import {useWallet} from 'hooks/useWallet';
-// import {trackEvent} from 'services/analytics';
-// import {getEtherscanVerifiedContract} from 'services/etherscanAPI';
 import {
-  PENDING_MULTISIG_PROPOSALS_KEY,
-  PENDING_PROPOSALS_KEY,
   TransactionState,
 } from 'utils/constants';
 import {
-  daysToMills,
-  getCanonicalDate,
-  getCanonicalTime,
-  getCanonicalUtcOffset,
   getDHMFromSeconds,
-  hoursToMills,
-  minutesToMills,
-  offsetToMills,
 } from 'utils/date';
-// import {
-//   customJSONReplacer,
-//   getDefaultPayableAmountInputName,
-//   toDisplayEns,
-// } from 'utils/library';
-// import {Proposal} from 'utils/paths';
-// import {
-//   CacheProposalParams,
-//   getNonEmptyActions,
-//   mapToCacheProposal,
-// } from 'utils/proposals';
-// import {isNativeToken} from 'utils/tokens';
-// import {ProposalId, ProposalResource} from 'utils/types';
-// import {pendingMultisigProposalsVar} from './apolloClient';
 import {useGlobalModalContext} from './globalModals';
 import {useNetwork} from './network';
 import {usePrivacyContext} from './privacyContext';
@@ -140,7 +107,7 @@ const CreateProposalProvider: React.FC<Props> = ({
         proposalCreationData.title,
         proposalCreationData.description,
         proposalCreationData.destination,
-        proposalCreationData.value
+        BigNumber.from(proposalCreationData.value)
       );
     }
 
@@ -150,7 +117,7 @@ const CreateProposalProvider: React.FC<Props> = ({
       proposalCreationData.description,
       proposalCreationData.tokenAddress,
       proposalCreationData.destination,
-      proposalCreationData.value
+      BigNumber.from(proposalCreationData.value)
     );
   }, [client, proposalCreationData]);
 
@@ -262,14 +229,14 @@ const CreateProposalProvider: React.FC<Props> = ({
           proposalCreationData.title,
           proposalCreationData.description,
           proposalCreationData.destination,
-          proposalCreationData.value
+          BigNumber.from(proposalCreationData.value)
         )
       : client?.multiSigWallet.submitTransactionTokenTransfer(
           proposalCreationData.title,
           proposalCreationData.description,
           proposalCreationData.tokenAddress,
           proposalCreationData.destination,
-          proposalCreationData.value
+          BigNumber.from(proposalCreationData.value)
         );
 
     if (creationProcessState === TransactionState.SUCCESS) {
@@ -290,35 +257,37 @@ const CreateProposalProvider: React.FC<Props> = ({
     // the try-catch block inside the for loop would not catch the error
     // FF - 11/21/2020
     try {
-      for await (const step of proposalIterator) {
-        switch (step.key) {
-          case NormalSteps.SENT:
-            //console.log(step.txHash);
-            // trackEvent('newProposal_transaction_signed', {
-            //   dao_address: walletDetails?.address,
-            //   network: network,
-            //   wallet_provider: provider?.connection.url,
-            // });
-            break;
-          case NormalSteps.SUCCESS: {
-            //TODO: replace with step.proposal id when SDK returns proper format
-            // const prefixedId = new ProposalId(
-            //   step.transactionId
-            // ).makeGloballyUnique(pluginAddress);
-            //
-            const prefixedId = step.transactionId.toString();
-            setProposalId(prefixedId);
-            setCreationProcessState(TransactionState.SUCCESS);
-            // trackEvent('newProposal_transaction_success', {
-            //   dao_address: walletDetails?.address,
-            //   network: network,
-            //   wallet_provider: provider?.connection.url,
-            //   proposalId: prefixedId,
-            // });
+      if (proposalIterator !== undefined) {
+        for await (const step of proposalIterator) {
+          switch (step.key) {
+            case NormalSteps.SENT:
+              //console.log(step.txHash);
+              // trackEvent('newProposal_transaction_signed', {
+              //   dao_address: walletDetails?.address,
+              //   network: network,
+              //   wallet_provider: provider?.connection.url,
+              // });
+              break;
+            case NormalSteps.SUCCESS: {
+              //TODO: replace with step.proposal id when SDK returns proper format
+              // const prefixedId = new ProposalId(
+              //   step.transactionId
+              // ).makeGloballyUnique(pluginAddress);
+              //
+              const prefixedId = step.transactionId.toString();
+              setProposalId(prefixedId);
+              setCreationProcessState(TransactionState.SUCCESS);
+              // trackEvent('newProposal_transaction_success', {
+              //   dao_address: walletDetails?.address,
+              //   network: network,
+              //   wallet_provider: provider?.connection.url,
+              //   proposalId: prefixedId,
+              // });
 
-            // cache proposal
-            // handleCacheProposal(prefixedId);
-            break;
+              // cache proposal
+              // handleCacheProposal(prefixedId);
+              break;
+            }
           }
         }
       }

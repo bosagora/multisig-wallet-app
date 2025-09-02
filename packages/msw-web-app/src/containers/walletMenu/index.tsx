@@ -78,6 +78,7 @@ export const WalletMenu = () => {
           </AddressContainer>
         </AvatarAddressContainer>
         <ButtonIcon
+          css={{}}
           mode="secondary"
           icon={<IconCopy />}
           size="small"
@@ -87,6 +88,7 @@ export const WalletMenu = () => {
         />
         {isDesktop && (
           <ButtonIcon
+            css={{}}
             mode="ghost"
             icon={<IconClose />}
             size="small"
@@ -96,6 +98,7 @@ export const WalletMenu = () => {
       </ModalHeader>
       <ModalBody>
         <StyledButtonText
+          css={{}}
           size="large"
           mode="ghost"
           iconLeft={<IconSwitch />}
@@ -103,6 +106,7 @@ export const WalletMenu = () => {
           onClick={handleViewTransactions}
         />
         <StyledButtonText
+          css={{}}
           size="large"
           mode="ghost"
           iconLeft={<IconTurnOff />}

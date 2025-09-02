@@ -177,6 +177,7 @@ const LinkRow: React.FC<LinkRowProps & BgWhite> = ({
           sideOffset={8}
           trigger={
             <ButtonIcon
+              css={{}}
               mode="ghost"
               size="large"
               bgWhite

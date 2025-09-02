@@ -41,6 +41,7 @@ export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
       {children}
       <Link to={generatePath(AllTokens, {network, msWallet})}>
         <ButtonText
+          css={{}}
           mode="secondary"
           label={t('labels.seeAllTokens')}
           iconRight={<IconChevronRight />}
@@ -75,6 +76,7 @@ export const TransferSectionWrapper = ({
         <div>
           <Link to={generatePath(AllTransfers, {network, msWallet})}>
             <ButtonText
+              css={{}}
               mode="secondary"
               label={t('labels.seeAllTransfers')}
               iconRight={<IconChevronRight />}

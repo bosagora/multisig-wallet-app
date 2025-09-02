@@ -12,7 +12,6 @@ export const WithdrawCard: React.FC<{
 }> = ({action, walletName}) => {
   const {t} = useTranslation();
 
-  //console.log('WithdrawCard > action:', action);
   return (
     <AccordionMethod
       type="execution-widget"

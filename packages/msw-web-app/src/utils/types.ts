@@ -158,12 +158,6 @@ type ExecutionData = {
   amount: number;
 };
 
-export type Erc20ProposalVote = {
-  address: string;
-  vote: VoteValues;
-  weight: bigint;
-};
-
 export type DetailedProposal = MultisigProposal;
 export type ProposalListItem = MultisigProposalListItem;
 export type SupportedProposals = DetailedProposal | ProposalListItem;
@@ -207,15 +201,6 @@ export type ActionsTypes =
   | 'add_address'
   | 'remove_address'
   | 'withdraw_assets'
-  | 'mint_tokens'
-  | 'external_contract_modal'
-  | 'external_contract_action'
-  | 'wallet_connect_modal'
-  | 'wallet_connect_action'
-  | 'modify_token_voting_settings'
-  | 'modify_metadata'
-  | 'modify_multisig_voting_settings'
-  | 'update_minimum_approval';
 
 export type ActionWithdraw = {
   amount: number;

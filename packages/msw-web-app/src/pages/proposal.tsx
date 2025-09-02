@@ -74,13 +74,11 @@ const Proposal: React.FC = () => {
     [urlId]
   );
   const {getImgUrl} = useLoadTokenLogoURL();
-  // console.log('>>>>> tokenList :', tokenList)
 
   const {data: walletDetails, isLoading: detailsAreLoading} =
     useMSWalletDetailsQuery();
   const {
     data: {members: daoMemebers},
-    isLoading,
   } = useMSWalletMembers(
     walletDetails?.address || '',
     'multisig.plugin.msWallet.eth'
@@ -90,19 +88,12 @@ const Proposal: React.FC = () => {
     walletDetails?.address as string,
     'multisig.plugin.msWallet.eth' as PluginTypes
   );
-  // const {
-  //   data: {members},
-  // } = useDaoMembers(walletDetails?.address || '', 'multisig.plugin.msWallet.eth');
-  //
   const multisigDAO = true;
 
   const allowVoteReplacement = false;
-  // isTokenVotingSettings(daoSettings) &&
-  // daoSettings.votingMode === VotingMode.VOTE_REPLACEMENT;
 
   const {client} = useClient();
   const {set, get} = useCache();
-  // const apolloClient = useApolloClient();
 
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
@@ -117,14 +108,11 @@ const Proposal: React.FC = () => {
     handleSubmitVote,
     handleExecuteProposal,
     isLoading: paramsAreLoading,
-    pluginAddress,
     pluginType,
     voteSubmitted,
     executionFailed,
     transactionHash,
   } = useProposalTransactionContext();
-
-  // console.log('voteSubmitted :', voteSubmitted);
 
   const {
     data: proposal,
@@ -135,26 +123,13 @@ const Proposal: React.FC = () => {
     proposalId!,
     intervalInMills
   );
-  // const midday = useMemo(() => {
-  //   const hours = Number(value?.match(/^(\d+)/)?.[1]);
-  //   return hours > 11 ? 'pm' : 'am';
-  // }, [value]);
-  // const proposal = useMemo(() => {
-  //   console.log('tempProposal : ', tempProposal)
-  //   return tempProposal ?  tempProposal.slice(0, 5);
-  // }, [tempProposal]);
+
   const {data: canVote} = useWalletCanVote(
     address,
     daoMemebers,
     proposal?.approval,
     proposal?.executed
   );
-  // const canVote = true;
-  // console.log('canVote >>>> :', canVote);
-
-  // ref used to hold "memories" of previous "state"
-  // across renders in order to automate the following states:
-  // loggedOut -> login modal => switch network modal -> vote options selection;
   const statusRef = useRef({wasNotLoggedIn: false, wasOnWrongNetwork: false});
 
   // voting
@@ -162,34 +137,10 @@ const Proposal: React.FC = () => {
   const [votingInProcess, setVotingInProcess] = useState(false);
   const [expandedProposal, setExpandedProposal] = useState(false);
 
-  // const editor = useEditor({
-  //   editable: false,
-  //   extensions: [
-  //     StarterKit,
-  //     TipTapLink.configure({
-  //       openOnClick: false,
-  //     }),
-  //   ],
-  // });
-
   /*************************************************
    *                     Hooks                     *
    *************************************************/
 
-  // set editor data
-  // useEffect(() => {
-  //   if (proposal && editor) {
-  //     editor.commands.setContent(
-  //       // Default list of allowed tags and attributes - https://www.npmjs.com/package/sanitize-html#default-options
-  //       sanitizeHtml(proposal.metadata.description, {
-  //         // the disallowedTagsMode displays the disallowed tags to be rendered as a string
-  //         disallowedTagsMode: 'recursiveEscape',
-  //       }),
-  //       true
-  //     );
-  //   }
-  // }, [editor, proposal]);
-  //
   useEffect(() => {
     if (proposal?.status) {
       setTerminalTab(
@@ -201,6 +152,7 @@ const Proposal: React.FC = () => {
   // decode proposal actions
   useEffect(() => {
     if (!proposal) return;
+    console.log(proposal);
 
     const mintTokenActions: {
       actions: Uint8Array[];
@@ -208,7 +160,6 @@ const Proposal: React.FC = () => {
     } = {actions: [], index: 0};
 
     const withdrawAction = {
-      // amount: Number(formatUnits(decoded.amount, tokenInfo.decimals)),
       amount: proposal.amount,
       name: 'withdraw_assets',
       to: {address: proposal.to || ''},
@@ -251,20 +202,11 @@ const Proposal: React.FC = () => {
   }, [isConnected, isOnWrongNetwork, open, getImgUrl]);
 
   useEffect(() => {
-    // all conditions unmet close voting in process
-    // console.log('isOnWrongNetwork :', isOnWrongNetwork);
-    // console.log('isConnected :', isConnected);
-    // console.log('canVote :', canVote);
     if (isOnWrongNetwork || !isConnected || !canVote) {
-      // console.log('vip false on wrongnetwork');
       setVotingInProcess(false);
     } else {
       setVotingInProcess(true);
     }
-    // if (canVote) {
-    //   // console.log('set vip true');
-    //   setVotingInProcess(true);
-    // }
     // was on the wrong network but now on the right one
     if (statusRef.current.wasOnWrongNetwork && !isOnWrongNetwork) {
       // reset ref
@@ -283,34 +225,10 @@ const Proposal: React.FC = () => {
     statusRef.current.wasOnWrongNetwork,
   ]);
 
-  // show voter tab once user has voted
-  // useEffect(() => {
-  //   if (voteSubmitted) {
-  //     setTerminalTab('voters');
-  //     setVotingInProcess(false);
-  //     // console.log('vip false on voteSubmmited');
-  //   }
-  // }, [voteSubmitted]);
-
   useEffect(() => {
     if (proposal) {
       // set the very first time
       setVoteStatus(getVoteStatus(proposal, t));
-
-      // const interval = setInterval(async () => {
-      //   const v = getVoteStatus(proposal, t);
-      //
-      //   // remove interval timer once the proposal has started
-      //   if (proposal.startDate.valueOf() <= new Date().valueOf()) {
-      //     clearInterval(interval);
-      //     setIntervalInMills(PROPOSAL_STATUS_INTERVAL);
-      //     setVoteStatus(v);
-      //   } else if (proposal.status === 'Pending') {
-      //     setVoteStatus(v);
-      //   }
-      // }, PENDING_PROPOSAL_STATUS_INTERVAL);
-      //
-      // return () => clearInterval(interval);
     }
   }, [proposal, t]);
 
@@ -649,7 +567,6 @@ const Proposal: React.FC = () => {
           />
         </ProposalContainer>
         <AdditionalInfoContainer>
-          {/*<ResourceList links={proposal?.metadata.resources} />*/}
           <WidgetStatus steps={proposalSteps} />
         </AdditionalInfoContainer>
       </ContentContainer>

@@ -51,6 +51,7 @@ export const DescriptionListContainer: React.FC<DescriptionListProps> = ({
         </TitleContainer>
         {onEditClick && (
           <ButtonText
+            css={{}}
             label={editLabel || t('labels.edit')}
             mode="secondary"
             size="large"

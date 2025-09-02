@@ -20,6 +20,7 @@ const ModalHeader: React.FC<Props> = props => {
       <ButtonWrapper className="w-4 h-4">
         {props.showBackButton && (
           <ButtonIcon
+            css={{}}
             mode="secondary"
             size="small"
             icon={<IconChevronLeft />}
@@ -33,6 +34,7 @@ const ModalHeader: React.FC<Props> = props => {
       <ButtonWrapper className="w-4 h-4">
         {props.showCloseButton && (
           <ButtonIcon
+            css={{}}
             mode="secondary"
             size="small"
             icon={<IconClose />}

@@ -84,7 +84,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
   const {pluginAddress, pluginType} = useMemo(() => {
     return {
       pluginAddress: walletDetails?.address || '',
-      pluginType: 'multisig.plugin.msWallet.eth',
+      pluginType: 'multisig.plugin.msWallet.eth' as PluginTypes,
     };
   }, [walletDetails]);
   const {client} = useClient();
@@ -321,7 +321,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
   return (
     <ProposalTransactionContext.Provider value={value}>
       {children}
-      <PublishModal
+      <PublishModal 
         title={
           showExecuteModal
             ? t('labels.signExecuteProposal')

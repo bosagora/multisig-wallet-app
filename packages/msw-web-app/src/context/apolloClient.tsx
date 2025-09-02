@@ -2,6 +2,7 @@ import {InMemoryCache, makeVar} from '@apollo/client';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
 
 import {
+  defaultChainID,
   FAVORITE_DAOS_KEY,
   PENDING_EXECUTION_KEY,
   PENDING_MULTISIG_EXECUTION_KEY,
@@ -100,7 +101,7 @@ const selectedDaoVar = makeVar<NavigationDao>({
   metadata: {
     name: '',
   },
-  chain: 5,
+  chain: 2151,
 });
 
 export {favoriteDaosVar, selectedDaoVar};

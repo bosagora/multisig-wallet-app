@@ -162,6 +162,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
           ) : (
             <FormFooter>
               <ButtonText
+                css={{}}
                 mode="secondary"
                 size="large"
                 label={backButtonLabel || t('labels.back')}
@@ -173,6 +174,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
               />
               <ButtonValidationTrigger onClick={onNextButtonDisabledClicked}>
                 <ButtonText
+                  css={{}}
                   label={nextButtonLabel || t('labels.next')}
                   size="large"
                   onClick={() =>

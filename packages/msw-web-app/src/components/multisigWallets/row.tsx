@@ -92,6 +92,7 @@ export const Row = ({index, ...props}: MultisigWalletsRowProps) => {
               sideOffset={4}
               trigger={
                 <ButtonIcon
+                  css={{}}
                   bgWhite
                   size="large"
                   mode="secondary"

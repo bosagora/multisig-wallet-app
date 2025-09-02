@@ -62,6 +62,7 @@ const AddLinks: React.FC<AddLinks> = ({
       )}
 
       <ButtonText
+        css={{}}
         label={buttonLabel || t('labels.addLink')}
         mode={bgWhite ? 'ghost' : 'secondary'}
         size="large"

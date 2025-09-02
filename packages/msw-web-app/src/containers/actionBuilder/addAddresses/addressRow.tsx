@@ -132,6 +132,7 @@ export const AddressRow = ({
             }))}
             trigger={
               <ButtonIcon
+                css={{}}
                 size="large"
                 mode="secondary"
                 icon={<IconMenuVertical />}

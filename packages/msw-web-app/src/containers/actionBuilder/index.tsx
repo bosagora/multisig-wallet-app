@@ -6,7 +6,6 @@ import {useActionsContext} from 'context/actions';
 import {useNetwork} from 'context/network';
 import {useMSWalletBalances} from '../../hooks/useMSWalletBalances';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
-import {fetchTokenPrice} from 'services/prices';
 import {formatUnits} from 'utils/library';
 import {
   ActionIndex,
@@ -15,7 +14,6 @@ import {
   BaseTokenInfo,
 } from 'utils/types';
 import WithdrawAction from './withdraw/withdrawAction';
-import {PluginTypes} from '../../utils/aragon/types';
 
 /**
  * This Component is responsible for generating all actions that append to pipeline context (actions)
@@ -84,10 +82,6 @@ const ActionBuilder: React.FC<ActionBuilderProps> = ({allowEmpty = true}) => {
       `actions.${index}.tokenBalance`,
       formatUnits(token.count, token.decimals)
     );
-
-    fetchTokenPrice(token.address, network, token.symbol).then(price => {
-      setValue(`actions.${index}.tokenPrice`, price);
-    });
   };
 
   return (

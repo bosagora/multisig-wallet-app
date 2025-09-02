@@ -17,9 +17,6 @@ import {
 } from 'utils/constants';
 
 import {i18n} from '../../i18n.config';
-import {getTokenInfo} from './tokens';
-import {fetchTokenData} from '../services/prices';
-import {ActionWithdraw} from './types';
 
 export function formatUnits(amount: BigNumberish, decimals: number) {
   if (amount.toString().includes('.') || !decimals) {
@@ -83,79 +80,6 @@ export const toHex = (num: number | string) => {
   return '0x' + num.toString(16);
 };
 
-/**
- * DecodeWithdrawToAction
- * @param data Uint8Array action data
- * @param client SDK client, Fetched using useClient
- * @param apolloClient Apollo client, Fetched using useApolloClient
- * @param provider Eth provider
- * @param network network of the msWallet
- * @returns Return Decoded Withdraw action
- */
-
-export async function decodeWithdrawToAction(
-  data: Uint8Array | undefined,
-  client: Client | undefined,
-  // apolloClient: ApolloClient<object>,
-  provider: providers.Provider,
-  network: SupportedNetworks,
-  to: string,
-  value: bigint
-): Promise<ActionWithdraw | undefined> {
-  if (!client || !data) {
-    console.error('SDK client is not initialized correctly');
-    return;
-  }
-
-  const decoded = client.decoding.withdrawAction(to, value, data);
-
-  if (!decoded) {
-    console.error('Unable to decode withdraw action');
-    return;
-  }
-
-  const tokenAddress =
-    decoded.type === 'native' ? constants.AddressZero : decoded?.tokenAddress;
-
-  try {
-    const recipient = await Web3Address.create(
-      provider,
-      decoded.recipientAddressOrEns
-    );
-
-    const [tokenInfo] = await Promise.all([
-      getTokenInfo(
-        tokenAddress,
-        provider,
-        CHAIN_METADATA[network].nativeCurrency
-      ),
-    ]);
-
-    const apiResponse = await fetchTokenData(
-      tokenAddress,
-      apolloClient,
-      network,
-      tokenInfo.symbol
-    );
-
-    return {
-      amount: Number(formatUnits(decoded.amount, tokenInfo.decimals)),
-      name: 'withdraw_assets',
-      to: recipient,
-      tokenBalance: 0, // unnecessary?
-      tokenAddress: tokenAddress,
-      tokenImgUrl: apiResponse?.imgUrl || '',
-      tokenName: tokenInfo.name,
-      tokenPrice: apiResponse?.price || 0,
-      tokenSymbol: tokenInfo.symbol,
-      tokenDecimals: tokenInfo.decimals,
-      isCustomToken: false,
-    };
-  } catch (error) {
-    console.error('Error decoding withdraw action', error);
-  }
-}
-
 const FLAG_TYPED_ARRAY = 'FLAG_TYPED_ARRAY';
 /**
  *  Custom serializer that includes fix for BigInt type
@@ -203,10 +127,6 @@ export const customJSONReviver = (_: string, value: any) => {
   return value;
 };
 
-type DecodedVotingMode = {
-  earlyExecution: boolean;
-  voteReplacement: boolean;
-};
 /**
  * Get DAO resolved IPFS CID URL for the DAO avatar
  * @param avatar - avatar to be resolved. If it's an IPFS CID,
@@ -218,17 +138,6 @@ export function resolveDaoAvatarIpfsCid(
   avatar?: string
 ): string | undefined {
   return undefined;
-}
-
-export function readFile(file: Blob): Promise<ArrayBuffer> {
-  return new Promise((resolve, reject) => {
-    const fr = new FileReader();
-    fr.onload = () => {
-      resolve(fr.result as ArrayBuffer);
-    };
-    fr.onerror = reject;
-    fr.readAsArrayBuffer(file);
-  });
 }
 
 /**
@@ -250,22 +159,14 @@ export const translateToAppNetwork = (
   switch (sdkNetwork.name) {
     case 'homestead':
       return 'ethereum';
-    case 'goerli':
-      return 'goerli';
     case 'sepolia':
       return 'sepolia';
     case 'bosagora_mainnet':
       return 'bosagora_mainnet';
     case 'bosagora_testnet':
       return 'bosagora_testnet';
-    case 'bosagora_devnet':
-      return 'bosagora_devnet';
-    case 'acc_sidechain_mainnet':
-      return 'acc_sidechain_mainnet';
-    case 'acc_sidechain_testnet':
-      return 'acc_sidechain_testnet';
-    case 'acc_sidechain_devnet':
-      return 'acc_sidechain_devnet';
+    case 'msw_devnet':
+      return 'msw_devnet';
   }
   return 'unsupported';
 };
@@ -285,22 +186,14 @@ export function translateToNetworkishName(
   switch (appNetwork) {
     case 'ethereum':
       return SdkSupportedNetworks.ETHEREUM_MAINNET;
-    case 'goerli':
-      return SdkSupportedNetworks.ETHEREUM_GOERLI;
     case 'sepolia':
       return SdkSupportedNetworks.ETHEREUM_SEPOLIA;
     case 'bosagora_mainnet':
       return SdkSupportedNetworks.BOSAGORA_MAINNET;
     case 'bosagora_testnet':
       return SdkSupportedNetworks.BOSAGORA_TESTNET;
-    case 'bosagora_devnet':
-      return SdkSupportedNetworks.BOSAGORA_DEVNET;
-    case 'acc_sidechain_mainnet':
-      return SdkSupportedNetworks.ACC_SIDECHAIN_MAINNET;
-    case 'acc_sidechain_testnet':
-      return SdkSupportedNetworks.ACC_SIDECHAIN_TESTNET;
-    case 'acc_sidechain_devnet':
-      return SdkSupportedNetworks.ACC_SIDECHAIN_DEVNET;
+    case 'msw_devnet':
+      return SdkSupportedNetworks.MSW_DEVNET;
   }
 
   return 'unsupported';
@@ -318,9 +211,6 @@ export function toDisplayEns(ensName?: string) {
   return ensName;
 }
 
-export function getDefaultPayableAmountInputName(t: TFunction) {
-  return t('scc.inputPayableAmount.label');
-}
 
 export function getWCPayableAmount(
   t: TFunction,
