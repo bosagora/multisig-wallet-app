@@ -1,25 +1,18 @@
-import React, {HTMLAttributes, useEffect, useMemo, useState} from 'react';
+import React, {HTMLAttributes, useMemo} from 'react';
 import styled from 'styled-components';
 
 export interface AvatarDaoProps extends HTMLAttributes<HTMLElement> {
   walletName: string;
-  src?: string;
   size?: 'small' | 'medium' | 'big' | 'hero' | 'unset';
   onClick?: () => void;
 }
 
 export const AvatarDao: React.FC<AvatarDaoProps> = ({
   walletName,
-  src,
   size = 'medium',
   onClick,
   ...props
 }) => {
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    setError(false);
-  }, [src]);
 
   const daoInitials = useMemo(() => {
     // To allow for no name daos - should not be a thing
@@ -30,20 +23,11 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
     else return arr[0][0] + arr[1][0];
   }, [walletName]);
 
-  return error || !src ? (
+  return (
     <FallBackAvatar onClick={onClick} size={size} {...props}>
       <DaoInitials>{daoInitials?.toUpperCase()}</DaoInitials>
     </FallBackAvatar>
-  ) : (
-    <Avatar
-      src={src}
-      size={size}
-      alt="msWallet avatar"
-      onClick={onClick}
-      onError={() => setError(true)}
-      {...props}
-    />
-  );
+  )
 };
 
 type AvatarPropsType = {
@@ -56,10 +40,6 @@ const sizes = {
   big: 'w-10 h-10 ft-text-lg',
   hero: 'w-14 h-14 ft-text-xl',
 };
-
-const Avatar = styled.img.attrs(({size}: AvatarPropsType) => ({
-  className: `${size !== 'unset' && sizes[size]} rounded-full` as string,
-}))<AvatarPropsType>``;
 
 const FallBackAvatar = styled.div.attrs(({size}: AvatarPropsType) => ({
   className:

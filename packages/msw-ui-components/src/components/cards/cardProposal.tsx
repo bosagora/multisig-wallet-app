@@ -91,7 +91,6 @@ export const CardProposal: React.FC<
   alertMessage,
   stateLabel,
   type = 'list',
-  daoLogo,
   walletName,
   onClick,
   addressLabel,
@@ -112,7 +111,7 @@ export const CardProposal: React.FC<
         <Description>{description}</Description>
         <Publisher>
           {isExploreProposal(type) ? (
-            <AvatarDao walletName={walletName!} size="small" src={daoLogo} />
+            <AvatarDao walletName={walletName!} size="small"  />
           ) : (
             <PublisherLabel>{publishLabel}</PublisherLabel>
           )}

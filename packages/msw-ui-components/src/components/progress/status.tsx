@@ -131,13 +131,12 @@ const Icon: React.FC<ModeProps> = ({mode}) => {
 type CustomLabelProps = Pick<LabelProps, 'label' | 'helpText'>;
 
 /* Lord knows it hurts. */
-const CustomLabel: React.FC<CustomLabelProps> = ({label, helpText}) => {
+const CustomLabel: React.FC<CustomLabelProps> = ({label}) => {
   return (
     <VStack>
       <LabelLine>
         <Heading>{label}</Heading>
       </LabelLine>
-      {/*{helpText && <HelpText>{helpText}</HelpText>}*/}
     </VStack>
   );
 };
@@ -152,8 +151,4 @@ const LabelLine = styled.div.attrs({
 
 const Heading = styled.p.attrs({
   className: 'font-bold',
-})``;
-
-const HelpText = styled.p.attrs({
-  className: 'ft-text-sm font-normal text-ui-500',
 })``;

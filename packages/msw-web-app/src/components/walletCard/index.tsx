@@ -25,7 +25,7 @@ export const WalletCard = (props: IWalletCardProps) => {
       <Container data-testid="daoCard" onClick={props.onClick}>
         <DaoDataWrapper>
           <HeaderContainer>
-            <AvatarDao walletName={props.name} src={props.address} />
+            <AvatarDao walletName={props.name} />
             <div className="space-y-0.25 desktop:space-y-0.5 text-left">
               <Title>{props.name}</Title>
             </div>

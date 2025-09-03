@@ -119,7 +119,6 @@ const ActionListenerModal: React.FC<Props> = ({
         <div className="flex flex-col items-center space-y-1.5">
           <AvatarDao
             walletName={metadataName}
-            src={metadataIcon}
             size="medium"
           />
           <div className="flex justify-center items-center font-bold text-center text-ui-800">

@@ -23,7 +23,7 @@ export type ListItemDaoProps = {
 export const ListItemDao: React.FC<ListItemDaoProps> = props => {
   return (
     <Container selected={props.selected} onClick={props.onClick}>
-      <AvatarDao walletName={props.walletName} src={props.daoLogo} />
+      <AvatarDao walletName={props.walletName}/>
       <Content>
         <DaoName selected={props.selected}>{props.walletName}</DaoName>
         <Domain>{shortenAddress(props.msWalletAddress)}</Domain>

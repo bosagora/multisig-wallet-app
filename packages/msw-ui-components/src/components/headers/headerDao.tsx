@@ -124,7 +124,6 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
         <AvatarContainer>
           <AvatarDao
             walletName={walletName || ''}
-            size="unset"
             className="w-10 desktop:w-14 h-10 desktop:h-14 text-lg desktop:text-xl"
             {...(daoAvatar && {src: daoAvatar})}
           />

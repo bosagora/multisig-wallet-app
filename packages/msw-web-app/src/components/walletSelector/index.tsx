@@ -16,13 +16,12 @@ type WalletSelectorProps = {
   msWalletAddress: string;
   /** Handler for the switch button. Will be called when the button is clicked. */
   onClick: () => void;
-} & Pick<AvatarDaoProps, 'src'>;
+};
 
 export const WalletSelector: React.FC<WalletSelectorProps> = ({
   walletName,
   msWalletAddress,
   onClick,
-  src,
 }: WalletSelectorProps) => {
   const {isDesktop} = useScreen();
 
@@ -30,7 +29,7 @@ export const WalletSelector: React.FC<WalletSelectorProps> = ({
     <Card data-testid="cardDao" onClick={onClick}>
       <LeftContent>
         <AvatarWrapper>
-          <AvatarDao walletName={walletName} src={src} />
+          <AvatarDao walletName={walletName} />
         </AvatarWrapper>
         <TextContainer>
           <DaoName>{walletName}</DaoName>
