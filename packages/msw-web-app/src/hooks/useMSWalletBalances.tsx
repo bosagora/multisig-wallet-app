@@ -25,31 +25,32 @@ export const useLoadTokenLogoURL = (): {
   tokenList: TokenList;
 } => {
   const [tokenList, setTokenList] = useState<TokenList>({tokens: []});
-  // useEffect(() => {
-  //   // async function loadTokens() {
-  //   //   // const loadedTokensMeta = await fetch('/data/tokens.json') // 파일 경로를 지정합니다.
-  //   //   const loadedTokensMeta = await fetch(
-  //   //     'https://raw.githubusercontent.com/bosagora/multisig-wallet-app/v0.x.x/packages/web-app/data/tokens.json'
-  //   //   ) // 파일 경로를 지정합니다.
-  //   //     .then(response => {
-  //   //       if (!response.ok) {
-  //   //         throw new Error(
-  //   //           'Network response was not ok ' + response.statusText
-  //   //         );
-  //   //       }
-  //   //       return response.json();
-  //   //     });
-  //   //   setTokenList(loadedTokensMeta);
-  //   // }
-  //   // loadTokens();
-  //
-  //   setTokenList(loadedTokensMeta);
-  // }, []);
 
   useEffect(() => {
-    console.log(`loadedTokensMeta: ${JSON.stringify(loadedTokensMeta)}`);
+    async function loadTokens() {
+      // const loadedTokensMeta = await fetch('/data/tokens.json') // 파일 경로를 지정합니다.
+      const loadedTokensMeta = await fetch(
+        'https://raw.githubusercontent.com/bosagora/multisig-wallet-app/refs/heads/v0.x.x/packages/msw-web-app/data/tokens.json'
+      )
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(
+              'Network response was not ok ' + response.statusText
+            );
+          }
+          return response.json();
+        });
+      setTokenList(loadedTokensMeta);
+    }
+    loadTokens();
+
     setTokenList(loadedTokensMeta);
   }, []);
+
+  // useEffect(() => {
+  //   console.log(`loadedTokensMeta: ${JSON.stringify(loadedTokensMeta)}`);
+  //   setTokenList(loadedTokensMeta);
+  // }, []);
 
   const getImgUrl = useCallback(
     (symbol: string, chainId: number) => {
