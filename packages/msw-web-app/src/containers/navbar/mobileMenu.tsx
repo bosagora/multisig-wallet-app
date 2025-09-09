@@ -24,7 +24,6 @@ const MobileNavMenu = () => {
           <WalletSelector
             msWalletAddress={currentDao.address}
             walletName={currentDao.metadata.name}
-            src={currentDao.address}
             onClick={() => {
               close('mobileMenu');
               handleWithFunctionalPreferenceMenu(() => open('selectDao'));

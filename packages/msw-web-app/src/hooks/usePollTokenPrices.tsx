@@ -21,6 +21,7 @@ type PolledTokenPricing = {
 /**
  * Hook for fetching token prices at specified intervals
  * @param tokenList List of token ids to fetch USD  value for
+ * @param options
  * @param options.filter TimeFilter for market data
  * @param options.interval Delay in milliseconds
  * @returns Object with key value pairs corresponding to token address and USD value respectively.

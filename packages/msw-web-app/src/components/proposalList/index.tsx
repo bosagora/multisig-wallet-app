@@ -1,5 +1,4 @@
 import {CardProposal, CardProposalProps, Spinner} from 'msw-ui-components';
-// import {BigNumber} from 'ethers';
 import React, {useMemo} from 'react';
 import {TFunction, useTranslation} from 'react-i18next';
 import {NavigateFunction, generatePath, useNavigate} from 'react-router-dom';
@@ -11,16 +10,8 @@ import {
   PROPOSAL_STATE_LABELS,
   SupportedNetworks,
 } from 'utils/constants';
-// import {translateProposalDate} from 'utils/date';
 import {Proposal} from 'utils/paths';
-// import {
-//   TokenVotingOptions,
-//   getErc20Results,
-//   isErc20VotingProposal,
-//   stripPlgnAdrFromProposalId,
-// } from 'utils/proposals';
 import {ProposalListItem} from 'utils/types';
-import {MultisigProposalListItem, PluginTypes} from 'utils/aragon/types';
 import {useWallet} from 'hooks/useWallet';
 import {stripPlgnAdrFromProposalId} from '../../utils/proposals';
 import {shortenAddress} from '../../utils/library';
@@ -31,20 +22,6 @@ type ProposalListProps = {
   isLoading?: boolean;
 };
 
-// type OptionResult = {
-//   [K in TokenVotingOptions]: {
-//     value: string | number;
-//     percentage: number;
-//     option: K;
-//   };
-// };
-
-function isMultisigProposalListItem(
-  proposal: ProposalListItem | undefined
-): proposal is MultisigProposalListItem {
-  if (!proposal) return false;
-  return 'approval' in proposal;
-}
 
 const ProposalList: React.FC<ProposalListProps> = ({
   proposals,
@@ -189,9 +166,6 @@ export function proposal2CardProps(
   } else {
     return {...props, ...specificProps};
   }
-  // } else {
-  //   throw Error('invalid proposal type');
-  // }
 }
 
 export default ProposalList;

@@ -1,4 +1,3 @@
-// import {MultisigVotingSettings, VotingSettings} from '@aragon/sdk-client';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Outlet, useNavigate} from 'react-router-dom';
 
@@ -12,9 +11,6 @@ import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useMSWalletMembers} from '../../hooks/useMSWalletMembers';
 import {useWallet} from 'hooks/useWallet';
 import {CHAIN_METADATA} from 'utils/constants';
-// import {formatUnits} from 'utils/library';
-// import {fetchBalance} from 'utils/tokens';
-// import {PluginTypes} from '../../utils/aragon/types';
 
 const ProtectedRoute: React.FC = () => {
   const navigate = useNavigate();
@@ -30,14 +26,6 @@ const ProtectedRoute: React.FC = () => {
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // const [pluginType, pluginAddress] = useMemo(
-  //   () => [
-  //     walletDetails?.plugins[0].id as PluginTypes,
-  //     walletDetails?.plugins[0].instanceAddress as string,
-  //   ],
-  //   [walletDetails?.plugins]
-  // );
-
   const {
     data: {members, filteredMembers},
     isLoading: membersAreLoading,
@@ -46,7 +34,6 @@ const ProtectedRoute: React.FC = () => {
     address || ''
   );
   const {network} = useNetwork();
-  const provider = useSpecificProvider(CHAIN_METADATA[network].id);
 
   /*************************************************
    *             Callbacks and Handlers            *
@@ -58,34 +45,6 @@ const ProtectedRoute: React.FC = () => {
     navigate(-1);
   }, [navigate]);
 
-  // const gateTokenBasedProposal = useCallback(async () => {
-  //   if (daoToken && address && filteredMembers.length === 0) {
-  //     const balance = await fetchBalance(
-  //       daoToken?.address,
-  //       address,
-  //       provider,
-  //       CHAIN_METADATA[network].nativeCurrency
-  //     );
-  //     const minProposalThreshold = Number(
-  //       formatUnits(
-  //         (daoSettings as VotingSettings).minProposerVotingPower || 0,
-  //         daoToken?.decimals || 18
-  //       )
-  //     );
-  //     if (minProposalThreshold && Number(balance) < minProposalThreshold) {
-  //       open('gating');
-  //     } else close('gating');
-  //   }
-  // }, [
-  //   address,
-  //   close,
-  //   daoSettings,
-  //   daoToken,
-  //   filteredMembers.length,
-  //   network,
-  //   open,
-  //   provider,
-  // ]);
 
   const gateMultisigProposal = useCallback(() => {
     // if ((daoSettings as MultisigVotingSettings).onlyListed === false) {
@@ -186,7 +145,6 @@ const ProtectedRoute: React.FC = () => {
         <GatingMenu
           walletDetails={walletDetails}
           pluginType="multisig.plugin.msWallet.eth"
-          // daoToken={daoToken}
         />
       )}
       <LoginRequired isOpen={showLoginModal} onClose={handleCloseLoginModal} />

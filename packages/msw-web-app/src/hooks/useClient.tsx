@@ -86,7 +86,6 @@ export const UseClientProvider: React.FC = ({children}) => {
       }
     }
 
-    //console.log('signer :', signer);
     const contextParams: ContextParams = {
       walletFactoryAddress:
         LIVE_CONTRACTS[translatedNetwork].MultiSigWalletFactoryAddress,

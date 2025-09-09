@@ -16,8 +16,6 @@ import ExploreNav from 'containers/navbar/exploreNav';
 import NetworkErrorMenu from 'containers/networkErrorMenu';
 import TransferMenu from 'containers/transferMenu';
 import {WalletMenu} from 'containers/walletMenu';
-import {useTransactionDetailContext} from 'context/transactionDetail';
-import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useWallet} from 'hooks/useWallet';
 import CreateMSWallet from './pages/createMSWallet';
 import {FormProvider, useForm} from 'react-hook-form';

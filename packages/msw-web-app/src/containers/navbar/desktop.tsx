@@ -99,7 +99,6 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
           <WalletSelector
             msWalletAddress={currentDao.address}
             walletName={currentDao?.metadata.name}
-            src={currentDao.address}
             onClick={props.onDaoSelect}
           />
           <LinksWrapper>

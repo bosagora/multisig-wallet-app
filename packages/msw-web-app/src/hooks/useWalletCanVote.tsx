@@ -1,9 +1,4 @@
 import {useEffect, useState} from 'react';
-// import {
-//   MultisigClient,
-//   TokenVotingClient,
-//   VoteValues,
-// } from '@aragon/sdk-client';
 
 import {HookData, ProposalId} from 'utils/types';
 import {stripPlgnAdrFromProposalId} from '../utils/proposals';
@@ -12,6 +7,9 @@ import {MultisigMember} from './useMSWalletMembers';
 /**
  * Check whether wallet is eligible to vote on proposal
  * @param address wallet address
+ * @param members
+ * @param approval
+ * @param executed
  * @returns whether given wallet address is allowed to vote on proposal with given id
  */
 export const useWalletCanVote = (

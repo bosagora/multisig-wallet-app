@@ -14,7 +14,7 @@ import {
   ButtonText,
   IconChevronUp,
   IconGovernance,
-  Link,
+  Link, VoterType,
   WidgetStatus,
 } from 'msw-ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -53,7 +53,7 @@ import {
   Action,
   ActionWithdraw,
   DetailedProposal,
-  ProposalId,
+  ProposalId, WithdrawProposal,
 } from 'utils/types';
 import {PluginTypes} from '../utils/aragon/types';
 import {format} from 'date-fns';
@@ -78,15 +78,14 @@ const Proposal: React.FC = () => {
   const {data: walletDetails, isLoading: detailsAreLoading} =
     useMSWalletDetailsQuery();
   const {
-    data: {members: daoMemebers},
+    data: {members: daoMembers},
   } = useMSWalletMembers(
     walletDetails?.address || '',
     'multisig.plugin.msWallet.eth'
   );
 
-  const {data: daoSettings} = usePluginSettings(
-    walletDetails?.address as string,
-    'multisig.plugin.msWallet.eth' as PluginTypes
+  const {data: mswSettings} = usePluginSettings(
+    walletDetails?.address as string
   );
   const multisigDAO = true;
 
@@ -126,7 +125,7 @@ const Proposal: React.FC = () => {
 
   const {data: canVote} = useWalletCanVote(
     address,
-    daoMemebers,
+    daoMembers,
     proposal?.approval,
     proposal?.executed
   );
@@ -154,22 +153,17 @@ const Proposal: React.FC = () => {
     if (!proposal) return;
     console.log(proposal);
 
-    const mintTokenActions: {
-      actions: Uint8Array[];
-      index: number;
-    } = {actions: [], index: 0};
-
     const withdrawAction = {
       amount: proposal.amount,
       name: 'withdraw_assets',
       to: {address: proposal.to || ''},
       tokenBalance: 0,
       tokenAddress: proposal.tokenAddress,
-      tokenImgUrl: getImgUrl(proposal.token.symbol, walletDetails?.chain || 1),
-      tokenName: proposal.token.name,
+      tokenImgUrl: getImgUrl(proposal.tokenSymbol, walletDetails?.chain || 1),
+      tokenName: proposal.tokenName,
       tokenPrice: 0,
-      tokenSymbol: proposal.token.symbol,
-      tokenDecimals: proposal.token.decimals,
+      tokenSymbol: proposal.tokenSymbol,
+      tokenDecimals: proposal.tokenDecimals,
       isCustomToken: false,
     } as unknown as ActionWithdraw;
 
@@ -235,77 +229,57 @@ const Proposal: React.FC = () => {
   /*************************************************
    *              Handlers and Callbacks           *
    *************************************************/
-  // terminal props
+    // terminal props
   const mappedProps = useMemo(() => {
-    if (proposal && daoMemebers) {
-      const data = {
-        approvals: proposal.approval,
-        minApproval: proposal.settings.minApprovals,
-        voters: [
-          ...daoMemebers.map(m => {
-            m.wallet = m.address;
-            m.option = proposal.approval.some(
+      if (proposal && daoMembers) {
+        return {
+          approvals: proposal.approval,
+          minApproval: proposal.settings.minApprovals,
+          voters: [
+            ...daoMembers.map((m) => {
+              return {
+                wallet: m.address,
+                option: proposal.approval.some(
+                  a =>
+                    // remove the call to strip plugin address when sdk returns proper plugin address
+                    stripPlgnAdrFromProposalId(a).toLowerCase() ===
+                    m.address.toLowerCase()
+                )
+                  ? 'approved'
+                  : 'none'
+              } as VoterType
+            }),
+          ],
+          isMember: (
+            address &&
+            daoMembers.some(
               a =>
                 // remove the call to strip plugin address when sdk returns proper plugin address
-                stripPlgnAdrFromProposalId(a).toLowerCase() ===
-                m.address.toLowerCase()
-            )
-              ? 'approved'
-              : 'none';
-            return m;
-          }),
-        ],
-        isMember:
-          address &&
-          daoMemebers.some(
-            a =>
-              // remove the call to strip plugin address when sdk returns proper plugin address
-              stripPlgnAdrFromProposalId(a.address).toLowerCase() ===
-              address.toLowerCase()
-          ),
-        strategy: t('votingTerminal.multisig'),
-        voteOptions: t('votingTerminal.approve'),
-        startDate: `${format(
-          new Date(),
-          KNOWN_FORMATS.proposals
-        )}  ${getFormattedUtcOffset()}`,
+                stripPlgnAdrFromProposalId(a.address).toLowerCase() ===
+                address.toLowerCase()
+            )) as boolean,
+          strategy: t('votingTerminal.multisig'),
+          voteOptions: t('votingTerminal.approve'),
+          startDate: `${format(
+            new Date(),
+            KNOWN_FORMATS.proposals
+          )}  ${getFormattedUtcOffset()}`,
 
-        endDate: `${format(
-          new Date(),
-          KNOWN_FORMATS.proposals
-        )}  ${getFormattedUtcOffset()}`,
-      };
-      // console.log('data :', data);
-      return data;
-    }
-
-    // return getLiveProposalTerminalProps(
-    //   t,
-    //   proposal,
-    //   address,
-    //   daoSettings,
-    //   isMultisigProposal(proposal) ? (members as MultisigMember[]) : undefined
-    // );
-    // }
-  }, [address, daoMemebers, proposal, t]);
+          endDate: `${format(
+            new Date(),
+            KNOWN_FORMATS.proposals
+          )}  ${getFormattedUtcOffset()}`,
+        };
+      }
+    }, [address, daoMembers, proposal, t]);
 
   // get early execution status
   const canExecuteEarly = useMemo(
     () =>
-      // isTokenVotingSettings(daoSettings)
-      //   ? isEarlyExecutable(
-      //       mappedProps?.missingParticipation,
-      //       proposal,
-      //       mappedProps?.results,
-      //       daoSettings.votingMode
-      //     )
-      //   :
-      (proposal as DetailedProposal)?.approval?.length >=
-      daoSettings?.minApprovals,
+      (proposal as WithdrawProposal)?.approval?.length >=
+      mswSettings?.minApprovals,
     [
-      daoSettings,
-      mappedProps?.missingParticipation,
-      mappedProps?.results,
+      mswSettings,
       proposal,
     ]
   );
@@ -324,7 +298,6 @@ const Proposal: React.FC = () => {
   // whether current user has voted
   const voted = useMemo(() => {
     if (!address || !proposal) return false;
-    // console.log('voted > proposal :', proposal);
 
     // if (isMultisigProposal(proposal)) {
     return proposal.approval.some(
@@ -332,13 +305,6 @@ const Proposal: React.FC = () => {
         // remove the call to strip plugin address when sdk returns proper plugin address
         stripPlgnAdrFromProposalId(a).toLowerCase() === address.toLowerCase()
     );
-    // } else {
-    //   return proposal.votes.some(
-    //     voter =>
-    //       voter.address.toLowerCase() === address.toLowerCase() &&
-    //       voter.vote !== undefined
-    //   );
-    // }
   }, [address, proposal]);
 
   // vote button and status
@@ -414,7 +380,6 @@ const Proposal: React.FC = () => {
       open('wallet');
       statusRef.current.wasNotLoggedIn = true;
     } else if (isOnWrongNetwork) {
-      // don't allow execution on wrong network
       open('network');
     } else {
       handleExecuteProposal();
@@ -431,8 +396,6 @@ const Proposal: React.FC = () => {
       !voted && // haven't voted
       !canVote // cannot vote
     ) {
-      // presence of token delineates token voting proposal
-      // people add types to these things!!
       return t('votingTerminal.status.ineligibleWhitelist');
     }
   }, [address, canVote, isOnWrongNetwork, proposal, t, voted]);
@@ -447,11 +410,8 @@ const Proposal: React.FC = () => {
         new Date(proposal.createdTime.toNumber()),
         new Date(proposal.createdTime.toNumber()),
         new Date(proposal.createdTime.toNumber()),
-        // proposal.startDate,
-        // proposal.endDate,
-        // proposal.creationDate,
         '',
-        false, //executionFailed,
+        false,
         '',
         proposal.executed ? new Date() : undefined
       );
@@ -489,11 +449,6 @@ const Proposal: React.FC = () => {
         )}
         <ProposalTitle>{proposal?.title}</ProposalTitle>
         <ContentWrapper>
-          {/* <BadgeContainer>
-            {PROPOSAL_TAGS.map((tag: string) => (
-              <Tag label={tag} key={tag} />
-            ))}
-          </BadgeContainer> */}
           <ProposerLink>
             {t('governance.proposals.publishedBy')}{' '}
             <Link
@@ -508,24 +463,12 @@ const Proposal: React.FC = () => {
           </ProposerLink>
         </ContentWrapper>
         <SummaryText>{proposal?.description}</SummaryText>
-        {/*{proposal.description && !expandedProposal && (*/}
-        {/*  <ButtonText*/}
-        {/*    css={{}}*/}
-        {/*    className="w-full tablet:w-max"*/}
-        {/*    size="large"*/}
-        {/*    label={t('governance.proposals.buttons.readFullProposal')}*/}
-        {/*    mode="secondary"*/}
-        {/*    iconRight={<IconChevronDown />}*/}
-        {/*    onClick={() => setExpandedProposal(true)}*/}
-        {/*  />*/}
-        {/*)}*/}
       </HeaderContainer>
 
       <ContentContainer expandedProposal={expandedProposal}>
         <ProposalContainer>
           {proposal.description && expandedProposal && (
             <>
-              {/*<StyledEditorContent editor={editor} />*/}
               <ButtonText
                 css={{}}
                 className="mt-3 w-full tablet:w-max"
@@ -552,10 +495,16 @@ const Proposal: React.FC = () => {
               handleSubmitVote(
                 vote,
                 address || ''
-                // (proposal as TokenVotingProposal).token?.address
               )
             }
-            {...mappedProps}
+            approvals={mappedProps?.approvals}
+            voters={mappedProps?.voters}
+            isMember={mappedProps?.isMember}
+            startDate={mappedProps?.startDate}
+            endDate={mappedProps?.endDate}
+            minApproval={mappedProps?.minApproval}
+            strategy={mappedProps?.strategy}
+            voteOptions={mappedProps?.voteOptions}
           />
 
           <ExecutionWidget
@@ -563,7 +512,7 @@ const Proposal: React.FC = () => {
             actions={decodedActions}
             status={executionStatus}
             onExecuteClicked={handleExecuteNowClicked}
-            txhash={transactionHash || proposal?.executionTxHash || undefined}
+            txhash={transactionHash || undefined}
           />
         </ProposalContainer>
         <AdditionalInfoContainer>
@@ -591,10 +540,6 @@ const ProposalTitle = styled.p.attrs({
 const ContentWrapper = styled.div.attrs({
   className: 'flex flex-col tablet:flex-row gap-x-3 gap-y-1.5',
 })``;
-
-// const BadgeContainer = styled.div.attrs({
-//   className: 'flex flex-wrap gap-x-1.5',
-// })``;
 
 const ProposerLink = styled.p.attrs({
   className: 'text-ui-500',

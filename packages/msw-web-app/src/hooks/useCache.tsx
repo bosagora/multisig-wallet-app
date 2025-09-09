@@ -1,9 +1,5 @@
 import React, {createContext, ReactNode, useContext, useState} from 'react';
 
-// eslint is disabled to avoid the warning on the use of any
-// this cache is not the final implementation, and when
-// the final implementation is done the any should be updated with generics
-/* eslint-disable @typescript-eslint/no-explicit-any */
 interface ICacheContext {
   set: (key: string, value: any) => void;
   get: (key: string) => any;

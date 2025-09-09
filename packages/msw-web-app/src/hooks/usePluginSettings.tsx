@@ -1,6 +1,5 @@
-// import {MultisigVotingSettings, VotingSettings} from '@aragon/sdk-client';
 import {useEffect, useState} from 'react';
-import {HookData, SupportedVotingSettings} from 'utils/types';
+import {HookData, MSWSetting, SupportedVotingSettings} from 'utils/types';
 import {
   MultisigVotingSettings,
   PluginTypes,
@@ -25,15 +24,13 @@ export function isMultisigVotingSettings(
 /**
  * Retrieves plugin governance settings from SDK
  * @param pluginAddress plugin from which proposals will be retrieved
- * @param type plugin type
  * @returns plugin governance settings
  */
 export function usePluginSettings(
   pluginAddress: string,
-  type: PluginTypes
-): HookData<SupportedVotingSettings> {
-  const [data, setData] = useState<SupportedVotingSettings>(
-    {} as SupportedVotingSettings
+): HookData<MSWSetting> {
+  const [data, setData] = useState<MSWSetting>(
+    {} as MSWSetting
   );
   const [error, setError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(false);
@@ -46,16 +43,11 @@ export function usePluginSettings(
         setIsLoading(true);
 
         const minApprovals = await client?.multiSigWallet.getRequired();
-        //console.log('minApprovals :', minApprovals);
         const settings = {
-          minDuration: 0,
-          minParticipation: 0,
-          supportThreshold: 0,
-          votingMode: 'Standard',
           minApprovals: minApprovals,
           onlyListed: true,
         };
-        if (settings) setData(settings as VotingSettings);
+        if (settings) setData(settings as MSWSetting);
       } catch (err) {
         console.error(err);
         setError(err as Error);

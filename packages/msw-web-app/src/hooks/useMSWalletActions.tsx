@@ -18,18 +18,6 @@ export function useMSWalletActions(
       subtitle: t('AddActionModal.withdrawAssetsSubtitle'),
       isReuseable: true,
     },
-    {
-      type: 'wallet_connect_modal',
-      title: t('AddActionModal.connectdAppsTitle'),
-      subtitle: t('AddActionModal.connectdAppsSubtitle'),
-      isReuseable: true,
-    },
-    {
-      type: 'external_contract_modal',
-      title: t('AddActionModal.externalContract'),
-      subtitle: t('AddActionModal.externalContractSubtitle'),
-      isReuseable: true,
-    },
   ];
 
   const multisigActions = [
@@ -45,16 +33,6 @@ export function useMSWalletActions(
     },
   ].concat(baseActions) as ActionParameter[];
 
-  // const tokenVotingActions = showMintOption
-  //   ? ([
-  //       {
-  //         type: 'mint_tokens',
-  //         title: t('AddActionModal.mintTokens'),
-  //         subtitle: t('AddActionModal.mintTokensSubtitle'),
-  //       },
-  //     ].concat(baseActions) as ActionParameter[])
-  //   : baseActions;
-  //
   return {
     data: multisig ? multisigActions : multisigActions,
     isLoading,

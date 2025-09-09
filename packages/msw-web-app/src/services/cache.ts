@@ -5,10 +5,7 @@
 import {NavigationDao} from 'context/apolloClient';
 import {
   FAVORITE_DAOS_KEY,
-  PENDING_DAOS_KEY,
   SupportedChainID,
-  SupportedNetworks,
-  VERIFIED_CONTRACTS_KEY,
 } from 'utils/constants';
 import {sleepFor} from 'utils/library';
 

@@ -21,22 +21,9 @@ const SUPPORTED_NETWORKS = [
   'msw_devnet',
 ] as const;
 
-export type availableNetworks =
-  | 'mainnet'
-  | 'sepolia'
-  | 'bosagora_mainnet'
-  | 'bosagora_testnet'
-  | 'msw_devnet'
-
 export type SupportedNetworks =
   | typeof SUPPORTED_NETWORKS[number]
   | 'unsupported';
-
-export function isSupportedNetwork(
-  network: string
-): network is SupportedNetworks {
-  return SUPPORTED_NETWORKS.some(n => n === network);
-}
 
 export function toSupportedNetwork(network: string): SupportedNetworks {
   return SUPPORTED_NETWORKS.some(n => n === network)

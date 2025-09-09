@@ -1,6 +1,5 @@
 import {
   Client,
-  ContractWalletInfo,
   SortDirection,
   QueryOption,
   WalletDetails,
@@ -8,7 +7,6 @@ import {
 import {InfiniteData, useInfiniteQuery} from '@tanstack/react-query';
 
 import {useClient} from './useClient';
-import {useWallet} from './useWallet';
 
 export const EXPLORE_FILTER = ['favorite', 'newest', 'popular'] as const;
 export type ExploreFilter = typeof EXPLORE_FILTER[number];

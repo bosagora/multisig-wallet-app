@@ -156,12 +156,6 @@ export function actionsAreValid(
           (formActions?.[index] as ActionWithdraw)?.amount?.toString() === '' ||
           !(formActions?.[index] as ActionWithdraw)?.tokenAddress
         );
-      case 'mint_tokens':
-        return (
-          formActions?.[index] as ActionMintToken
-        )?.inputs?.mintTokensToWallets?.some(
-          wallet => wallet.address === '' || Number(wallet.amount) === 0
-        );
 
       // check that no address is empty; invalid addresses will be caught by
       // the form specific validator

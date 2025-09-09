@@ -15,7 +15,6 @@ export const EditSettings =
 export const ProposeNewSettings =
   '/multisig-wallets/:network/:msWallet/settings/new-proposal';
 
-export const AllTokens = '/multisig-wallets/:network/:msWallet/finance/tokens';
 export const AllTransfers =
   '/multisig-wallets/:network/:msWallet/finance/transfers';
 export const NewDeposit =

@@ -12,6 +12,9 @@ import {useClient} from './useClient';
  * NOTE: rename to useDaoProposals once the other hook has been deprecated
  * @param msWalletAddress
  * @param type plugin type
+ * @param limit
+ * @param skip
+ * @param status
  * @returns list of proposals on plugin
  */
 export function useProposals(

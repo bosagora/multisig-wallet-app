@@ -1,36 +1,29 @@
-import {useReactiveVar} from '@apollo/client';
-import {useCallback, useEffect, useState} from 'react';
-
-import {usePrivacyContext} from 'context/privacyContext';
-import {CHAIN_METADATA, PENDING_MULTISIG_PROPOSALS_KEY} from 'utils/constants';
+import {useEffect, useState} from 'react';
+import {CHAIN_METADATA} from 'utils/constants';
 import {formatUnits} from 'utils/library';
-import {DetailedProposal, HookData, ProposalId} from 'utils/types';
+import {HookData, ProposalId, WithdrawProposal} from 'utils/types';
 import {useMSWalletDetailsQuery} from './useMSWalletDetails';
 import {useClient} from './useClient';
 import {BigNumber, constants} from 'ethers';
-import {PluginTypes, ProposalStatus} from '../utils/aragon/types';
-import {
-  ABIStorage,
-  ISmartContractFunctionData,
-} from 'multisig-wallet-sdk-client';
+import {ProposalStatus} from '../utils/aragon/types';
+import {ABIStorage, ISmartContractFunctionData,} from 'multisig-wallet-sdk-client';
 import {getTokenInfo} from '../utils/tokens';
 import {useSpecificProvider} from '../context/providers';
 import {useNetwork} from '../context/network';
-import {pendingMultisigApprovalsVar} from '../context/apolloClient';
 
 /**
  * Retrieve a single detailed proposal
  * @param msWalletAddress address used to create unique proposal id
  * @param proposalId id of proposal to retrieve
+ * @param intervalInMills
  * @returns a detailed proposal
  */
 export const useMSWalletProposal = (
   msWalletAddress: string,
   proposalId: ProposalId | undefined,
   intervalInMills?: number
-): HookData<DetailedProposal | undefined> => {
-  // TODO: please remove msWalletAddress when refactoring to react-query based query
-  const [data, setData] = useState<DetailedProposal>();
+): HookData<WithdrawProposal | undefined> => {
+  const [data, setData] = useState<WithdrawProposal>();
   const [error, setError] = useState<Error>();
   const [isLoading, setIsLoading] = useState(false);
   const [numberOfRuns, setNumberOfRuns] = useState(0);
@@ -45,10 +38,6 @@ export const useMSWalletProposal = (
     to?: string;
     amount?: string;
   } {
-    const contents: string[] = [];
-    contents.push(`Interface: ${data.interfaceName}`);
-    contents.push(`Function: ${data.fragment.name}`);
-    contents.push('Parameter:');
     const tt: {[key: string]: string} = {};
     for (let idx = 0; idx < data.fragment.inputs.length; idx++) {
       tt[data.fragment.inputs[idx].name] = String(data.parameter[idx]);
@@ -118,20 +107,29 @@ export const useMSWalletProposal = (
 
           const requiredCount = await client?.multiSigWallet.getRequired();
           setData({
-            ...proposal,
-            mwWallet: {
+            id: proposal.id,
+            msWallet: {
               address: walletDetails?.address,
               name: walletDetails?.metadata.name,
             },
+            title: proposal.title,
+            description: proposal.description,
+            creator: proposal.creator,
+            createdTime: proposal.createdTime,
+            destination: proposal.destination,
+            value: proposal.value,
+            data: proposal.data,
+            executed: proposal.executed,
+            approval: proposal.approval,
+            status: proposal.executed ? ProposalStatus.EXECUTED : ProposalStatus.ACTIVE,
             settings: {minApprovals: requiredCount, onlyListed: true},
-            token,
-            tokenAddress,
+            tokenAddress: tokenAddress,
+            tokenDecimals: token.decimals,
+            tokenSymbol: token.symbol,
+            tokenName: token.name,
+            amount: amount,
             to: toAddress,
-            amount,
-            status: proposal.executed
-              ? ProposalStatus.EXECUTED
-              : ProposalStatus.ACTIVE,
-          } as unknown as DetailedProposal);
+          } as unknown as WithdrawProposal);
         }
       } catch (err) {
         console.error(err);

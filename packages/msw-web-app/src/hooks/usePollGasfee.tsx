@@ -11,6 +11,7 @@ import {GasFeeEstimation} from 'multisig-wallet-sdk-client';
  * does not yet poll for the gas fees on interval
  *
  * @param estimationFunction function that estimates gas fee
+ * @param shouldPoll
  * @returns the average and maximum gas fee estimations, native token price
  * in USD, an error object if an error occurred while estimating,
  * and a function to stop the interval polling

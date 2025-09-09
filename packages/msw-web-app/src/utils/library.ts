@@ -30,6 +30,7 @@ export function formatUnits(amount: BigNumberish, decimals: number) {
  * Handles copying and pasting to and from the clipboard respectively
  * @param currentValue field value
  * @param onChange on value change callback
+ * @param alert
  */
 export async function handleClipboardActions(
   currentValue: string,
@@ -56,7 +57,7 @@ export const isOnlyWhitespace = (value: string) => {
 };
 
 /**
- * Return user friendly wallet address label if available
+ * Return user-friendly wallet address label if available
  * @param value address
  * @param t translation function
  * @returns user friendly label or wallet address
@@ -129,6 +130,7 @@ export const customJSONReviver = (_: string, value: any) => {
 
 /**
  * Get DAO resolved IPFS CID URL for the DAO avatar
+ * @param network
  * @param avatar - avatar to be resolved. If it's an IPFS CID,
  * the function will return a fully resolved URL.
  * @returns the url to the DAO avatar
