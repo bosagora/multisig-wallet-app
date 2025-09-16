@@ -2,9 +2,9 @@
 export function hexToBytes(hexString: string): Uint8Array {
   if (!hexString) return new Uint8Array();
   else if (!/^(0x)?[0-9a-fA-F]*$/.test(hexString)) {
-    throw new Error("Invalid hex string");
+    throw new Error('Invalid hex string');
   } else if (hexString.length % 2 !== 0) {
-    throw new Error("The hex string has an odd length");
+    throw new Error('The hex string has an odd length');
   }
 
   hexString = strip0x(hexString);
@@ -20,16 +20,16 @@ export function bytesToHex(buff: Uint8Array, skip0x?: boolean): string {
   const bytes: string[] = [];
   for (let i = 0; i < buff.length; i++) {
     if (buff[i] >= 16) bytes.push(buff[i].toString(16));
-    else bytes.push("0" + buff[i].toString(16));
+    else bytes.push('0' + buff[i].toString(16));
   }
-  if (skip0x) return bytes.join("");
-  return "0x" + bytes.join("");
+  if (skip0x) return bytes.join('');
+  return '0x' + bytes.join('');
 }
 
 /** Encodes the given big integer as a 32 byte big endian buffer */
 export function bigIntToBuffer(number: bigint): Uint8Array {
   let hexNumber = number.toString(16);
-  while (hexNumber.length < 64) hexNumber = "0" + hexNumber;
+  while (hexNumber.length < 64) hexNumber = '0' + hexNumber;
   return hexToBytes(hexNumber);
 }
 
@@ -41,22 +41,24 @@ export function bigIntToLeBuffer(number: bigint): Uint8Array {
 /** Transforms the given (big endian) buffer into a big int */
 export function bufferToBigInt(bytes: Buffer | Uint8Array): bigint {
   // Ensure that it is a buffer
+  // @ts-ignore
   bytes = Buffer.from(bytes);
-  return BigInt(ensure0x(bytes.toString("hex")));
+  return BigInt(ensure0x(bytes.toString('hex')));
 }
 
 /** Transforms the given (little endian) buffer into a endian big int */
 export function bufferLeToBigInt(bytes: Buffer | Uint8Array): bigint {
+  // @ts-ignore
   bytes = Buffer.from(bytes);
   return bufferToBigInt(bytes.reverse());
 }
 
 export function ensure0x(value: string): string {
-  return value.startsWith("0x") ? value : "0x" + value;
+  return value.startsWith('0x') ? value : '0x' + value;
 }
 
 export function strip0x(value: string): string {
-  return value.startsWith("0x") ? value.substring(2) : value;
+  return value.startsWith('0x') ? value.substring(2) : value;
 }
 
 /**
@@ -69,9 +71,9 @@ export function strip0x(value: string): string {
  */
 export function encodeRatio(ratio: number, digits: number): number {
   if (ratio < 0 || ratio > 1) {
-    throw new Error("The ratio value should range between 0 and 1");
+    throw new Error('The ratio value should range between 0 and 1');
   } else if (!Number.isInteger(digits) || digits < 1 || digits > 15) {
-    throw new Error("The number of digits should range between 1 and 15");
+    throw new Error('The number of digits should range between 1 and 15');
   }
   return Math.round(ratio * 10 ** digits);
 }
@@ -90,10 +92,10 @@ export function decodeRatio(
 ): number {
   if (!Number.isInteger(digits) || digits < 1 || digits > 15) {
     throw new Error(
-      "The number of digits should be a positive integer between 1 and 15"
+      'The number of digits should be a positive integer between 1 and 15'
     );
   } else if (onChainValue > 10 ** digits) {
-    throw new Error("The value is out of range");
+    throw new Error('The value is out of range');
   }
 
   return Number(onChainValue) / 10 ** digits;
@@ -102,7 +104,7 @@ export function decodeRatio(
 /** Encodes the particles of a proposalId into a globally unque value for subgraph */
 export function encodeProposalId(pluginAddress: string, id: number) {
   if (!/^0x[A-Fa-f0-9]{40}$/.test(pluginAddress)) {
-    throw new Error("Invalid address");
+    throw new Error('Invalid address');
   }
 
   return `${pluginAddress}_0x${id.toString(16)}`;
@@ -111,7 +113,7 @@ export function encodeProposalId(pluginAddress: string, id: number) {
 /** Transforms an array of booleans into a bitmap big integer */
 export function boolArrayToBitmap(bools?: Array<boolean>) {
   if (!bools || !bools.length) return BigInt(0);
-  else if (bools.length > 256) throw new Error("The array is too big");
+  else if (bools.length > 256) throw new Error('The array is too big');
 
   let result = BigInt(0);
   for (let i = 0; i < 256; i++) {
@@ -125,7 +127,7 @@ export function boolArrayToBitmap(bools?: Array<boolean>) {
 /** Transforms an array of booleans into a bitmap big integer */
 export function bitmapToBoolArray(bitmap: bigint): Array<boolean> {
   if (bitmap >= BigInt(1) << BigInt(256)) {
-    throw new Error("The bitmap value is too big");
+    throw new Error('The bitmap value is too big');
   }
 
   const result: Array<boolean> = [];
