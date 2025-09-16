@@ -26,7 +26,7 @@
     "privacyLinkLabel": "Privacy",
     "privacyLinkURL": "https://aragon.org/privacy-policy"
   },
-  "daoSwitcher": {
+  "walletSwitcher": {
     "title": "Select your Multisig Wallet",
     "subtitle": "Go back to explorer page"
   },
@@ -227,7 +227,7 @@
     "submitProposal": "Publish proposal",
     "addWalletsDescriptionLinkLabel": "read our guide",
     "addWalletsDescription": "Wallets can create proposals, propose to send funds in and out of the treasury, and vote in your DAO.",
-    "daoEnsName": "ENS Subdomain",
+    "walletEnsName": "ENS Subdomain",
     "ens": "ENS",
     "currentTokenSupply": "Current token supply",
     "helptext": {
@@ -520,7 +520,7 @@
     "goToFinance": "Go to Finance",
     "goToProposal": "Open your proposal",
     "launchGovernancePage": "Launch governance page",
-    "launchDaoDashboard": "Launch DAO Dashboard",
+    "launchDaoDashboard": "Launch Multisig-Wallet Dashboard",
     "errorLabel": "Error while confirming transaction",
     "gasEstimationErrorLabel": "Failed to estimate gas fee. You can still proceed. ",
     "estimatedFees": "Estimated gas fees",

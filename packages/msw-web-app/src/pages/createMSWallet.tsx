@@ -14,7 +14,7 @@ import DefineMetadata from 'containers/defineMetadata';
 import GoLive, {GoLiveFooter, GoLiveHeader} from 'containers/goLive';
 import SelectChain from 'containers/selectChainForm';
 import SetupCommunity from 'containers/setupCommunity';
-import {CreateDaoProvider} from 'context/createDao';
+import {CreateMSWalletProvider} from 'context/createMSWallet';
 import {useNetwork} from 'context/network';
 import {useWallet} from 'hooks/useWallet';
 import {trackEvent} from 'services/analytics';
@@ -22,14 +22,14 @@ import {CHAIN_METADATA, getSupportedNetworkByChainId} from 'utils/constants';
 import {htmlIn} from 'utils/htmlIn';
 import {Landing} from 'utils/paths';
 
-export type CreateDaoFormData = {
+export type CreateMSWalletFormData = {
   blockchain: {
     id: number;
     label: string;
     network: string;
   };
   walletName: string;
-  daoSummary: string;
+  walletSummary: string;
   multisigWallets: MultisigWalletField[];
   multisigMinimumApprovals: number;
 };
@@ -40,7 +40,7 @@ const CreateMSWallet: React.FC = () => {
   const {t} = useTranslation();
   const {chainId} = useWallet();
   const {network, setNetwork} = useNetwork();
-  const formMethods = useForm<CreateDaoFormData>({
+  const formMethods = useForm<CreateMSWalletFormData>({
     mode: 'onChange',
     defaultValues,
   });
@@ -79,12 +79,12 @@ const CreateMSWallet: React.FC = () => {
     // required fields not dirty
     if (!walletName) return false;
 
-    return !(errors.walletName || errors.daoSummary);
+    return !(errors.walletName || errors.walletSummary);
   }, [
     walletName,
-    dirtyFields.daoSummary,
+    dirtyFields.walletSummary,
     errors.walletName,
-    errors.daoSummary,
+    errors.walletSummary,
   ]);
 
   const daoSetupCommunityIsValid = useMemo(() => {
@@ -113,7 +113,7 @@ const CreateMSWallet: React.FC = () => {
    *************************************************/
   return (
     <FormProvider {...formMethods}>
-      <CreateDaoProvider>
+      <CreateMSWalletProvider>
         <FullScreenStepper
           wizardProcessName={t('createDAO.title')}
           navLabel={t('createDAO.title')}
@@ -151,7 +151,7 @@ const CreateMSWallet: React.FC = () => {
             onNextButtonClicked={next =>
               handleNextButtonTracking(next, '2_define_metadata', {
                 dao_name: formMethods.getValues('walletName'),
-                dao_summary: formMethods.getValues('daoSummary'),
+                dao_summary: formMethods.getValues('walletSummary'),
               })
             }
           >
@@ -194,7 +194,7 @@ const CreateMSWallet: React.FC = () => {
             <GoLive />
           </Step>
         </FullScreenStepper>
-      </CreateDaoProvider>
+      </CreateMSWalletProvider>
     </FormProvider>
   );
 };

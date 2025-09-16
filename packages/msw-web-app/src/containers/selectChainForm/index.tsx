@@ -63,8 +63,8 @@ const SelectChainForm: React.FC = () => {
                   });
                   setNetwork(selectedNetwork);
                   // if (!CHAIN_METADATA[selectedNetwork].supportsEns) {
-                  //   // reset daoEnsName if network changed to L2
-                  //   resetField('daoEnsName');
+                  //   // reset walletEnsName if network changed to L2
+                  //   resetField('walletEnsName');
                   //
                 }}
                 selected={CHAIN_METADATA[selectedNetwork].id === field.value.id}

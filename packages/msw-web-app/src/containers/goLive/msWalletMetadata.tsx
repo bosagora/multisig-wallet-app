@@ -5,11 +5,11 @@ import {useTranslation} from 'react-i18next';
 import {useFormStep} from 'components/fullScreenStepper';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
 
-const DaoMetadata: React.FC = () => {
+const MsWalletMetadata: React.FC = () => {
   const {control, getValues} = useFormContext();
   const {setStep} = useFormStep();
   const {t} = useTranslation();
-  const {walletName, daoSummary, reviewCheckError} = getValues();
+  const {walletName, walletSummary, reviewCheckError} = getValues();
 
   return (
     <Controller
@@ -36,7 +36,7 @@ const DaoMetadata: React.FC = () => {
           </Dl>
           <Dl>
             <Dt>{t('labels.summary')}</Dt>
-            <Dd>{daoSummary}</Dd>
+            <Dd>{walletSummary}</Dd>
           </Dl>
         </DescriptionListContainer>
       )}
@@ -44,4 +44,4 @@ const DaoMetadata: React.FC = () => {
   );
 };
 
-export default DaoMetadata;
+export default MsWalletMetadata;

@@ -12,7 +12,7 @@ type GlobalModalsContextType = {
   isTransferOpen: boolean;
   isTokenOpen: boolean;
   isUtcOpen: boolean;
-  isSelectDaoOpen: boolean;
+  isSelectWalletOpen: boolean;
   isAddActionOpen: boolean;
   isAddressesOpen: boolean;
   isWalletOpen: boolean;
@@ -57,8 +57,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
     useState<GlobalModalsContextType['isUtcOpen']>(false);
   const [isAddActionOpen, setIsAddActionOpen] =
     useState<GlobalModalsContextType['isAddActionOpen']>(false);
-  const [isSelectDaoOpen, setIsSelectDaoOpen] =
-    useState<GlobalModalsContextType['isSelectDaoOpen']>(false);
+  const [isSelectWalletOpen, setIsSelectWalletOpen] =
+    useState<GlobalModalsContextType['isSelectWalletOpen']>(false);
   const [isAddressesOpen, setAddressesOpen] =
     useState<GlobalModalsContextType['isAddressesOpen']>(false);
   const [isWalletOpen, setWalletOpen] =
@@ -88,7 +88,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
         setIsAddActionOpen(true);
         break;
       case 'selectDao':
-        setIsSelectDaoOpen(true);
+        setIsSelectWalletOpen(true);
         break;
       case 'addresses':
         setAddressesOpen(true);
@@ -133,7 +133,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
         setIsAddActionOpen(false);
         break;
       case 'selectDao':
-        setIsSelectDaoOpen(false);
+        setIsSelectWalletOpen(false);
         break;
       case 'addresses':
         setAddressesOpen(false);
@@ -180,7 +180,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isTokenOpen,
       isUtcOpen,
       isAddActionOpen,
-      isSelectDaoOpen,
+      isSelectWalletOpen,
       isAddressesOpen,
       isWalletOpen,
       isNetworkOpen,
@@ -201,7 +201,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isMobileMenuOpen,
       isNetworkOpen,
       isPoapClaimOpen,
-      isSelectDaoOpen,
+      isSelectWalletOpen,
       isTokenOpen,
       isTransferOpen,
       isUtcOpen,

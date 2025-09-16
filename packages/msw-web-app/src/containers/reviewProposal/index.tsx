@@ -12,7 +12,6 @@ import * as Locales from 'date-fns/locale';
 
 import {ExecutionWidget} from 'components/executionWidget';
 import {useFormStep} from 'components/fullScreenStepper';
-// import ResourceList from 'components/resourceList';
 import {Loading} from 'components/temporary';
 import {VotingTerminal} from 'containers/votingTerminal';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
@@ -24,7 +23,6 @@ import {
   isMultisigVotingSettings,
   usePluginSettings,
 } from 'hooks/usePluginSettings';
-import {useTokenSupply} from 'hooks/useTokenSupply';
 import {
   KNOWN_FORMATS,
   getCanonicalDate,
@@ -34,8 +32,8 @@ import {
   minutesToMills,
 } from 'utils/date';
 import {getNonEmptyActions} from 'utils/proposals';
-import {ProposalResource, SupportedVotingSettings} from 'utils/types';
-import {InstalledPluginListItem, PluginTypes} from '../../utils/aragon/types';
+import {SupportedVotingSettings} from 'utils/types';
+import {PluginTypes} from '../../utils/aragon/types';
 
 type ReviewProposalProps = {
   defineProposalStepNumber: number;
@@ -55,7 +53,7 @@ const ReviewProposal: React.FC<ReviewProposalProps> = ({
   //
   const {data: daoSettings} = usePluginSettings(
     walletDetails?.address as string,
-    'multisig.plugin.msWallet.eth' as PluginTypes
+    'multisig.plugin.wallet.eth' as PluginTypes
   );
 
   const {

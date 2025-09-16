@@ -22,7 +22,7 @@ const Carousel: React.FC = () => {
   const handleCTAClick = useCallback(
     (path: string) => {
       // if (path === '/create') {
-      //   trackEvent('landing_createDaoBtn_clicked');
+      //   trackEvent('landing_createMSWalletBtn_clicked');
       // }
       //
       if (path.startsWith('http')) {
@@ -84,7 +84,7 @@ const Carousel: React.FC = () => {
             if (isSelected) {
               return (
                 <ActiveIndicator
-                  style={{ display: 'none' }}
+                  style={{display: 'none'}}
                   aria-label={`Selected: ${label} ${index + 1}`}
                   title={`Selected: ${label} ${index + 1}`}
                 />

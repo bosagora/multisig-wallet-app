@@ -14,7 +14,7 @@ import {WalletSelector} from '../../components/walletSelector';
 import {Container} from 'components/layout';
 import NavLinks from 'components/navLinks';
 import ExitProcessMenu, {ProcessType} from 'containers/exitProcessMenu';
-import {selectedDaoVar} from 'context/apolloClient';
+import {selectedMSWalletVar} from 'context/apolloClient';
 import {useNetwork} from 'context/network';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 import {useWallet} from 'hooks/useWallet';
@@ -28,7 +28,7 @@ type DesktopNavProp = {
   returnURL?: string;
   processType?: ProcessType;
   processLabel?: string;
-  onDaoSelect: () => void;
+  onWalletSelect: () => void;
   onWalletClick: () => void;
 };
 
@@ -40,7 +40,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {breadcrumbs, icon, tag} = useMappedBreadcrumbs();
   const {address, isConnected} = useWallet();
 
-  const currentDao = useReactiveVar(selectedDaoVar);
+  const currentWallet = useReactiveVar(selectedMSWalletVar);
 
   const [showExitProcessMenu, setShowExitProcessMenu] = useState(false);
 
@@ -97,9 +97,9 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
       <Menu>
         <Content>
           <WalletSelector
-            msWalletAddress={currentDao.address}
-            walletName={currentDao?.metadata.name}
-            onClick={props.onDaoSelect}
+            msWalletAddress={currentWallet.address}
+            walletName={currentWallet?.metadata.name}
+            onClick={props.onWalletSelect}
           />
           <LinksWrapper>
             {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (

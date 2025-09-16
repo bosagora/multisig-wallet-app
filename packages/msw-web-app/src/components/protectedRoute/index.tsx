@@ -45,7 +45,6 @@ const ProtectedRoute: React.FC = () => {
     navigate(-1);
   }, [navigate]);
 
-
   const gateMultisigProposal = useCallback(() => {
     // if ((daoSettings as MultisigVotingSettings).onlyListed === false) {
     //   close('gating');
@@ -115,7 +114,7 @@ const ProtectedRoute: React.FC = () => {
   // wallet connected and on right network, authenticate
   useEffect(() => {
     if (status === 'connected' && !isOnWrongNetwork) {
-      // if (pluginType === 'token-voting.plugin.msWallet.eth') {
+      // if (pluginType === 'token-voting.plugin.wallet.eth') {
       //   gateTokenBasedProposal();
       // } else {
       //   gateMultisigProposal();
@@ -144,7 +143,7 @@ const ProtectedRoute: React.FC = () => {
       {walletDetails && (
         <GatingMenu
           walletDetails={walletDetails}
-          pluginType="multisig.plugin.msWallet.eth"
+          pluginType="multisig.plugin.wallet.eth"
         />
       )}
       <LoginRequired isOpen={showLoginModal} onClose={handleCloseLoginModal} />

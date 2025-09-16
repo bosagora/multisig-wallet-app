@@ -19,11 +19,6 @@ function Hero() {
   );
 }
 
-// NOTE: "h-56 -mt-10 pt-10" is the "simplest" way to achieve a sticky header
-// with a gradient AND a primary 400 background. What it does it is extends the
-// hero by a height of 12, moves it up using the negative margin and compensates
-// by lowering the content using the padding-top. Same with factor 12 on
-// desktop.
 const Container = styled.div.attrs({
   className:
     'bg-primary-400 h-56 -mt-10 pt-10  desktop:h-67 desktop:pt-12 desktop:-mt-12 overflow-hidden',
@@ -49,31 +44,6 @@ const Title = styled.h1.attrs({
 const Subtitle = styled.h3.attrs({
   className:
     'text-ui-0 ft-text-lg font-normal text-center desktop:text-left leading-3 desktop:leading-3.75',
-})``;
-
-const ImageWrapper = styled.div.attrs({
-  className: 'h-full',
-})``;
-
-const StyledImage = styled.img.attrs({
-  className: 'w-71 hidden desktop:block',
-})``;
-
-const GradientContainer = styled.div.attrs({
-  className: 'absolute top-64 desktop:top-20 right-0 w-71',
-})``;
-
-const GradientWrapper = styled.div.attrs({
-  className: 'relative w-full h-full',
-})``;
-
-const GradientGreen = styled.img.attrs({
-  className: 'h-40 absolute desktop:-left-14 desktop:-top-20 -top-19 left-14',
-})``;
-
-const GradientPurple = styled.img.attrs({
-  className:
-    'desktop:h-40 h-30 absolute desktop:-right-20 desktop:top-5 -right-5 -top-6',
 })``;
 
 export default Hero;

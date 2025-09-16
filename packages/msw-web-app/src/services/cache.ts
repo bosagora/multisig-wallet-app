@@ -2,11 +2,8 @@
 // of a caching service provided by separate server
 // For now most of these methods will be passed the reactive
 // variables from Apollo-client
-import {NavigationDao} from 'context/apolloClient';
-import {
-  FAVORITE_DAOS_KEY,
-  SupportedChainID,
-} from 'utils/constants';
+import {NavigationMSWallet} from 'context/apolloClient';
+import {FAVORITE_WALLETS_KEY, SupportedChainID} from 'utils/constants';
 import {sleepFor} from 'utils/library';
 
 /**
@@ -18,16 +15,16 @@ import {sleepFor} from 'utils/library';
 export async function getFavoritedDaosFromCache(options: {
   skip: number;
   limit?: number;
-}): Promise<NavigationDao[]> {
+}): Promise<NavigationMSWallet[]> {
   const {skip, limit} = options;
 
-  const favoriteDaos = JSON.parse(
-    localStorage.getItem(FAVORITE_DAOS_KEY) || '[]'
-  ) as NavigationDao[];
+  const favoriteMSWallets = JSON.parse(
+    localStorage.getItem(FAVORITE_WALLETS_KEY) || '[]'
+  ) as NavigationMSWallet[];
 
   // sleeping for 600 ms because the immediate apparition of DAOS creates a flickering issue
   await sleepFor(600);
-  return favoriteDaos.slice(skip, limit ? skip + limit : undefined);
+  return favoriteMSWallets.slice(skip, limit ? skip + limit : undefined);
 }
 
 /**
@@ -60,14 +57,14 @@ export async function getFavoritedDaoFromCache(
  * @param msWallet DAO being favorited
  * @returns an error if the msWallet to favorite is not provided
  */
-export async function addFavoriteDaoToCache(msWallet: NavigationDao) {
+export async function addFavoriteDaoToCache(msWallet: NavigationMSWallet) {
   if (!msWallet)
     return Promise.reject(new Error('daoToFavorite must be defined'));
 
   const cache = await getFavoritedDaosFromCache({skip: 0});
   const newCache = [msWallet, ...cache];
 
-  localStorage.setItem(FAVORITE_DAOS_KEY, JSON.stringify(newCache));
+  localStorage.setItem(FAVORITE_WALLETS_KEY, JSON.stringify(newCache));
 }
 
 /**
@@ -75,7 +72,7 @@ export async function addFavoriteDaoToCache(msWallet: NavigationDao) {
  * @param msWallet DAO to unfavorite
  * @returns an error if no DAO is provided
  */
-export async function removeFavoriteDaoFromCache(msWallet: NavigationDao) {
+export async function removeFavoriteDaoFromCache(msWallet: NavigationMSWallet) {
   if (!msWallet) return Promise.reject(new Error('msWallet must be defined'));
 
   const cache = await getFavoritedDaosFromCache({skip: 0});
@@ -85,7 +82,7 @@ export async function removeFavoriteDaoFromCache(msWallet: NavigationDao) {
       fd.chain !== msWallet.chain
   );
 
-  localStorage.setItem(FAVORITE_DAOS_KEY, JSON.stringify(newCache));
+  localStorage.setItem(FAVORITE_WALLETS_KEY, JSON.stringify(newCache));
 }
 
 /**
@@ -93,7 +90,7 @@ export async function removeFavoriteDaoFromCache(msWallet: NavigationDao) {
  * @param msWallet updated DAO; note msWallet.address & msWallet.chain should never be changed
  * @returns an error if no DAO is provided
  */
-export async function updateFavoritedDaoInCache(msWallet: NavigationDao) {
+export async function updateFavoritedDaoInCache(msWallet: NavigationMSWallet) {
   if (!msWallet) return Promise.reject(new Error('msWallet must be defined'));
 
   const cache = await getFavoritedDaosFromCache({skip: 0});
@@ -105,6 +102,6 @@ export async function updateFavoritedDaoInCache(msWallet: NavigationDao) {
     const newCache = [...cache];
     newCache[daoFound] = {...msWallet};
 
-    localStorage.setItem(FAVORITE_DAOS_KEY, JSON.stringify(newCache));
+    localStorage.setItem(FAVORITE_WALLETS_KEY, JSON.stringify(newCache));
   }
 }

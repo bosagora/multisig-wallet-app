@@ -6,12 +6,12 @@ import {useTranslation} from 'react-i18next';
 import BottomSheet from 'components/bottomSheet';
 import {WalletSelector} from '../../components/walletSelector';
 import NavLinks from 'components/navLinks';
-import {selectedDaoVar} from 'context/apolloClient';
+import {selectedMSWalletVar} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {usePrivacyContext} from 'context/privacyContext';
 
 const MobileNavMenu = () => {
-  const currentDao = useReactiveVar(selectedDaoVar);
+  const currentWallet = useReactiveVar(selectedMSWalletVar);
   const {open, close, isMobileMenuOpen} = useGlobalModalContext();
   const {t} = useTranslation();
 
@@ -22,8 +22,8 @@ const MobileNavMenu = () => {
       <div className="tablet:w-50">
         <CardWrapper className="rounded-xl">
           <WalletSelector
-            msWalletAddress={currentDao.address}
-            walletName={currentDao.metadata.name}
+            msWalletAddress={currentWallet.address}
+            walletName={currentWallet.metadata.name}
             onClick={() => {
               close('mobileMenu');
               handleWithFunctionalPreferenceMenu(() => open('selectDao'));

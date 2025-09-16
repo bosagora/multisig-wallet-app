@@ -9,7 +9,7 @@ import {Loading} from 'components/temporary';
 import {MembershipSnapshot} from 'containers/membershipSnapshot';
 import TreasurySnapshot from 'containers/treasurySnapshot';
 import {useAlertContext} from 'context/alert';
-import {NavigationDao} from 'context/apolloClient';
+import {NavigationMSWallet} from 'context/apolloClient';
 import {useNetwork} from 'context/network';
 import {useMSWalletQuery} from 'hooks/useMSWalletDetails';
 import {
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
   } = useMSWalletQuery(multisigWalletAddress, pollInterval);
 
   const favoriteMSWalletMatchPredicate = useCallback(
-    (favoriteDao: NavigationDao) => {
+    (favoriteDao: NavigationMSWallet) => {
       return (
         favoriteDao.address.toLowerCase() ===
           walletDetail?.address.toLowerCase() &&
@@ -87,7 +87,7 @@ const Dashboard: React.FC = () => {
   }, [alert, multisigWalletAddress, network, t]);
 
   const handleFavoriteClick = useCallback(
-    async (msWallet: NavigationDao) => {
+    async (msWallet: NavigationMSWallet) => {
       try {
         if (isFavoritedMSWallet) {
           await removeFavoriteMSWalletMutation.mutateAsync({msWallet});
@@ -182,7 +182,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   const {transfers, totalAssetValue} = useMSWalletVault();
   const {data: tempProposals, totalCount} = useProposals(
     multisigWalletAddress,
-    'multisig.plugin.msWallet.eth',
+    'multisig.plugin.wallet.eth',
     4
   );
 
@@ -243,7 +243,7 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
   const {transfers, totalAssetValue} = useMSWalletVault();
   const {data: tempProposals, totalCount} = useProposals(
     multisigWalletAddress,
-    'multisig.plugin.msWallet.eth',
+    'multisig.plugin.wallet.eth',
     4
   );
 

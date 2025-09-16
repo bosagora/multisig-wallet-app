@@ -14,8 +14,8 @@ export default class CreateMSWallet {
 
     // Fills out mandatory fields on the Define DAO metadata page and proceeds to the next page
     cy.get('input[name="walletName"]').type('Cypress test');
-    cy.get('input[name="daoEnsName"]').type(Date.now().toString());
-    cy.get('textarea[name="daoSummary"]').type(
+    cy.get('input[name="walletEnsName"]').type(Date.now().toString());
+    cy.get('textarea[name="walletSummary"]').type(
       'Cypress test to test Multisig DAO Creation'
     );
     cy.get('button[mode="primary"]')
@@ -63,7 +63,9 @@ export default class CreateMSWallet {
     cy.switchToCypressWindow();
 
     // Waits till the tx completes by checking the state of the primary button the tx modal
-    cy.get('button[mode="primary"]').contains('Launch DAO Dashboard');
+    cy.get('button[mode="primary"]').contains(
+      'Launch Multisig-Wallet Dashboard'
+    );
 
     cy.wait(5000);
   }

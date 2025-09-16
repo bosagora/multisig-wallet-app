@@ -1,7 +1,6 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate} from 'react-router-dom';
-// import {MultisigVotingSettings} from '@aragon/sdk-client';
 import {Link} from 'msw-ui-components';
 
 import {Dd, DescriptionListContainer, Dl, Dt} from 'components/descriptionList';
@@ -20,7 +19,7 @@ const MultisigSettings: React.FC<IPluginSettings> = ({walletDetails}) => {
 
   const {data: votingSettings} = usePluginSettings(
     walletDetails?.address || '',
-    'multisig.plugin.msWallet.eth' as PluginTypes
+    'multisig.plugin.wallet.eth' as PluginTypes
   );
 
   const {data: daoMembers} = useMSWalletMembers(

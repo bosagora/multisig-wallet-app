@@ -84,13 +84,13 @@ export const GatingMenu: React.FC<Props> = ({
 
   // const {isDAOTokenWrapped} = useExistingToken({walletDetails, daoToken});
 
-  const isTokenAbsenceAlert = pluginType === 'token-voting.plugin.msWallet.eth';
+  const isTokenAbsenceAlert = pluginType === 'token-voting.plugin.wallet.eth';
 
   return (
     <ModalBottomSheetSwitcher isOpen={isGatingOpen}>
       <ModalBody>
         <StyledImage src={WalletIcon} />
-        {/*{pluginType === 'token-voting.plugin.msWallet.eth' ? (*/}
+        {/*{pluginType === 'token-voting.plugin.wallet.eth' ? (*/}
         {/*  <>*/}
         {/*    {isDAOTokenWrapped ? (*/}
         {/*      <WrappingRequiredContainer*/}

@@ -3,7 +3,7 @@ import {matchRoutes, useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 
 import {ProcessType} from 'containers/exitProcessMenu';
-import {selectedDaoVar} from 'context/apolloClient';
+import {selectedMSWalletVar} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useNetwork} from 'context/network';
 import {usePrivacyContext} from 'context/privacyContext';
@@ -49,7 +49,7 @@ const Navbar: React.FC = () => {
   // set current msWallet as selected msWallet
   useEffect(() => {
     if (walletDetails) {
-      selectedDaoVar.set({
+      selectedMSWalletVar.set({
         address: walletDetails.address,
         metadata: {
           name: walletDetails.metadata.name,
@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
   /*************************************************
    *                   Handlers                    *
    *************************************************/
-  const handleOnDaoSelect = () => {
+  const handleOnWalletSelect = () => {
     handleWithFunctionalPreferenceMenu(() => open('selectDao'));
   };
 
@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
         returnURL={processInfo?.returnURL}
         processLabel={processInfo?.processLabel}
         processType={processInfo?.processType}
-        onDaoSelect={handleOnDaoSelect}
+        onWalletSelect={handleOnWalletSelect}
         onWalletClick={handleWalletButtonClick}
       />
     );
@@ -93,7 +93,7 @@ const Navbar: React.FC = () => {
   return (
     <MobileNav
       isProcess={processInfo?.isProcess}
-      onDaoSelect={handleOnDaoSelect}
+      onWalletSelect={handleOnWalletSelect}
       onWalletClick={handleWalletButtonClick}
     />
   );

@@ -13,12 +13,12 @@ import {
 import {useNavigate} from 'react-router-dom';
 
 import Blockchain from './blockchain';
-import DaoMetadata from './daoMetadata';
+import MsWalletMetadata from './msWalletMetadata';
 import Community from './community';
 import Governance from './governance';
 import goLive from 'public/goLive.svg';
 import {Landing} from 'utils/paths';
-import {useCreateDaoContext} from 'context/createDao';
+import {useCreateMSWalletContext} from 'context/createMSWallet';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
 import {trackEvent} from 'services/analytics';
@@ -60,7 +60,7 @@ const GoLive: React.FC = () => {
   return (
     <Container>
       <Blockchain />
-      <DaoMetadata />
+      <MsWalletMetadata />
       <Community />
       <Governance />
       <AlertCard title={t('createDAO.review.daoUpdates')} />
@@ -72,7 +72,7 @@ export const GoLiveFooter: React.FC = () => {
   const {watch, setValue, getValues} = useFormContext();
   const {reviewCheck} = watch();
   const {t} = useTranslation();
-  const {handlePublishDao} = useCreateDaoContext();
+  const {handlePublishDao} = useCreateMSWalletContext();
   const {open} = useGlobalModalContext();
   const {isConnected, isOnWrongNetwork} = useWallet();
 

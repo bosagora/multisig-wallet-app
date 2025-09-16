@@ -9,13 +9,8 @@ const Governance: React.FC = () => {
   const {control, getValues} = useFormContext();
   const {setStep} = useFormStep();
   const {t} = useTranslation();
-  const {
-    reviewCheckError,
-    multisigMinimumApprovals,
-    multisigWallets,
-    isCustomToken,
-    tokenType,
-  } = getValues();
+  const {reviewCheckError, multisigMinimumApprovals, multisigWallets} =
+    getValues();
 
   return (
     <Controller

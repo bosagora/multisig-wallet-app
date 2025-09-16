@@ -9,19 +9,21 @@ import {useClient} from 'hooks/useClient';
 import {useaddFavoriteMSWalletMutation} from 'hooks/useFavoritedDaos';
 import {usePollGasFee} from 'hooks/usePollGasfee';
 import {useWallet} from 'hooks/useWallet';
-import {CreateDaoFormData} from '../pages/createMSWallet';
+import {CreateMSWalletFormData} from '../pages/createMSWallet';
 import {trackEvent} from 'services/analytics';
 import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import {Dashboard} from 'utils/paths';
 import {useGlobalModalContext} from './globalModals';
 import {useNetwork} from './network';
 
-type CreateDaoContextType = {
+type CreateMSWalletContextType = {
   /** Prepares the creation data and awaits user confirmation to start process */
   handlePublishDao: () => void;
 };
 
-const CreateDaoContext = createContext<CreateDaoContextType | null>(null);
+const CreateMSWalletContext = createContext<CreateMSWalletContextType | null>(
+  null
+);
 
 declare type CreateWalletParams = {
   name: string;
@@ -30,13 +32,13 @@ declare type CreateWalletParams = {
   required: number;
 };
 
-const CreateDaoProvider: React.FC = ({children}) => {
+const CreateMSWalletProvider: React.FC = ({children}) => {
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
   const {isOnWrongNetwork, provider} = useWallet();
   const {network} = useNetwork();
   const {t} = useTranslation();
-  const {getValues} = useFormContext<CreateDaoFormData>();
+  const {getValues} = useFormContext<CreateMSWalletFormData>();
   const {client} = useClient();
 
   const addFavoriteMSWalletMutation = useaddFavoriteMSWalletMutation();
@@ -91,7 +93,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
     }
 
     // proceed with creation if transaction is waiting or was not successfully executed (retry);
-    await createDao();
+    await createMSWallet();
   };
 
   // Handler for modal close; don't close modal if transaction is still running
@@ -118,14 +120,14 @@ const CreateDaoProvider: React.FC = ({children}) => {
     const {
       blockchain,
       walletName,
-      daoSummary,
+      walletSummary,
       multisigWallets,
       multisigMinimumApprovals,
     } = getValues();
 
     return {
       name: walletName,
-      description: daoSummary,
+      description: walletSummary,
       members: multisigWallets.map(wallet => wallet.address),
       required: multisigMinimumApprovals,
     };
@@ -157,7 +159,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
   } = usePollGasFee(estimateCreationFees, shouldPoll);
 
   // run msWallet creation transaction
-  const createDao = async () => {
+  const createMSWallet = async () => {
     setCreationProcessState(TransactionState.LOADING);
 
     // Check if SDK initialized properly
@@ -172,7 +174,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
       1
     );
 
-    // Check if createDaoIterator function is initialized
+    // Check if createMSWalletIterator function is initialized
     if (!createIterator) {
       throw new Error('deposit function is not initialized correctly');
     }
@@ -237,7 +239,7 @@ const CreateDaoProvider: React.FC = ({children}) => {
    *                    Render                     *
    *************************************************/
   return (
-    <CreateDaoContext.Provider value={{handlePublishDao}}>
+    <CreateMSWalletContext.Provider value={{handlePublishDao}}>
       {children}
       <PublishModal
         subtitle={t('TransactionModal.publishDaoSubtitle')}
@@ -253,12 +255,12 @@ const CreateDaoProvider: React.FC = ({children}) => {
         tokenPrice={tokenPrice}
         disabledCallback={disableActionButton}
       />
-    </CreateDaoContext.Provider>
+    </CreateMSWalletContext.Provider>
   );
 };
 
-function useCreateDaoContext(): CreateDaoContextType {
-  return useContext(CreateDaoContext) as CreateDaoContextType;
+function useCreateMSWalletContext(): CreateMSWalletContextType {
+  return useContext(CreateMSWalletContext) as CreateMSWalletContextType;
 }
 
-export {useCreateDaoContext, CreateDaoProvider};
+export {useCreateMSWalletContext, CreateMSWalletProvider};

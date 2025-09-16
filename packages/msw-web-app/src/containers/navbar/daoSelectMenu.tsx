@@ -13,9 +13,9 @@ import styled from 'styled-components';
 import {useReactiveVar} from 'context/apolloClient';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {
-  favoriteDaosVar,
-  NavigationDao,
-  selectedDaoVar,
+  favoriteMSWalletsVar,
+  NavigationMSWallet,
+  selectedMSWalletVar,
 } from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import useScreen from 'hooks/useScreen';
@@ -26,13 +26,13 @@ const DaoSelectMenu: React.FC = () => {
   const {t} = useTranslation();
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
-  const currentWallet = useReactiveVar(selectedDaoVar);
-  const favoriteDaoCache = useReactiveVar(favoriteDaosVar);
-  const {isSelectDaoOpen, close, open} = useGlobalModalContext();
+  const currentWallet = useReactiveVar(selectedMSWalletVar);
+  const favoriteWalletCache = useReactiveVar(favoriteMSWalletsVar);
+  const {isSelectWalletOpen, close, open} = useGlobalModalContext();
 
   const handleDaoSelect = useCallback(
-    (msWallet: NavigationDao) => {
-      selectedDaoVar.set(msWallet);
+    (msWallet: NavigationMSWallet) => {
+      selectedMSWalletVar.set(msWallet);
       navigate(
         generatePath(Dashboard, {
           network: getSupportedNetworkByChainId(msWallet.chain),
@@ -51,7 +51,7 @@ const DaoSelectMenu: React.FC = () => {
 
   return (
     <ModalBottomSheetSwitcher
-      isOpen={isSelectDaoOpen}
+      isOpen={isSelectWalletOpen}
       onClose={() => close('selectDao')}
       onOpenAutoFocus={(e: any) => e.preventDefault()}
     >
@@ -65,7 +65,7 @@ const DaoSelectMenu: React.FC = () => {
             onClick={handleBackButtonClick}
             css={{}}
           />
-          <Title>{t('daoSwitcher.title')}</Title>
+          <Title>{t('walletSwitcher.title')}</Title>
           <div role="presentation" className="w-4 h-4" />
         </ModalHeader>
         <ModalContentContainer>
@@ -76,7 +76,7 @@ const DaoSelectMenu: React.FC = () => {
               walletName={currentWallet?.metadata.name}
               onClick={() => close('selectDao')}
             />
-            {favoriteDaoCache.flatMap(msw => {
+            {favoriteWalletCache.flatMap(msw => {
               if (
                 msw.address.toLowerCase() ===
                   currentWallet.address.toLowerCase() &&
@@ -101,7 +101,7 @@ const DaoSelectMenu: React.FC = () => {
             css={{}}
             mode="secondary"
             size="large"
-            label={t('daoSwitcher.subtitle')}
+            label={t('walletSwitcher.subtitle')}
             iconLeft={<IconLinkExternal />}
             className="w-full"
             onClick={() => {

@@ -209,11 +209,11 @@ export function isDaoEnsNameValid(
   // for better performance
   try {
     provider?.resolveName(`${value}.msWallet.eth`).then(result => {
-      const inputValue = getValues('daoEnsName');
+      const inputValue = getValues('walletEnsName');
       // Check to see if the response belongs to current value
       if (value === inputValue) {
         if (result) {
-          setError('daoEnsName', {
+          setError('walletEnsName', {
             type: 'validate',
             message: i18n.t('errors.ensDuplication'),
           });

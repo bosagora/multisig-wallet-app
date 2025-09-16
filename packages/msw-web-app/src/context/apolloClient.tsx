@@ -3,7 +3,7 @@
 import {useEffect, useState} from 'react';
 import {
   defaultChainID,
-  FAVORITE_DAOS_KEY,
+  FAVORITE_WALLETS_KEY,
   PENDING_EXECUTION_KEY,
   PENDING_MULTISIG_EXECUTION_KEY,
   PENDING_MULTISIG_PROPOSALS_KEY,
@@ -66,7 +66,10 @@ export function useReactiveVar<T>(reactiveVar: ReactiveVar<T>): T {
  *************************************************/
 // including description, type, and chain in anticipation for
 // showing these daos on explorer page
-export type NavigationDao = Omit<WalletDetails, 'creationDate' | 'metadata'> & {
+export type NavigationMSWallet = Omit<
+  WalletDetails,
+  'creationDate' | 'metadata'
+> & {
   address: string;
   metadata: {
     name: string;
@@ -75,12 +78,13 @@ export type NavigationDao = Omit<WalletDetails, 'creationDate' | 'metadata'> & {
   creationDate?: Date;
   chain: SupportedChainID;
 };
-const favoriteDaos = JSON.parse(
-  localStorage.getItem(FAVORITE_DAOS_KEY) || '[]'
+const favoriteMSWallets = JSON.parse(
+  localStorage.getItem(FAVORITE_WALLETS_KEY) || '[]'
 );
-export const favoriteDaosVar = makeVar<Array<NavigationDao>>(favoriteDaos);
+export const favoriteMSWalletsVar =
+  makeVar<Array<NavigationMSWallet>>(favoriteMSWallets);
 
-export const selectedDaoVar = makeVar<NavigationDao>({
+export const selectedMSWalletVar = makeVar<NavigationMSWallet>({
   address: '',
   metadata: {
     name: '',
@@ -124,9 +128,8 @@ const pendingTokenBasedExecution = JSON.parse(
   localStorage.getItem(PENDING_EXECUTION_KEY) || '{}',
   customJSONReviver
 );
-export const pendingTokenBasedExecutionVar = makeVar<PendingTokenBasedExecution>(
-  pendingTokenBasedExecution
-);
+export const pendingTokenBasedExecutionVar =
+  makeVar<PendingTokenBasedExecution>(pendingTokenBasedExecution);
 
 //================ Multisig
 export type PendingMultisigExecution = {

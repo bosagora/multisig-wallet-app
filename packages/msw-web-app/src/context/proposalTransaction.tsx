@@ -84,7 +84,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
   const {pluginAddress, pluginType} = useMemo(() => {
     return {
       pluginAddress: walletDetails?.address || '',
-      pluginType: 'multisig.plugin.msWallet.eth' as PluginTypes,
+      pluginType: 'multisig.plugin.wallet.eth' as PluginTypes,
     };
   }, [walletDetails]);
   const {client} = useClient();
@@ -180,7 +180,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
       let newCache;
       let cacheKey = '';
       // // cache multisig vote
-      if (pluginType === 'multisig.plugin.msWallet.eth') {
+      if (pluginType === 'multisig.plugin.wallet.eth') {
         newCache = {
           date: new Date().toDateString(),
         };
@@ -321,7 +321,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
   return (
     <ProposalTransactionContext.Provider value={value}>
       {children}
-      <PublishModal 
+      <PublishModal
         title={
           showExecuteModal
             ? t('labels.signExecuteProposal')

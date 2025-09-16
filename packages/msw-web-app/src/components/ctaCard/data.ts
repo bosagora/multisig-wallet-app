@@ -2,7 +2,7 @@ import {CreateMSWallet} from 'utils/paths';
 
 import learnImg from '../../public/learnDao.svg';
 import buildFaster from '../../public/buildFaster.svg';
-import createDaoImg from '../../public/createDao.svg';
+import createMSWalletImg from '../../public/createMSWallet.svg';
 import {i18n} from '../../../i18n.config';
 
 // temporary for review
@@ -11,7 +11,7 @@ const CTACards = [
     actionAvailable: true,
     actionLabel: i18n.t('cta.create.actionLabel'),
     path: CreateMSWallet,
-    imgSrc: createDaoImg,
+    imgSrc: createMSWalletImg,
     subtitle: i18n.t('cta.create.description'),
     title: i18n.t('cta.create.title'),
   },

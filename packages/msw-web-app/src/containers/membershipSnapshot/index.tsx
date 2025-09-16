@@ -24,7 +24,7 @@ type Props = {
 
 export const MembershipSnapshot: React.FC<Props> = ({
   multisigWalletAddress,
-  pluginType = 'multisig.plugin.msWallet.eth',
+  pluginType = 'multisig.plugin.wallet.eth',
   horizontal = false,
 }) => {
   const {t} = useTranslation();
@@ -47,7 +47,7 @@ export const MembershipSnapshot: React.FC<Props> = ({
   //   walletDetails,
   // });
   //
-  const walletBased = pluginType === 'multisig.plugin.msWallet.eth';
+  const walletBased = pluginType === 'multisig.plugin.wallet.eth';
 
   const headerButtonHandler = () => {
     generatePath(ManageMembersProposal, {

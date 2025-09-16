@@ -10,7 +10,6 @@ export type DaoAction = {
   data: Uint8Array;
 };
 
-
 export type Pagination = {
   skip?: number;
   limit?: number;
@@ -43,13 +42,9 @@ export type ProposalMetadata = {
   };
 };
 
-
 export enum ProposalStatus {
   ACTIVE = 'Active',
-  // PENDING = 'Pending',
-  // SUCCEEDED = 'Succeeded',
   EXECUTED = 'Executed',
-  // DEFEATED = 'Defeated',
 }
 
 export type ProposalBase = {

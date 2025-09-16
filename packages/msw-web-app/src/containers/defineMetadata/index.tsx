@@ -68,7 +68,7 @@ const DefineMetadata: React.FC<DefineMetadataProps> = () => {
           helpText={t('createDAO.step2.descriptionSubtitle')}
         />
         <Controller
-          name="daoSummary"
+          name="walletSummary"
           rules={{
             required: t('errors.required.summary'),
             validate: value =>

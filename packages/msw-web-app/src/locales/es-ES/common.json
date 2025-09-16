@@ -19,7 +19,7 @@
     "privacy": "Privacy",
     "settings": "Settings"
   },
-  "daoSwitcher": {
+  "walletSwitcher": {
     "title": "Select your DAO",
     "subtitle": "Go back to Explorer page"
   },

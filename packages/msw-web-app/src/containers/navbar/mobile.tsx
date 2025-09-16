@@ -10,7 +10,7 @@ import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
-import {selectedDaoVar} from 'context/apolloClient';
+import {selectedMSWalletVar} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import useScreen from 'hooks/useScreen';
 import {useWallet} from 'hooks/useWallet';
@@ -19,7 +19,7 @@ import NetworkIndicator from './networkIndicator';
 
 type MobileNavProps = {
   isProcess?: boolean;
-  onDaoSelect: () => void;
+  onWalletSelect: () => void;
   onWalletClick: () => void;
 };
 
@@ -27,7 +27,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
-  const currentDao = useReactiveVar(selectedDaoVar);
+  const currentWallet = useReactiveVar(selectedMSWalletVar);
   const {isConnected, address} = useWallet();
 
   if (props.isProcess)
@@ -64,10 +64,10 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           <FlexOne className="justify-center">
             <DaoContainer>
               <AvatarDao
-                walletName={currentDao.metadata.name}
-                onClick={props.onDaoSelect}
+                walletName={currentWallet.metadata.name}
+                onClick={props.onWalletSelect}
               />
-              <DaoName>{currentDao.metadata.name}</DaoName>
+              <DaoName>{currentWallet.metadata.name}</DaoName>
             </DaoContainer>
           </FlexOne>
           <FlexOne className="justify-end">

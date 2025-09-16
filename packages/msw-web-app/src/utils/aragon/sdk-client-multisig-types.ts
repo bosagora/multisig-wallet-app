@@ -1,6 +1,4 @@
-import {
-  ProposalBase,
-} from './sdk-client-common-types';
+import {ProposalBase} from './sdk-client-common-types';
 import {DaoAction, Pagination, ProposalStatus} from './sdk-client-common-types';
 /**
  * Contains the states of a proposal. Note that on chain
@@ -12,7 +10,6 @@ export enum VoteValues {
   YES = 2,
   NO = 3,
 }
-
 
 // TYPES
 
@@ -63,17 +60,10 @@ export type VoteProposalParams = {
 
 // STEPS
 
-// PROPOSAL CREATION
-export enum ProposalCreationSteps {
-  CREATING = 'creating',
-  DONE = 'done',
-}
-
 export type MultisigVotingSettings = {
   minApprovals: number;
   onlyListed: boolean;
 };
-
 
 /* Proposal */
 

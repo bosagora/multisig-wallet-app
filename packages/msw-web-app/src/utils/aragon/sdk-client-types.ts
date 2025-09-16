@@ -1,10 +1,8 @@
-import {
-  TokenType,
-} from './sdk-client-common-types';
+import {TokenType} from './sdk-client-common-types';
 
 /* DAOs */
 export type DaoResourceLink = {name: string; url: string};
-export type DaoMetadata = {
+export type MsWalletMetadata = {
   name: string;
   description: string;
   avatar?: string;
@@ -13,7 +11,7 @@ export type DaoMetadata = {
 export type walletDetails = {
   address: string;
   ensDomain: string;
-  metadata: DaoMetadata;
+  metadata: MsWalletMetadata;
   metadataHash?: string;
   creationDate: Date;
   plugins: InstalledPluginListItem[];
@@ -27,7 +25,6 @@ export type InstalledPluginListItem = {
   release: number;
   build: number;
 };
-
 
 /* Withdrawals */
 type WithdrawParamsBase = {
@@ -165,5 +162,3 @@ export type Deposit = (
 ) & {
   type: TransferType.DEPOSIT;
 };
-
-

@@ -36,8 +36,8 @@ export function useProposals(
   const {client} = useClient();
   client?.multiSigWallet.attach(msWalletAddress);
 
-  const isMultisigPlugin = type === 'multisig.plugin.msWallet.eth';
-  const isTokenBasedPlugin = type === 'token-voting.plugin.msWallet.eth';
+  const isMultisigPlugin = type === 'multisig.plugin.wallet.eth';
+  const isTokenBasedPlugin = type === 'token-voting.plugin.wallet.eth';
 
   useEffect(() => {
     async function getDaoProposals() {

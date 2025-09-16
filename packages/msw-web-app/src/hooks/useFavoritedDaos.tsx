@@ -8,7 +8,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-import {NavigationDao} from 'context/apolloClient';
+import {NavigationMSWallet} from 'context/apolloClient';
 import {useCallback} from 'react';
 import {
   addFavoriteDaoToCache,
@@ -33,13 +33,13 @@ const DEFAULT_QUERY_PARAMS = {
  * @param skip The number of DAOs to skip before starting to fetch the result set.
  * (defaults to 0)
  * @param limit The maximum number of DAOs to return. Fetches all available DAOs by default.
- * @returns result object containing an array of NavigationDao objects with added avatar information.
+ * @returns result object containing an array of NavigationMSWallet objects with added avatar information.
  */
 export const useFavoritedDaosQuery = (
   skip = 0
-): UseQueryResult<NavigationDao[]> => {
-  return useQuery<NavigationDao[]>({
-    queryKey: ['favoriteDaos'],
+): UseQueryResult<NavigationMSWallet[]> => {
+  return useQuery<NavigationMSWallet[]>({
+    queryKey: ['favoriteMSWallets'],
     queryFn: useCallback(() => getFavoritedDaosFromCache({skip}), [skip]),
     select: addAvatarToWallet,
     refetchOnWindowFocus: false,
@@ -70,8 +70,8 @@ export const useFavoritedDaosInfiniteQuery = (
     ),
 
     getNextPageParam: (
-      lastPage: NavigationDao[],
-      allPages: NavigationDao[][]
+      lastPage: NavigationMSWallet[],
+      allPages: NavigationMSWallet[][]
     ) => (lastPage.length === limit ? allPages.length : undefined),
 
     select: augmentCachedDaos,
@@ -106,13 +106,13 @@ export const useUpdateFavoritedDaoMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: {msWallet: NavigationDao}) =>
+    mutationFn: (variables: {msWallet: NavigationMSWallet}) =>
       updateFavoritedDaoInCache(variables.msWallet),
 
     onSuccess: (_, variables) => {
       const network = getSupportedNetworkByChainId(variables.msWallet.chain);
 
-      queryClient.invalidateQueries(['favoriteDaos']);
+      queryClient.invalidateQueries(['favoriteMSWallets']);
       queryClient.invalidateQueries(['infiniteFavoriteDaos']);
       queryClient.invalidateQueries([
         'favoritedDao',
@@ -131,12 +131,12 @@ export const useaddFavoriteMSWalletMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: {msWallet: NavigationDao}) =>
+    mutationFn: (variables: {msWallet: NavigationMSWallet}) =>
       addFavoriteDaoToCache(variables.msWallet),
 
     onSuccess: () => {
       onSuccess?.();
-      queryClient.invalidateQueries(['favoriteDaos']);
+      queryClient.invalidateQueries(['favoriteMSWallets']);
       queryClient.invalidateQueries(['infiniteFavoriteDaos']);
     },
   });
@@ -150,12 +150,12 @@ export const useremoveFavoriteMSWalletMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: {msWallet: NavigationDao}) =>
+    mutationFn: (variables: {msWallet: NavigationMSWallet}) =>
       removeFavoriteDaoFromCache(variables.msWallet),
 
     onSuccess: () => {
       onSuccess?.();
-      queryClient.invalidateQueries(['favoriteDaos']);
+      queryClient.invalidateQueries(['favoriteMSWallets']);
       queryClient.invalidateQueries(['infiniteFavoriteDaos']);
     },
   });
@@ -166,7 +166,7 @@ export const useremoveFavoriteMSWalletMutation = (onSuccess?: () => void) => {
  * @param data raw fetched data for the cached DAOs.
  * @returns list of DAOs augmented with the resolved IPFS CID avatars
  */
-function augmentCachedDaos(data: InfiniteData<NavigationDao[]>) {
+function augmentCachedDaos(data: InfiniteData<NavigationMSWallet[]>) {
   return {
     pageParams: data.pageParams,
     pages: data.pages.flatMap(page => addAvatarToWallet(page)),
@@ -175,10 +175,10 @@ function augmentCachedDaos(data: InfiniteData<NavigationDao[]>) {
 
 /**
  * Add resolved IPFS CID for each DAO's avatar to the metadata.
- * @param daos array of `NavigationDao` objects representing the DAOs to be processed.
- * @returns array of augmented NavigationDao objects with resolved avatar IPFS CIDs.
+ * @param daos array of `NavigationMSWallet` objects representing the DAOs to be processed.
+ * @returns array of augmented NavigationMSWallet objects with resolved avatar IPFS CIDs.
  */
-function addAvatarToWallet<T extends NavigationDao>(daos: T[]): T[] {
+function addAvatarToWallet<T extends NavigationMSWallet>(daos: T[]): T[] {
   return daos.map(msWallet => {
     const {metadata} = msWallet;
     return {

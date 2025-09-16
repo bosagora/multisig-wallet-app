@@ -43,7 +43,7 @@ const Governance: React.FC = () => {
     totalCount,
   } = useProposals(
     walletDetails?.address as string,
-    'multisig.plugin.msWallet.eth' as PluginTypes,
+    'multisig.plugin.wallet.eth' as PluginTypes,
     PROPOSALS_PER_PAGE,
     skip,
     filterValue !== 'All' ? filterValue : undefined

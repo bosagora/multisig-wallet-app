@@ -14,7 +14,8 @@ import {
   ButtonText,
   IconChevronUp,
   IconGovernance,
-  Link, VoterType,
+  Link,
+  VoterType,
   WidgetStatus,
 } from 'msw-ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -53,7 +54,8 @@ import {
   Action,
   ActionWithdraw,
   DetailedProposal,
-  ProposalId, WithdrawProposal,
+  ProposalId,
+  WithdrawProposal,
 } from 'utils/types';
 import {PluginTypes} from '../utils/aragon/types';
 import {format} from 'date-fns';
@@ -81,7 +83,7 @@ const Proposal: React.FC = () => {
     data: {members: daoMembers},
   } = useMSWalletMembers(
     walletDetails?.address || '',
-    'multisig.plugin.msWallet.eth'
+    'multisig.plugin.wallet.eth'
   );
 
   const {data: mswSettings} = usePluginSettings(
@@ -229,59 +231,55 @@ const Proposal: React.FC = () => {
   /*************************************************
    *              Handlers and Callbacks           *
    *************************************************/
-    // terminal props
+  // terminal props
   const mappedProps = useMemo(() => {
-      if (proposal && daoMembers) {
-        return {
-          approvals: proposal.approval,
-          minApproval: proposal.settings.minApprovals,
-          voters: [
-            ...daoMembers.map((m) => {
-              return {
-                wallet: m.address,
-                option: proposal.approval.some(
-                  a =>
-                    // remove the call to strip plugin address when sdk returns proper plugin address
-                    stripPlgnAdrFromProposalId(a).toLowerCase() ===
-                    m.address.toLowerCase()
-                )
-                  ? 'approved'
-                  : 'none'
-              } as VoterType
-            }),
-          ],
-          isMember: (
-            address &&
-            daoMembers.some(
-              a =>
-                // remove the call to strip plugin address when sdk returns proper plugin address
-                stripPlgnAdrFromProposalId(a.address).toLowerCase() ===
-                address.toLowerCase()
-            )) as boolean,
-          strategy: t('votingTerminal.multisig'),
-          voteOptions: t('votingTerminal.approve'),
-          startDate: `${format(
-            new Date(),
-            KNOWN_FORMATS.proposals
-          )}  ${getFormattedUtcOffset()}`,
+    if (proposal && daoMembers) {
+      return {
+        approvals: proposal.approval,
+        minApproval: proposal.settings.minApprovals,
+        voters: [
+          ...daoMembers.map(m => {
+            return {
+              wallet: m.address,
+              option: proposal.approval.some(
+                a =>
+                  // remove the call to strip plugin address when sdk returns proper plugin address
+                  stripPlgnAdrFromProposalId(a).toLowerCase() ===
+                  m.address.toLowerCase()
+              )
+                ? 'approved'
+                : 'none',
+            } as VoterType;
+          }),
+        ],
+        isMember: (address &&
+          daoMembers.some(
+            a =>
+              // remove the call to strip plugin address when sdk returns proper plugin address
+              stripPlgnAdrFromProposalId(a.address).toLowerCase() ===
+              address.toLowerCase()
+          )) as boolean,
+        strategy: t('votingTerminal.multisig'),
+        voteOptions: t('votingTerminal.approve'),
+        startDate: `${format(
+          new Date(),
+          KNOWN_FORMATS.proposals
+        )}  ${getFormattedUtcOffset()}`,
 
-          endDate: `${format(
-            new Date(),
-            KNOWN_FORMATS.proposals
-          )}  ${getFormattedUtcOffset()}`,
-        };
-      }
-    }, [address, daoMembers, proposal, t]);
+        endDate: `${format(
+          new Date(),
+          KNOWN_FORMATS.proposals
+        )}  ${getFormattedUtcOffset()}`,
+      };
+    }
+  }, [address, daoMembers, proposal, t]);
 
   // get early execution status
   const canExecuteEarly = useMemo(
     () =>
       (proposal as WithdrawProposal)?.approval?.length >=
       mswSettings?.minApprovals,
-    [
-      mswSettings,
-      proposal,
-    ]
+    [mswSettings, proposal]
   );
 
   // proposal execution status
@@ -491,12 +489,7 @@ const Proposal: React.FC = () => {
             voteButtonLabel={buttonLabel}
             voteNowDisabled={voteNowDisabled}
             votingInProcess={votingInProcess}
-            onVoteSubmitClicked={vote =>
-              handleSubmitVote(
-                vote,
-                address || ''
-              )
-            }
+            onVoteSubmitClicked={vote => handleSubmitVote(vote, address || '')}
             approvals={mappedProps?.approvals}
             voters={mappedProps?.voters}
             isMember={mappedProps?.isMember}
