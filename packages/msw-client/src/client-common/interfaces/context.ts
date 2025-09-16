@@ -1,7 +1,7 @@
 // This file defines the interfaces of the context object holding client settings
 
 import { Signer } from "@ethersproject/abstract-signer";
-import { JsonRpcProvider, Network, Networkish } from "@ethersproject/providers";
+import { JsonRpcProvider, Network, Networkish } from "@ethersproject/providers"; // Context input parameters
 
 // Context input parameters
 type Web3ContextParams = {

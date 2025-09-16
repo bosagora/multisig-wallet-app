@@ -111,7 +111,7 @@ export const CardProposal: React.FC<
         <Description>{description}</Description>
         <Publisher>
           {isExploreProposal(type) ? (
-            <AvatarDao walletName={walletName!} size="small"  />
+            <AvatarDao walletName={walletName!} size="small" />
           ) : (
             <PublisherLabel>{publishLabel}</PublisherLabel>
           )}

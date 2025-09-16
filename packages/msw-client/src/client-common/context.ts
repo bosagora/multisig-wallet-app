@@ -2,14 +2,14 @@ import { ContextParams, ContextState } from "./interfaces/context";
 import { SupportedNetwork, SupportedNetworksArray } from "./interfaces/common";
 import { getNetwork } from "../utils/Utilty";
 
-import { InvalidAddressError, UnsupportedProtocolError } from "multisig-wallet-sdk-common";
+import { InvalidAddressError, UnsupportedNetworkError, UnsupportedProtocolError } from "multisig-wallet-sdk-common";
 import { activeContractsList } from "multisig-wallet-contracts-lib";
-import { UnsupportedNetworkError } from "multisig-wallet-sdk-common";
 
 import { isAddress } from "@ethersproject/address";
 import { Network } from "@ethersproject/networks";
 import { JsonRpcProvider, Networkish } from "@ethersproject/providers";
 import { AddressZero } from "@ethersproject/constants";
+
 export { ContextParams } from "./interfaces/context";
 
 const DEFAULT_GAS_FEE_ESTIMATION_FACTOR = 0.625;
@@ -22,10 +22,10 @@ const supportedProtocols = ["https:", "http:"];
 const defaultState: ContextState = {
     network: {
         name: "mainnet",
-        chainId: 1
+        chainId: 1,
     },
     web3Providers: [],
-    gasFeeEstimationFactor: DEFAULT_GAS_FEE_ESTIMATION_FACTOR
+    gasFeeEstimationFactor: DEFAULT_GAS_FEE_ESTIMATION_FACTOR,
 };
 
 export class Context {
@@ -116,17 +116,17 @@ export class Context {
             if (network === "bosagora_mainnet") {
                 return {
                     name: network,
-                    chainId: 2151
+                    chainId: 2151,
                 };
             } else if (network === "bosagora_testnet") {
                 return {
                     name: network,
-                    chainId: 2019
+                    chainId: 2019,
                 };
             } else if (network === "msw_devnet") {
                 return {
                     name: network,
-                    chainId: 24002
+                    chainId: 24002,
                 };
             } else {
                 return network;
@@ -135,17 +135,17 @@ export class Context {
             if (network === 2151) {
                 return {
                     name: "bosagora_mainnet",
-                    chainId: 2151
+                    chainId: 2151,
                 };
             } else if (network === 2019) {
                 return {
                     name: "bosagora_testnet",
-                    chainId: 2019
+                    chainId: 2019,
                 };
             } else if (network === 24002) {
                 return {
                     name: "msw_devnet",
-                    chainId: 24002
+                    chainId: 24002,
                 };
             } else {
                 return network;
@@ -203,6 +203,14 @@ export class Context {
         }
     }
 
+    private static resolveGasFeeEstimationFactor(gasFeeEstimationFactor: number): number {
+        if (typeof gasFeeEstimationFactor === "undefined") return 1;
+        else if (gasFeeEstimationFactor < 0 || gasFeeEstimationFactor > 1) {
+            throw new Error("Gas estimation factor value should be a number between 0 and 1");
+        }
+        return gasFeeEstimationFactor;
+    }
+
     /**
      * Does set and parse the given context configuration object
      *
@@ -231,7 +239,7 @@ export class Context {
                 Context.resolveNetwork(contextParams.network)
             ),
             walletFactoryAddress: contextParams.walletFactoryAddress,
-            gasFeeEstimationFactor: Context.resolveGasFeeEstimationFactor(contextParams.gasFeeEstimationFactor)
+            gasFeeEstimationFactor: Context.resolveGasFeeEstimationFactor(contextParams.gasFeeEstimationFactor),
         };
     }
 
@@ -261,13 +269,5 @@ export class Context {
                 contextParams.gasFeeEstimationFactor
             );
         }
-    }
-
-    private static resolveGasFeeEstimationFactor(gasFeeEstimationFactor: number): number {
-        if (typeof gasFeeEstimationFactor === "undefined") return 1;
-        else if (gasFeeEstimationFactor < 0 || gasFeeEstimationFactor > 1) {
-            throw new Error("Gas estimation factor value should be a number between 0 and 1");
-        }
-        return gasFeeEstimationFactor;
     }
 }

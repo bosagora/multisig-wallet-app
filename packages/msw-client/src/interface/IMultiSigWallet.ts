@@ -1,6 +1,6 @@
 import { IClientCore } from "../client-common";
 import { BigNumber } from "@ethersproject/bignumber";
-import { SubmitTransaction, ConfirmTransaction, RevokeTransaction, ContractTransactionData } from "../interfaces";
+import { ConfirmTransaction, ContractTransactionData, RevokeTransaction, SubmitTransaction } from "../interfaces";
 import { BigNumberish } from "ethers";
 
 export interface IMultiSigWallet {

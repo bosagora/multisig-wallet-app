@@ -1,11 +1,11 @@
 import { ClientCore, Context, GasFeeEstimation, SupportedNetwork, SupportedNetworksArray } from "../../client-common";
 import { IClientEstimationMethods } from "../../interface/IClientEstimation";
-import { NoProviderError, NoSignerError, UnsupportedNetworkError } from "multisig-wallet-sdk-common";
+import { NoProviderError, UnsupportedNetworkError } from "multisig-wallet-sdk-common";
 import { getNetwork } from "../../utils/Utilty";
 import {
     MultiSigWallet__factory,
     MultiSigWalletFactory,
-    MultiSigWalletFactory__factory
+    MultiSigWalletFactory__factory,
 } from "multisig-wallet-contracts-lib";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { ABIStorage } from "../../utils";
@@ -24,7 +24,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         required: number,
         seed: number
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -37,7 +37,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
 
         const factoryInstance: MultiSigWalletFactory = MultiSigWalletFactory__factory.connect(
             this.web3.getWalletFactoryAddress(),
-          provider
+            provider
         );
         const gasEstimation = await factoryInstance.estimateGas.create(name, description, owners, required, seed);
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
@@ -51,7 +51,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         value: BigNumberish,
         data: string
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -73,7 +73,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
     }
 
     public async confirmTransaction(walletAddress: string, transactionId: BigNumber): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -89,7 +89,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
     }
 
     public async revokeConfirmation(walletAddress: string, transactionId: BigNumber): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -110,7 +110,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         description: string,
         owner: string
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -138,7 +138,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         description: string,
         owner: string
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -167,7 +167,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         owner: string,
         newOwner: string
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -196,7 +196,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         to: string,
         amount: BigNumber
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
@@ -219,13 +219,13 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         to: string,
         amount: BigNumber
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }
         const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
-        console.log(`submitTransactionTokenTransfer: ${network.name} - ${providerNetwork.chainId}`)
+        console.log(`submitTransactionTokenTransfer: ${network.name} - ${providerNetwork.chainId}`);
         const networkName = network.name as SupportedNetwork;
         if (!SupportedNetworksArray.includes(networkName)) {
             throw new UnsupportedNetworkError(networkName);
@@ -250,7 +250,7 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         spender: string,
         amount: BigNumber
     ): Promise<GasFeeEstimation> {
-        const provider = this.web3.getProvider()
+        const provider = this.web3.getProvider();
         if (!provider) {
             throw new NoProviderError();
         }

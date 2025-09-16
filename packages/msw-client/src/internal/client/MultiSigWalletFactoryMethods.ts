@@ -48,7 +48,7 @@ export class MultiSigWalletFactoryMethods extends ClientCore implements IMultiSi
                 creator: await signer.getAddress(),
                 members,
                 required,
-                txHash: tx.hash
+                txHash: tx.hash,
             };
 
             const address = await ContractUtils.getEventValueString(
@@ -61,7 +61,7 @@ export class MultiSigWalletFactoryMethods extends ClientCore implements IMultiSi
             if (address !== undefined) {
                 yield {
                     key: NormalSteps.SUCCESS,
-                    address
+                    address,
                 };
             } else {
                 throw new FailedCreateWallet();
@@ -108,10 +108,10 @@ export class MultiSigWalletFactoryMethods extends ClientCore implements IMultiSi
                 address: m.wallet,
                 metadata: {
                     name: m.name,
-                    description: m.description
+                    description: m.description,
                 },
                 creationDate: new Date(m.createdTime.toNumber() * 1000),
-                chain: network.chainId
+                chain: network.chainId,
             };
         });
     }
@@ -153,10 +153,10 @@ export class MultiSigWalletFactoryMethods extends ClientCore implements IMultiSi
                 address: m.wallet,
                 metadata: {
                     name: m.name,
-                    description: m.description
+                    description: m.description,
                 },
                 creationDate: new Date(m.createdTime.toNumber() * 1000),
-                chain: network.chainId
+                chain: network.chainId,
             };
         });
     }
@@ -222,10 +222,10 @@ export class MultiSigWalletFactoryMethods extends ClientCore implements IMultiSi
             address: res.wallet,
             metadata: {
                 name: res.name,
-                description: res.description
+                description: res.description,
             },
             creationDate: new Date(res.createdTime.toNumber() * 1000),
-            chain: network.chainId
+            chain: network.chainId,
         };
     }
 }

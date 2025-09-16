@@ -3,7 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 export enum NormalSteps {
     SENT = "sent",
-    SUCCESS = "success"
+    SUCCESS = "success",
 }
 
 export type CreateMultiSigWallet =
@@ -100,7 +100,7 @@ export type Pagination = {
 
 export enum SortDirection {
     ASC = "asc",
-    DESC = "desc"
+    DESC = "desc",
 }
 
 export type QueryOption = {

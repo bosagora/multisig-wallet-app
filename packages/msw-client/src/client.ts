@@ -24,6 +24,18 @@ export class Client extends ClientCore implements IMultiSigWalletFactory, IMulti
         Object.freeze(this);
     }
 
+    public get multiSigWalletFactory(): IMultiSigWalletFactoryMethods {
+        return this.privateWalletFactoryMethods;
+    }
+
+    public get multiSigWallet(): IMultiSigWalletMethods {
+        return this.privateWalletMethods;
+    }
+
+    public get estimation(): IClientEstimationMethods {
+        return this.privateEstimationMethods;
+    }
+
     /** Replaces the current signer by the given one */
     public useSigner(signer: Signer): void {
         if (!signer) {
@@ -32,16 +44,5 @@ export class Client extends ClientCore implements IMultiSigWalletFactory, IMulti
         this.web3.useSigner(signer);
         this.privateWalletFactoryMethods.web3.useSigner(signer);
         this.privateWalletMethods.web3.useSigner(signer);
-    }
-
-    public get multiSigWalletFactory(): IMultiSigWalletFactoryMethods {
-        return this.privateWalletFactoryMethods;
-    }
-
-    public get multiSigWallet(): IMultiSigWalletMethods {
-        return this.privateWalletMethods;
-    }
-    public get estimation(): IClientEstimationMethods {
-        return this.privateEstimationMethods;
     }
 }

@@ -13,7 +13,6 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
   onClick,
   ...props
 }) => {
-
   const daoInitials = useMemo(() => {
     // To allow for no name daos - should not be a thing
     if (!walletName) return '';
@@ -27,7 +26,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
     <FallBackAvatar onClick={onClick} size={size} {...props}>
       <DaoInitials>{daoInitials?.toUpperCase()}</DaoInitials>
     </FallBackAvatar>
-  )
+  );
 };
 
 type AvatarPropsType = {

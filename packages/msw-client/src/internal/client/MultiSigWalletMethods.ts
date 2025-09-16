@@ -1,11 +1,11 @@
 import { ClientCore, SupportedNetwork, SupportedNetworksArray } from "../../client-common";
 import { IMultiSigWalletMethods } from "../../interface/IMultiSigWallet";
 import {
-    NormalSteps,
-    SubmitTransaction,
     ConfirmTransaction,
+    ContractTransactionData,
+    NormalSteps,
     RevokeTransaction,
-    ContractTransactionData
+    SubmitTransaction,
 } from "../../interfaces";
 
 import { NoProviderError, NoSignerError, UnsupportedNetworkError } from "multisig-wallet-sdk-common";
@@ -16,7 +16,7 @@ import {
     FailedConfirmTransaction,
     FailedRevokeTransaction,
     FailedSubmitTransaction,
-    NoWalletAddress
+    NoWalletAddress,
 } from "../../utils";
 
 import { Signer } from "@ethersproject/abstract-signer";
@@ -29,11 +29,6 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
 
     public attach(walletAddress: string) {
         this.walletAddress = walletAddress;
-    }
-
-    private getWalletContract(signerOrProvider: Signer | Provider): MultiSigWallet {
-        if (this.walletAddress === undefined) throw new NoWalletAddress();
-        return MultiSigWallet__factory.connect(this.walletAddress, signerOrProvider);
     }
 
     public async getMembers(): Promise<string[]> {
@@ -117,7 +112,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
             value: res.value,
             data: res.data,
             executed: res.executed,
-            approval: res.approval
+            approval: res.approval,
         };
     }
 
@@ -144,7 +139,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
                 value: m.value,
                 data: m.data,
                 executed: m.executed,
-                approval: m.approval
+                approval: m.approval,
             };
         });
     }
@@ -204,7 +199,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
             const tx = await contract.submitTransaction(title, description, destination, value, data);
             yield {
                 key: NormalSteps.SENT,
-                txHash: tx.hash
+                txHash: tx.hash,
             };
 
             const transactionId = await ContractUtils.getEventValueBigNumber(
@@ -217,7 +212,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
             if (transactionId !== undefined) {
                 yield {
                     key: NormalSteps.SUCCESS,
-                    transactionId
+                    transactionId,
                 };
             } else {
                 success = false;
@@ -249,7 +244,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
             const tx = await contract.confirmTransaction(transactionId);
             yield {
                 key: NormalSteps.SENT,
-                txHash: tx.hash
+                txHash: tx.hash,
             };
 
             const txId = await ContractUtils.getEventValueBigNumber(
@@ -265,7 +260,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
                 if (log === undefined) {
                     yield {
                         key: NormalSteps.SUCCESS,
-                        transactionId: txId
+                        transactionId: txId,
                     };
                 } else {
                     success = false;
@@ -300,7 +295,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
             const tx = await contract.revokeConfirmation(transactionId);
             yield {
                 key: NormalSteps.SENT,
-                txHash: tx.hash
+                txHash: tx.hash,
             };
 
             const txId = await ContractUtils.getEventValueBigNumber(
@@ -313,7 +308,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
             if (txId !== undefined) {
                 yield {
                     key: NormalSteps.SUCCESS,
-                    transactionId: txId
+                    transactionId: txId,
                 };
             } else {
                 success = false;
@@ -408,7 +403,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
         if (this.walletAddress === undefined) throw new NoWalletAddress();
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "changeMember", [
             additionalMembers,
-            removalMembers
+            removalMembers,
         ]);
         for await (const commit of this.submitTransaction(title, description, this.walletAddress, 0, encoded)) {
             yield commit;
@@ -436,7 +431,7 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
         if (this.walletAddress === undefined) throw new NoWalletAddress();
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "changeMetadata", [
             walletName,
-            walletDescription
+            walletDescription,
         ]);
         for await (const commit of this.submitTransaction(title, description, this.walletAddress, 0, encoded)) {
             yield commit;
@@ -478,5 +473,10 @@ export class MultiSigWalletMethods extends ClientCore implements IMultiSigWallet
         for await (const commit of this.submitTransaction(title, description, destination, 0, encoded)) {
             yield commit;
         }
+    }
+
+    private getWalletContract(signerOrProvider: Signer | Provider): MultiSigWallet {
+        if (this.walletAddress === undefined) throw new NoWalletAddress();
+        return MultiSigWallet__factory.connect(this.walletAddress, signerOrProvider);
     }
 }
