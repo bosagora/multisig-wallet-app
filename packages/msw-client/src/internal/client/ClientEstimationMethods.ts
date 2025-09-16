@@ -39,7 +39,10 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
             this.web3.getWalletFactoryAddress(),
             provider
         );
-        const gasEstimation = await factoryInstance.estimateGas.create(name, description, owners, required, seed);
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await factoryInstance.estimateGas.create(name, description, owners, required, seed);
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -62,13 +65,16 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
             throw new UnsupportedNetworkError(networkName);
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(
-            title,
-            description,
-            destination,
-            value,
-            data
-        );
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(
+                title,
+                description,
+                destination,
+                value,
+                data
+            );
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -84,7 +90,10 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
             throw new UnsupportedNetworkError(networkName);
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
-        const gasEstimation = await walletInstance.estimateGas.confirmTransaction(transactionId);
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.confirmTransaction(transactionId);
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -100,7 +109,10 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
             throw new UnsupportedNetworkError(networkName);
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
-        const gasEstimation = await walletInstance.estimateGas.confirmTransaction(transactionId);
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.confirmTransaction(transactionId);
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -122,13 +134,16 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "addOwner", [owner]);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(
-            title,
-            description,
-            walletAddress,
-            0,
-            encoded
-        );
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(
+                title,
+                description,
+                walletAddress,
+                0,
+                encoded
+            );
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -150,13 +165,16 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "removeOwner", [owner]);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(
-            title,
-            description,
-            walletAddress,
-            0,
-            encoded
-        );
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(
+                title,
+                description,
+                walletAddress,
+                0,
+                encoded
+            );
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -179,13 +197,16 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigWallet", "replaceOwner", [owner, newOwner]);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(
-            title,
-            description,
-            walletAddress,
-            0,
-            encoded
-        );
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(
+                title,
+                description,
+                walletAddress,
+                0,
+                encoded
+            );
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -200,25 +221,17 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         if (!provider) {
             throw new NoProviderError();
         }
-        console.log(`submitTransactionNativeTransfer`);
-        console.log(`walletAddress: ${walletAddress}`);
-        console.log(`title: ${title}`);
-        console.log(`description: ${description}`);
-        console.log(`to: ${to}`);
-        console.log(`amount: ${amount.toString()}`);
         const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
-        console.log(`networkName: ${networkName}`);
         if (!SupportedNetworksArray.includes(networkName)) {
-            console.log(`UnsupportedNetworkError`);
             throw new UnsupportedNetworkError(networkName);
         }
-        console.log(`submitTransactionNativeTransfer: ${1}`);
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
-        console.log(`submitTransactionNativeTransfer: ${2}`);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(title, description, to, amount, "0x");
-        console.log(`submitTransactionNativeTransfer: ${3}`);
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(title, description, to, amount, "0x");
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -243,13 +256,16 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigToken", "transfer", [to, amount]);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(
-            title,
-            description,
-            destination,
-            0,
-            encoded
-        );
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(
+                title,
+                description,
+                destination,
+                0,
+                encoded
+            );
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
@@ -273,13 +289,16 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         }
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
         const encoded = ABIStorage.encodeFunctionData("MultiSigToken", "approve", [spender, amount]);
-        const gasEstimation = await walletInstance.estimateGas.submitTransaction(
-            title,
-            description,
-            destination,
-            0,
-            encoded
-        );
+        let gasEstimation = BigNumber.from("3000000");
+        try {
+            gasEstimation = await walletInstance.estimateGas.submitTransaction(
+                title,
+                description,
+                destination,
+                0,
+                encoded
+            );
+        } catch (e) {}
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 }
