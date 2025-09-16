@@ -37,11 +37,8 @@ export default defineConfig(({mode}) => {
       typescript({tsconfig: './tsconfig.json'}),
     ],
     optimizeDeps: {
-      // 👈 optimizedeps
-      optimizeDeps: {
-        esbuildOptions: {
-          target: 'es2020',
-        },
+      esbuildOptions: {
+        target: 'es2020',
       },
     },
     build: {

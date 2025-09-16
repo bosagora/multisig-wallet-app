@@ -10,7 +10,7 @@ import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
-import {useReactiveVar} from '@apollo/client';
+import {useReactiveVar} from 'context/apolloClient';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {
   favoriteDaosVar,

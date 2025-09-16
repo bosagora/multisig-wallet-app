@@ -46,6 +46,7 @@ const ethereumClient = new EthereumClient(wagmiConfig, chains);
 // React-Query client
 export const queryClient = new QueryClient();
 
+
 const CACHE_VERSION = 1;
 const onLoad = () => {
   // Wipe local storage cache if its structure is out of date and clashes

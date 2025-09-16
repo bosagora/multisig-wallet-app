@@ -1,6 +1,6 @@
-import {InMemoryCache, makeVar} from '@apollo/client';
-import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
+// Simple state management to replace Apollo Client reactive variables
 
+import {useEffect, useState} from 'react';
 import {
   defaultChainID,
   FAVORITE_DAOS_KEY,
@@ -10,71 +10,55 @@ import {
   PENDING_MULTISIG_VOTES_KEY,
   SupportedChainID,
 } from 'utils/constants';
-import {PRIVACY_KEY} from './privacyContext';
 import {WalletDetails} from 'multisig-wallet-sdk-client';
 import {customJSONReviver} from '../utils/library';
 import {DetailedProposal} from '../utils/types';
 import {VotingMode} from '../utils/aragon/sdk-client-multisig-types';
 
-const cache = new InMemoryCache();
+// Simple reactive variable implementation
+class ReactiveVar<T> {
+  private value: T;
+  private listeners: Array<(value: T) => void> = [];
 
-// add the REST API's typename you want to persist here
-const entitiesToPersist = ['tokenData'];
+  constructor(initialValue: T) {
+    this.value = initialValue;
+  }
 
-// check if cache should be persisted or restored based on user preferences
-const value = localStorage.getItem(PRIVACY_KEY);
-if (value && JSON.parse(value).functional) {
-  const persistor = new CachePersistor({
-    cache,
-    // TODO: Check and update the size needed for the cache
-    maxSize: 5242880, // 5 MiB
-    storage: new LocalStorageWrapper(window.localStorage),
-    debug: process.env.NODE_ENV === 'development',
-    persistenceMapper: async (data: string) => {
-      const parsed = JSON.parse(data);
+  get(): T {
+    return this.value;
+  }
 
-      const mapped: Record<string, unknown> = {};
-      const persistEntities: string[] = [];
-      const rootQuery = parsed['ROOT_QUERY'];
+  set(newValue: T): void {
+    this.value = newValue;
+    this.listeners.forEach(listener => listener(newValue));
+  }
 
-      mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
-        (obj: Record<string, unknown>, key: string) => {
-          if (key === '__typename') return obj;
+  subscribe(listener: (value: T) => void): () => void {
+    this.listeners.push(listener);
+    return () => {
+      const index = this.listeners.indexOf(listener);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
+    };
+  }
+}
 
-          const keyWithoutArgs = key.substring(0, key.indexOf('('));
-          if (entitiesToPersist.includes(keyWithoutArgs)) {
-            obj[key] = rootQuery[key];
+// Factory function to create reactive variables
+function makeVar<T>(initialValue: T): ReactiveVar<T> {
+  return new ReactiveVar(initialValue);
+}
 
-            if (Array.isArray(rootQuery[key])) {
-              const entities = rootQuery[key].map(
-                (item: Record<string, unknown>) => item.__ref
-              ) as string[];
-              persistEntities.push(...entities);
-            } else {
-              const entity = rootQuery[key].__ref;
-              persistEntities.push(entity);
-            }
-          }
+// React hook to use reactive variables
+export function useReactiveVar<T>(reactiveVar: ReactiveVar<T>): T {
+  const [value, setValue] = useState<T>(reactiveVar.get());
 
-          return obj;
-        },
-        {__typename: 'Query'}
-      );
+  useEffect(() => {
+    const unsubscribe = reactiveVar.subscribe(setValue);
+    return unsubscribe;
+  }, [reactiveVar]);
 
-      persistEntities.reduce((obj, key) => {
-        obj[key] = parsed[key];
-        return obj;
-      }, mapped);
-
-      return JSON.stringify(mapped);
-    },
-  });
-
-  const restoreApolloCache = async () => {
-    await persistor.restore();
-  };
-
-  restoreApolloCache();
+  return value;
 }
 
 /*************************************************
@@ -94,17 +78,15 @@ export type NavigationDao = Omit<WalletDetails, 'creationDate' | 'metadata'> & {
 const favoriteDaos = JSON.parse(
   localStorage.getItem(FAVORITE_DAOS_KEY) || '[]'
 );
-const favoriteDaosVar = makeVar<Array<NavigationDao>>(favoriteDaos);
+export const favoriteDaosVar = makeVar<Array<NavigationDao>>(favoriteDaos);
 
-const selectedDaoVar = makeVar<NavigationDao>({
+export const selectedDaoVar = makeVar<NavigationDao>({
   address: '',
   metadata: {
     name: '',
   },
   chain: 2151,
 });
-
-export {favoriteDaosVar, selectedDaoVar};
 
 /*************************************************
  *                 PENDING PROPOSAL              *
@@ -142,7 +124,7 @@ const pendingTokenBasedExecution = JSON.parse(
   localStorage.getItem(PENDING_EXECUTION_KEY) || '{}',
   customJSONReviver
 );
-const pendingTokenBasedExecutionVar = makeVar<PendingTokenBasedExecution>(
+export const pendingTokenBasedExecutionVar = makeVar<PendingTokenBasedExecution>(
   pendingTokenBasedExecution
 );
 
@@ -158,6 +140,7 @@ const pendingMultisigExecution = JSON.parse(
 export const pendingMultisigExecutionVar = makeVar<PendingMultisigExecution>(
   pendingMultisigExecution
 );
+
 //================ Multisig
 type PendingMultisigProposals = {
   // key is msWallet address
@@ -166,7 +149,7 @@ type PendingMultisigProposals = {
     [key: string]: CachedProposal;
   };
 };
-export const pendingMultisigProposals = JSON.parse(
+const pendingMultisigProposals = JSON.parse(
   localStorage.getItem(PENDING_MULTISIG_PROPOSALS_KEY) || '{}',
   customJSONReviver
 );

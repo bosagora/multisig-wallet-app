@@ -1,4 +1,4 @@
-import {useReactiveVar} from '@apollo/client';
+import {useReactiveVar} from 'context/apolloClient';
 import {
   AvatarDao,
   ButtonIcon,
