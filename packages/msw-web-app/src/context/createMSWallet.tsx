@@ -45,16 +45,17 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
 
   const [creationProcessState, setCreationProcessState] =
     useState<TransactionState>();
-  const [daoCreationData, setDaoCreationData] = useState<CreateWalletParams>();
+  const [msWalletCreationData, setMSWalletCreationData] =
+    useState<CreateWalletParams>();
   const [showModal, setShowModal] = useState(false);
   const [msWalletAddress, setDaoAddress] = useState('');
 
   const shouldPoll =
-    daoCreationData !== undefined &&
+    msWalletCreationData !== undefined &&
     creationProcessState === TransactionState.WAITING;
 
   const disableActionButton =
-    !daoCreationData && creationProcessState !== TransactionState.SUCCESS;
+    !msWalletCreationData && creationProcessState !== TransactionState.SUCCESS;
 
   /*************************************************
    *                   Handlers                    *
@@ -62,8 +63,8 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
   const handlePublishDao = async () => {
     setCreationProcessState(TransactionState.WAITING);
     setShowModal(true);
-    const creationParams = await getDaoSettings();
-    setDaoCreationData(creationParams);
+    const creationParams = await getMSWalletSettings();
+    setMSWalletCreationData(creationParams);
   };
 
   // Handler for modal button click
@@ -80,7 +81,10 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
     }
 
     // if no creation data is set, or transaction already running, do nothing.
-    if (!daoCreationData || creationProcessState === TransactionState.LOADING) {
+    if (
+      !msWalletCreationData ||
+      creationProcessState === TransactionState.LOADING
+    ) {
       //console.log('Transaction is running');
       return;
     }
@@ -116,39 +120,40 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
   };
 
   // Get msWallet setting configuration for creation process
-  const getDaoSettings = useCallback(async (): Promise<CreateWalletParams> => {
-    const {
-      blockchain,
-      walletName,
-      walletSummary,
-      multisigWallets,
-      multisigMinimumApprovals,
-    } = getValues();
+  const getMSWalletSettings =
+    useCallback(async (): Promise<CreateWalletParams> => {
+      const {
+        blockchain,
+        walletName,
+        walletSummary,
+        multisigWallets,
+        multisigMinimumApprovals,
+      } = getValues();
 
-    return {
-      name: walletName,
-      description: walletSummary,
-      members: multisigWallets.map(wallet => wallet.address),
-      required: multisigMinimumApprovals,
-    };
-  }, [getValues]);
+      return {
+        name: walletName,
+        description: walletSummary,
+        members: multisigWallets.map(wallet => wallet.address),
+        required: multisigMinimumApprovals,
+      };
+    }, [getValues]);
 
   // estimate creation fees
   const estimateCreationFees = useCallback(async () => {
-    if (daoCreationData === undefined) {
+    if (msWalletCreationData === undefined) {
       return {
         average: BigInt(1500000000),
         max: BigInt(1500000000),
       };
     }
     return client?.estimation.create(
-      daoCreationData.name,
-      daoCreationData.description,
-      daoCreationData.members,
-      daoCreationData.required,
+      msWalletCreationData.name,
+      msWalletCreationData.description,
+      msWalletCreationData.members,
+      msWalletCreationData.required,
       1
     );
-  }, [client?.estimation, daoCreationData]);
+  }, [client?.estimation, msWalletCreationData]);
 
   const {
     tokenPrice,
@@ -163,14 +168,14 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
     setCreationProcessState(TransactionState.LOADING);
 
     // Check if SDK initialized properly
-    if (!client || !daoCreationData) {
+    if (!client || !msWalletCreationData) {
       throw new Error('SDK client is not initialized correctly');
     }
     const createIterator = client?.multiSigWalletFactory.create(
-      daoCreationData.name,
-      daoCreationData.description,
-      daoCreationData.members,
-      daoCreationData.required,
+      msWalletCreationData.name,
+      msWalletCreationData.description,
+      msWalletCreationData.members,
+      msWalletCreationData.required,
       1
     );
 
@@ -197,7 +202,7 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
               network: getValues('blockchain')?.network,
               wallet_provider: provider?.connection.url,
             });
-            setDaoCreationData(undefined);
+            setMSWalletCreationData(undefined);
             setCreationProcessState(TransactionState.SUCCESS);
             setDaoAddress(step.address.toLowerCase());
 
@@ -208,8 +213,8 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
                     address: step.address.toLocaleLowerCase(),
                     chain: CHAIN_METADATA[network].id,
                     metadata: {
-                      name: daoCreationData.name,
-                      description: daoCreationData.description,
+                      name: msWalletCreationData.name,
+                      description: msWalletCreationData.description,
                     },
                   },
                 }),
@@ -242,8 +247,8 @@ const CreateMSWalletProvider: React.FC = ({children}) => {
     <CreateMSWalletContext.Provider value={{handlePublishDao}}>
       {children}
       <PublishModal
-        subtitle={t('TransactionModal.publishDaoSubtitle')}
-        buttonLabelSuccess={t('TransactionModal.launchDaoDashboard')}
+        subtitle={t('TransactionModal.publishMSWSubtitle')}
+        buttonLabelSuccess={t('TransactionModal.launchMSWDashboard')}
         state={creationProcessState || TransactionState.WAITING}
         isOpen={showModal}
         onClose={handleCloseModal}

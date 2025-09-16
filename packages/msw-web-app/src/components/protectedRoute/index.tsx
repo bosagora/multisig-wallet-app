@@ -5,12 +5,9 @@ import {Loading} from 'components/temporary';
 import {GatingMenu} from 'containers/gatingMenu';
 import {LoginRequired} from 'containers/walletMenu/LoginRequired';
 import {useGlobalModalContext} from 'context/globalModals';
-import {useNetwork} from 'context/network';
-import {useSpecificProvider} from 'context/providers';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useMSWalletMembers} from '../../hooks/useMSWalletMembers';
 import {useWallet} from 'hooks/useWallet';
-import {CHAIN_METADATA} from 'utils/constants';
 
 const ProtectedRoute: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +30,6 @@ const ProtectedRoute: React.FC = () => {
     walletDetails ? walletDetails.address : '',
     address || ''
   );
-  const {network} = useNetwork();
 
   /*************************************************
    *             Callbacks and Handlers            *
