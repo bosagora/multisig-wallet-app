@@ -32,7 +32,7 @@ const DaoSelectMenu: React.FC = () => {
 
   const handleDaoSelect = useCallback(
     (msWallet: NavigationDao) => {
-      selectedDaoVar(msWallet);
+      selectedDaoVar.set(msWallet);
       navigate(
         generatePath(Dashboard, {
           network: getSupportedNetworkByChainId(msWallet.chain),

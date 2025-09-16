@@ -49,7 +49,7 @@ const Navbar: React.FC = () => {
   // set current msWallet as selected msWallet
   useEffect(() => {
     if (walletDetails) {
-      selectedDaoVar({
+      selectedDaoVar.set({
         address: walletDetails.address,
         metadata: {
           name: walletDetails.metadata.name,

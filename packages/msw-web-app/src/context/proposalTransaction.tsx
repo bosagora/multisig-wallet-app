@@ -185,7 +185,7 @@ const ProposalTransactionProvider: React.FC<Props> = ({children}) => {
           date: new Date().toDateString(),
         };
         cacheKey = PENDING_MULTISIG_VOTES_KEY;
-        pendingMultisigApprovalsVar(newCache);
+        pendingMultisigApprovalsVar.set(newCache);
       }
 
       // add to local storage
