@@ -200,14 +200,25 @@ export class ClientEstimationMethods extends ClientCore implements IClientEstima
         if (!provider) {
             throw new NoProviderError();
         }
+        console.log(`submitTransactionNativeTransfer`);
+        console.log(`walletAddress: ${walletAddress}`);
+        console.log(`title: ${title}`);
+        console.log(`description: ${description}`);
+        console.log(`to: ${to}`);
+        console.log(`amount: ${amount.toString()}`);
         const providerNetwork = await provider.getNetwork();
         const network = getNetwork(providerNetwork.chainId);
         const networkName = network.name as SupportedNetwork;
+        console.log(`networkName: ${networkName}`);
         if (!SupportedNetworksArray.includes(networkName)) {
+            console.log(`UnsupportedNetworkError`);
             throw new UnsupportedNetworkError(networkName);
         }
+        console.log(`submitTransactionNativeTransfer: ${1}`);
         const walletInstance = MultiSigWallet__factory.connect(walletAddress, provider);
+        console.log(`submitTransactionNativeTransfer: ${2}`);
         const gasEstimation = await walletInstance.estimateGas.submitTransaction(title, description, to, amount, "0x");
+        console.log(`submitTransactionNativeTransfer: ${3}`);
         return this.web3.getApproximateGasFee(gasEstimation.toBigInt());
     }
 
