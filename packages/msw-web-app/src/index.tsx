@@ -69,7 +69,6 @@ const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: w3mConnectors({
     projectId: walletConnectProjectID,
-    version: 2,
     chains,
   }),
 

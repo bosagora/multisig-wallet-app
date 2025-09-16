@@ -1,15 +1,4 @@
-import {ProposalStatus} from '@aragon/sdk-client-common';
-import {
-  format,
-  formatDistance,
-  formatDistanceToNow,
-  formatRelative,
-  Locale,
-} from 'date-fns';
-import * as Locales from 'date-fns/locale';
-
-import {i18n} from '../../i18n.config';
-import {HOURS_IN_DAY, MINS_IN_DAY, MINS_IN_HOUR} from './constants';
+import {format, formatRelative} from 'date-fns';
 
 export const KNOWN_FORMATS = {
   standard: 'MMM dd yyyy HH:mm', // This is our standard used for showing dates.
@@ -21,21 +10,6 @@ export type Offset = {
   hours?: number;
   minutes?: number;
 };
-
-/**
- * This function returns the number of seconds given the days hours and minutes
- * @param days number of days
- * @param hours number of hours
- * @param minutes number of minutes
- * @returns number of seconds
- */
-export function getSecondsFromDHM(
-  days: number,
-  hours: number,
-  minutes: number
-): number {
-  return minutes * 60 + hours * 3600 + days * 86400;
-}
 
 /**
  * This function returns the days, hours and minutes of seconds
@@ -58,33 +32,6 @@ export function getDHMFromSeconds(seconds: number): Offset {
     days: Math.floor(days),
     hours: Math.floor(hours),
     minutes: Math.floor(minutes),
-  };
-}
-
-/**
- * Note: This function will return a list of timestamp that we can use to categorize transfers
- * @return a object with milliseconds params
- */
-export function getDateSections(): {
-  lastWeek: number;
-  lastMonth: number;
-  lastYear: number;
-} {
-  const date = new Date();
-  const day = date.getDay();
-  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-  const lastWeek: number = new Date(date.setDate(diff)).getTime();
-  const lastMonth: number = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    1
-  ).getTime();
-  const lastYear: number = new Date(date.getFullYear(), 0, 1).getTime();
-
-  return {
-    lastWeek,
-    lastMonth,
-    lastYear,
   };
 }
 
@@ -213,54 +160,6 @@ export function getFormattedUtcOffset(): string {
 }
 
 /**
- * Note: This function will return the remaining time from input timestamp
- * to current time.
- * @param timestamp proposal create/end timestamp must be greater than current timestamp
- * @returns remaining timestamp from now
- */
-export function getRemainingTime(
-  timestamp: number | string // in milliseconds
-): number {
-  const currentTimestamp = Math.floor(new Date().getTime());
-  return parseInt(`${timestamp}`) - currentTimestamp;
-}
-
-/**
- * Note: this function will convert the proposal's timestamp to proper string to show
- * as a alert message on proposals card
- * @param status return the message if the type was pending or active
- * @param startDate proposal startDate
- * @param endDate proposal endDate
- * @returns a message with i18 translation as proposal ends alert
- */
-export function translateProposalDate(
-  status: ProposalStatus,
-  startDate: Date,
-  endDate: Date
-): string | undefined {
-  let timeDiff: string;
-  const locale = (Locales as Record<string, Locale>)[i18n.language];
-  if (status === 'Pending') {
-    timeDiff = formatDistanceToNow(startDate, {includeSeconds: true, locale});
-  } else if (status === 'Active') {
-    timeDiff = formatDistanceToNow(endDate, {includeSeconds: true, locale});
-  } else {
-    return;
-  }
-
-  return i18n.t(`governance.proposals.${status}`, {
-    timeDiff,
-  }) as string;
-}
-
-export function getDaysAndHours(timestamp: number) {
-  return {
-    days: Math.floor(timestamp / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((timestamp / (1000 * 60 * 60)) % 24),
-  };
-}
-
-/**
  * @param date number or string in seconds (not milliseconds)
  * @param formatType KNOWN_FORMATS
  */
@@ -279,34 +178,4 @@ export function formatDate(date: number | string, formatType?: string) {
   } catch (e) {
     return date;
   }
-}
-
-export function formatTime(time: number | string) {
-  //converting delay time into human readable format
-  try {
-    if (typeof time === 'string') {
-      time = parseInt(time, 10);
-    }
-    return formatDistance(0, time * 1000, {includeSeconds: true});
-  } catch (e) {
-    return time;
-  }
-}
-
-export function getDaysHoursMins(
-  value: number,
-  period: 'hours' | 'mins' = 'mins'
-) {
-  if (period === 'mins') {
-    return {
-      days: Math.floor(value / MINS_IN_DAY),
-      hours: Math.floor((value / MINS_IN_HOUR) % HOURS_IN_DAY),
-      mins: value % MINS_IN_HOUR,
-    };
-  } else
-    return {
-      days: Math.floor(value / HOURS_IN_DAY),
-      hours: value % HOURS_IN_DAY,
-      mins: 0,
-    };
 }

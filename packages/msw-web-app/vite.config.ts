@@ -4,11 +4,10 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import {defineConfig, loadEnv} from 'vite';
 import {resolve} from 'path';
 import analyze from 'rollup-plugin-analyzer';
-//import {uglify} from 'rollup-plugin-uglify';
 
 //const production = process.env.NODE_ENV === 'production';
 
-// https://vitejs.dev/config/
+// @ts-ignore
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, 'env');
 
@@ -57,7 +56,6 @@ export default defineConfig(({mode}) => {
         ],
         output: {
           manualChunks: {
-            'osx-ethers': ['@aragon/osx-ethers'],
             tiptap: [
               '@tiptap/extension-link',
               '@tiptap/extension-placeholder',
