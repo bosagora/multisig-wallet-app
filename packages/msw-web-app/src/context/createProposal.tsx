@@ -1,44 +1,22 @@
-import {useReactiveVar} from './apolloClient';
-import {
-  CreateMajorityVotingProposalParams,
-  CreateProposalBaseParams,
-  PluginTypes,
-  ProposalCreationSteps,
-  VoteValues,
-  WithdrawParams,
-} from 'utils/aragon/types';
-// import {
-//   DaoAction,
-//   ProposalMetadata,
-//   TokenType,
-// } from '@aragon/sdk-client-common';
-// import {hexToBytes} from '@aragon/sdk-common';
-import {BigNumber, ethers} from 'ethers';
+import {BigNumber} from 'ethers';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {generatePath, useNavigate} from 'react-router-dom';
 
-import {Loading} from 'components/temporary';
 import PublishModal from 'containers/transactionModals/publishModal';
 import {useClient} from 'hooks/useClient';
 import {useMSWalletDetailsQuery} from 'hooks/useMSWalletDetails';
 import {useWallet} from 'hooks/useWallet';
-import {
-  TransactionState,
-} from 'utils/constants';
-import {
-  getDHMFromSeconds,
-} from 'utils/date';
+import {TransactionState} from 'utils/constants';
+import {getDHMFromSeconds} from 'utils/date';
 import {useGlobalModalContext} from './globalModals';
 import {useNetwork} from './network';
 import {usePrivacyContext} from './privacyContext';
-import {trackEvent} from '../services/analytics';
 import {usePollGasFee} from '../hooks/usePollGasfee';
 import {BigNumberish} from '@ethersproject/bignumber';
 import {ABIStorage, BOACoin, NormalSteps} from 'multisig-wallet-sdk-client';
-import {Dashboard} from '../utils/paths';
-import {toDisplayEns} from '../utils/library';
+import {Proposal} from '../utils/paths';
 import {isNativeToken} from 'utils/tokens';
 
 type Props = {
@@ -142,7 +120,7 @@ const CreateProposalProvider: React.FC<Props> = ({
         break;
       case TransactionState.SUCCESS:
         navigate(
-          generatePath(Dashboard, {
+          generatePath(Proposal, {
             network,
             msWallet: walletDetails?.address,
             id: proposalId,
